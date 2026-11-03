@@ -91,3 +91,6 @@ Replace the sample parts of `data.js` with the real data in the same shape. Keep
 - Nothing is sent to the internet. No names or addresses are stored.
 
 See `../DECISIONS.md` for why things work the way they do.
+
+## One-file preview
+`preview/kiosk-preview.html` (in the main folder) is the whole kiosk in a single file, for quick viewing: download it and double-click. It is a copy, so it does **not** update by itself. After changing anything in `user-friendly/`, ask the project team to rebuild it, or delete it.

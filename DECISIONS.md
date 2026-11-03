@@ -2,7 +2,7 @@
 
 A running record of which requirements from the IEEE requirements guide are kept, simplified or left out. Each entry that is not fully kept explains what adding it later would involve.
 
-Last updated: 2026-11-03
+Last updated: 2026-11-03 (user-friendly version added; see the end of this file)
 
 ## Current build at a glance
 - A static web app (`index.html`, `data.js`, `core.js`, `app.js`). It is phone-first, and on desktop (900px or wider) it switches to two columns.
@@ -101,3 +101,54 @@ Last updated: 2026-11-03
 ## Privacy notes
 - The anonymous audit log stores question text, because the weekly audit needs it. It stores no name, no address and only a random session ID.
 - **Open question for Chang:** confirm this is acceptable under ORC 149.432, or whether questions should be dropped after the audit window.
+
+## 2026-11-03: User-friendly version (`user-friendly/` folder)
+A second build for patrons who are older, have low vision, or don't want to type. The root prototype files are unchanged. The new folder has its own copies of `data.js` and `core.js`, adapted as described below. It uses its own browser storage key, so the two versions don't share settings or logs.
+
+### Design
+- **Phone first, two columns on wide screens (960px or wider).** Base text is 20px. A+ and A++ buttons raise it to 24px and 28px. A High contrast button switches to white and yellow on black. Colors meet WCAG AAA contrast (7:1).
+- **Tap targets are at least 56px tall** (48px for the text-size buttons in the top bar).
+- **Topic buttons with tap-to-ask questions,** so nobody has to type. Typing is still available.
+- **Plain words.** Answer sentences are short. Results are labeled "Result / Tested on / Tested by / Sample". "Not detected" shows as "Not found" with the detection limit in plain words. `test.js` checks that the fixed wording averages grade 8 or lower.
+- **Jargon is explained under each answer** ("What these words mean"), using only the glossary. Glossary entries were added for EPA, Ohio EPA, ATSDR, fact card, sample, census tract and "not found". They define words only and contain no health content.
+- **Result values use neutral colors.** No red or green on numbers, because color would suggest a safety judgment.
+- **Report a problem** uses a large on-screen form with four tap choices instead of a browser pop-up.
+- **Read aloud** reads only what is visible on the screen, at a slightly slower rate, and says unit names in full. The same button stops it.
+- **Privacy:** "Done" clears the screen and display settings for the next person. The screen also clears itself after 10 minutes with no touch.
+- **Near my street** is a pick-list of streets instead of a typed address. The street is turned into a census tract once and then cleared (FR-20 unchanged).
+- **Print** opens the history, adds a printed date, "Bring this page to the reference desk", note lines and the disclaimer.
+
+### Gap 1 fixed: "What is <chemical>?" shows the fact card
+- **Now:** a question that is only "What is/are <chemical>?" shows that chemical's fact card, the federal limit (cited) and how many tests are on file, with a button to see them. "What is vinyl chloride at Sulphur Run?" still shows test results.
+- Every chemical now has a fact card entry. All say "Awaiting expert-approved ATSDR text." We wrote no health text. Approved cards would cite a new corpus entry, D7 (ATSDR ToxFAQs printed copies, sample entry).
+- Pausing fact cards on the staff page still hides any approved text.
+
+### Gap 2 fixed: newest result per location first
+- **Now:** by default, and for "right now", "latest", "current", "newest", "recent" or "still" questions, the newest result for each place, chemical and sample type is shown first. Older results sit behind a **Show history** button, newest first.
+- "Right now" questions also say plainly that the kiosk has no live readings.
+- "What are the latest test results?" and "Show me all the test results" now work without naming a place or chemical.
+- If two agencies disagree on a newest result, the flag shows next to it. If the disagreement is in older results, a short note at the top points to Show history, and the full flag card is inside the history.
+- Sample records were added (more made-up dates for the same places) so the history has something to show.
+
+### Other logic changes in `user-friendly/core.js`
+- **Safety gate additions (over-refusal preferred):** health-effect wording ("what will it do to me", "health effects of", "how does it affect my kids") is refused as *risk*. Judgment words ("bad", "clean", "contaminated", "poison", "healthy", "pure") are refused as *safety*. Eight matching red-team items were added (26 total, all refused). The benchmark list is unchanged, because benchmark questions must come from real staff questions.
+- **Glossary only answers word-only questions.** "What is the MCL for vinyl chloride?" now shows the actual limit instead of the MCL definition. It is still Tier 1, so the benchmark still passes at 100%.
+- **Glossary matching normalizes terms,** so "µg/L" and "ng/kg" questions now match.
+- **"Where can I read…" questions** show the documents only, not the test results.
+- **Word definitions now carry a citation** to a new corpus entry, G1 (the kiosk word list, sample, needs expert review), so every answer shows a source.
+- **Agency disagreements are logged for staff** and listed on the staff page, so "flagged" now means a person can see it.
+- **Topic buttons and their questions live in `data.js` (`topics`),** so all wording is in one file. `test.js` checks that every one gives the expected kind of answer.
+
+### Kept the same
+- Safety gate runs first. Eight refusal categories, each with a referral card (wording simplified, same contacts and placeholders).
+- Mandatory citation on every item, date banner on every result, stale-document warning.
+- "We don't have data on that" when nothing matches.
+- Staff page: kill switch, emergency mode, desk staffed toggle, 180-day auto-sunset, anonymous session count, report queue with 5-day warning, incident log, content-class pause, weekly audit, release gate.
+- No server, no AI model, no external requests, no personal data stored.
+
+### Open items
+- **Staff link:** still a small link at the bottom of patron screens, as in the root prototype. In a public kiosk the staff page must not be reachable by patrons (see "Kill switch as a physical action" above).
+- **Fonts:** uses Verdana or the device's system font. No web fonts are downloaded, to keep the kiosk offline.
+- **Reading level of chemical names** can't be lowered. They are official names and stay as published.
+- **User testing:** the design has not yet been tried with library patrons. A short session with a few older residents and the reference staff is the next step.
+- **Two versions:** once the library picks one, delete or archive the other so there is one `data.js` to maintain.

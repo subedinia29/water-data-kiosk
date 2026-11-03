@@ -106,16 +106,54 @@ All data shown is made-up sample data.
 
 ## 5. Plan for next steps (20%)
 
-1. **User testing with patrons and staff.** Run short sessions at the library with a few older residents and the reference librarians. Watch whether people can find answers without help. Fix wording, button labels and layout based on what we see. Then pick one version and retire the other, so there is only one data file to maintain.
-2. **Real data.** Write a Python script that reads the U.S. EPA, Ohio EPA and county CSV/PDF files and converts them into the same record format the prototype already uses. Add a signed manifest for each quarterly refresh. Build alias lists for chemical and place names.
-3. **Expert-approved content.** Work with the Expert Review Panel to:
-   - paste verbatim ATSDR/IRIS text into the fact cards
-   - write the Known Limitations text and the emergency text
-   - confirm every referral phone number (currently `[CONFIRM NUMBER]`)
-4. **Bigger, real evaluation sets.** Grow from 8 benchmark and 26 red-team items to about 200 real questions that staff have received and 75 red-team items. Add two-person grading of answers, not just routing. Keep the rule that safety refusals must stay at 100%.
-5. **Local LLM (RAG) stage.** Add a small backend on the kiosk machine running an open-weight model (about 7–8B, quantized, through Ollama), with local embeddings and a vector store (Chroma or FAISS). The rule-based safety gate stays in front of the model, so refused questions never reach it. The model is used to find passages and choose answer templates, not to write free health text. Compare it against the rule-based version on the same tests.
-6. **Kiosk deployment.** Store logs and reports in local SQLite instead of browser storage. Hide the staff page from patrons and add a physical kill-switch button. Set up a locked-down kiosk computer, a weekly source-link check, and add open-source licenses.
-7. **Privacy question.** Confirm with Dr. Chang whether keeping anonymous question text for the weekly audit is acceptable under ORC 149.432, or whether it should be deleted after the audit.
+**Goal:** a resident walks up, asks a question in their own words, and leaves with a correct, sourced answer they understand, or with the right person to call. Every step below is judged by that goal.
+
+**Who we design for:**
+- **Residents**, many of them older or with low vision. Some are worried, and some are not comfortable with technology.
+- **Librarians** who help at the desk.
+- **A non-technical maintainer** who updates the data.
+
+### Phase 1: Learn from real users (weeks 1–3)
+- Run 30-minute sessions with **5–8 older residents and 2–3 librarians**. Give them real tasks, such as "find the newest tap water result" or "find out what vinyl chloride is", and ask them to think aloud.
+- Record where they hesitate, what words they use, and which questions they try to type.
+- Collect **real questions** from the reference desk. These become the benchmark set, so we don't invent test questions.
+- **Done when:** we have a ranked list of problems and a vocabulary list of patrons' own words, such as "creek", "city water" and "is it clean".
+
+### Phase 2: Understand questions the way people ask them (weeks 3–6)
+The biggest weakness today is that typed questions must match keywords. Residents misspell words, use local names and ask vague or emotional questions.
+- Add the Phase 1 words to the alias lists, such as "the run" for Sulphur Run and "town water" for the village system. Also add spelling tolerance.
+- **Use an LLM as a question interpreter, not an answer writer.** It maps a free-form question to one of the kiosk's known, tested questions. The kiosk then shows its usual cited answer.
+  - For the presentation demo, this can be Claude.
+  - For deployment, it will be a local open-weight model. The rule-based safety gate always runs before it.
+- **Ask a clarifying question when a question is vague.** For example, "Which water do you mean? Tap water, creek, or private well?" The kiosk shows buttons instead of guessing.
+- **Recognize worry, not just keywords.** "Should I be scared?" gets a calm referral card with a person to talk to.
+- Add **voice input** using the device's built-in speech recognition, for people who can't type.
+- **Done when:** at least 90% of real patron questions reach the right answer or the right referral, and safety refusals stay at 100%.
+
+### Phase 3: Make answers easier to act on (weeks 5–8)
+- Test the wording with patrons and keep every answer at a **6th–8th grade reading level**. This is checked automatically.
+- Put a one-line "bottom line" first, for example "Newest test: July 30, 2026. Vinyl chloride not found." Details come after.
+- Improve the printout: large type, a "questions to ask the librarian" box, and the source binder location.
+- **Done when:** at least 80% of test users can explain what the result says, without help, in under 2 minutes.
+
+### Phase 4: Real data and expert-approved content (weeks 6–10)
+- Use a Python script to convert the real U.S. EPA, Ohio EPA and county files into the existing record format. Add a signed quarterly refresh.
+- The Expert Review Panel approves the fact-card text (verbatim ATSDR), the Known Limitations text and the emergency text, and every contact number is confirmed.
+- **Done when:** no sample data and no placeholders remain, and the maintainer can update data by following the README alone.
+
+### Phase 5: Test hard, then deploy (weeks 10–14)
+- Grow the evaluation sets to **200 real questions and 75 red-team items**, graded by two people for accuracy, correct citation, no unsupported claims, readability and correct refusal.
+- Release gate: benchmark at least 95%, red-team refusal **100%**, and written expert-panel approval.
+- Deploy on a locked-down library computer with local storage (SQLite) and a physical kill switch. The staff page must not be reachable by patrons.
+- Confirm with Dr. Chang how long anonymous question logs may be kept (ORC 149.432).
+
+### Risks and how we handle them
+| Risk | What we'll do |
+|---|---|
+| The LLM misreads a question or adds claims | It only picks a known question. The safety gate runs first. Answers come from templates with citations. Fall back to the rules if unsure. |
+| Patrons feel dismissed by refusals | Each refusal names a person and a phone number, with calm wording that we test with users. |
+| Real data is messy (PDF tables, mixed units) | Use a manual review step in the conversion script, and show "We don't have data on that" rather than guess. |
+| The kiosk becomes outdated | Stale-data banners, and auto-shutoff after 180 days without a signed refresh. |
 
 ## 6. LLMs used and reflection (20%)
 

@@ -1,0 +1,8 @@
+/* EXTRA FEATURES (Project 3.2) styles. Uses the color tokens from ../styles.css. */
+.choice-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin: 12px 0; }
+.feature-card { border: 3px solid var(--info-line); }
+.ai-note { border-width: 3px; }
+.ticket { text-align: center; border: 4px solid var(--primary); }
+.ticket-num { font-size: 4rem; font-weight: 700; line-height: 1.1; margin: 0.1em 0; color: var(--primary); }
+.mic[aria-pressed="true"] { background: var(--stop-bg); border-color: var(--stop-line); color: var(--fg); }
+@media print { .ticket-num { font-size: 48pt; color: #000; } }

@@ -20,7 +20,9 @@
     ["causation", /\bcaus|because of the|from the (train|derailment|spill|chemicals?|fire|burn)|due to the|is it from|linked to|responsible for|\bfault\b|\bblame/],
     ["safety",    /\bsafe|unsafe|dangerous|danger|\bharm|toxic|\bworr|concern|\bok(ay)? (to|for)|fine to|alright to|should (i|we) (drink|use|let|stop|be|boil|bathe|keep)|can (i|we) (drink|let|swim|fish|eat|bathe|use|cook)|let (my|the) (kids?|children|grandkids?|pets?|dogs?)|play in|water (my|the) garden|\bboil/
                   // NEW: judgement words ("is it bad", "is my well clean", "is the creek contaminated")
-                  ,/\bbad\b|\bclean\b|contaminated\b|\bpoison|\bdeadly\b|\blethal\b|\bhealthy\b|\bpure\b/]
+                  ,/\bbad\b|\bclean\b|contaminated\b|\bpoison|\bdeadly\b|\blethal\b|\bhealthy\b|\bpure\b/
+                  // NEW: "is the water ok / fine / alright?"
+                  ,/\b(is|are) (it|the|my|our|this|that|these|those)\b.*\b(ok|okay|fine|alright|good)\b/]
   ];
   const tier3Match = q => { for (const [cat, ...res] of TIER3) if (res.some(re => re.test(q))) return cat; return null; };
 

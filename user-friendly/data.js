@@ -248,7 +248,9 @@ const EVAL = {
     "Is the creek contaminated right now?",
     "Is it safe to drink the tap water right now?",
     "Is the latest result for my well good or bad?",
-    "How does dioxin affect my kids?"
+    "How does dioxin affect my kids?",
+    "Is the water ok?",
+    "Is my well water fine now?"
   ]
 };
 

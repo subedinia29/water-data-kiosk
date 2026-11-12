@@ -156,7 +156,7 @@ function renderMain() {
         <form id="type-form">
           <label for="q" class="visually-hidden">Type your question</label>
           <textarea id="q" rows="2" placeholder="Example: What is vinyl chloride?"></textarea>
-          <div class="row"><button type="submit" class="btn primary wide">Ask</button></div>
+          <div class="row"><button type="button" class="btn primary wide" data-action="ask-typed">Ask</button></div>
         </form>
       </div>
       <p class="or-topics">Or tap a topic. Then tap a question.</p>
@@ -568,6 +568,7 @@ document.addEventListener("click", e => {
   if (el.dataset.ask) { e.preventDefault(); askQuestion(el.dataset.ask); return; }
   if (typeof Intro !== "undefined" && Intro.click(el)) { render(); window.scrollTo(0, 0); return; }
   switch (el.dataset.action) {
+    case "ask-typed": askTyped(); break;
     case "start": S.ack = true; startSession(); render(); window.scrollTo(0, 0); break;
     case "done": endSession(); break;
     case "print": printPage(); break;
@@ -599,11 +600,12 @@ document.addEventListener("click", e => {
     case "audit": drawAudit(); break;
   }
 });
-document.addEventListener("submit", e => {
-  if (e.target.id !== "type-form") return;
-  e.preventDefault();
-  const box = $("#q"); const q = box.value; box.value = "";
-  askQuestion(q);
+// The Ask button and the Enter key ask directly, without a form submit, so it also works
+// inside previews that block forms. Shift+Enter still adds a new line.
+function askTyped() { const box = $("#q"); if (!box) return; const q = box.value; box.value = ""; askQuestion(q); }
+document.addEventListener("submit", e => { if (e.target.id === "type-form") { e.preventDefault(); askTyped(); } });
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing && e.target.id === "q") { e.preventDefault(); askTyped(); }
 });
 
 // ---------- Privacy: clear the screen after 10 minutes with no touch ----------

@@ -48,3 +48,15 @@ body[data-intro="welcome"] .help-bar { display: none; }
   .intro-fade { animation: intro-fade 1.2s ease-out both; }
   @keyframes intro-fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 }
+
+/* Opening page (step 0): deep red page with cream text and buttons. High contrast keeps black and yellow. */
+:root:not([data-contrast="high"]) body[data-intro="0"] { --open-red: #6e0a1a; --open-cream: #fbf1e3; background: var(--open-red); color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro-title,
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro-note,
+:root:not([data-contrast="high"]) body[data-intro="0"] .display-label { color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro .btn.primary { background: var(--open-cream); color: var(--open-red); border-color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro .btn:not(.primary) { background: transparent; color: var(--open-cream); border-color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .display button,
+:root:not([data-contrast="high"]) body[data-intro="0"] .speak-btn { background: var(--open-cream); color: var(--open-red); border-color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .display button[aria-pressed="true"],
+:root:not([data-contrast="high"]) body[data-intro="0"] .speak-btn[aria-pressed="true"] { background: var(--open-red); color: var(--open-cream); border-color: var(--open-cream); }

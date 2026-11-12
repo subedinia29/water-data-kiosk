@@ -213,3 +213,4 @@ Asking a question (typed, topic, street or "Did you mean?") now opens a separate
 - **Question box label:** "Type your question" is hidden on screen but kept for screen readers.
 - **Read aloud (every screen):** now a round speaker button at the top left, next to the text-size buttons. It turns red while reading and its label changes to "Stop reading". It was removed from the bottom button row. On phones the words "Text size" are hidden so the buttons fit on one row.
 - **Date panel:** on the answer page it now comes after the answer instead of before it. Every answer still shows it.
+- **Opening page colors:** deep red page (`#6e0a1a`) with cream text and cream pill buttons (cream on this red is well above AAA). The title is now "How's My Water?". The "Water & Soil Test Results / East Palestine Memorial Public Library" line moved from the opening page to the top of page 2. High contrast mode stays black and yellow.

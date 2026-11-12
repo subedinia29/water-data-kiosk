@@ -18,8 +18,7 @@ const Intro = {
   render(app, esc) {
     document.body.dataset.intro = String(this.step);
     app.innerHTML = `<section class="intro intro-hello" aria-labelledby="intro-h">
-      <p class="intro-credit">Water &amp; Soil Test Results<br>East Palestine Memorial Public Library</p>
-      <h1 id="intro-h" class="intro-title">${esc(INTRO_CONFIG.appName)}</h1>
+      <h1 id="intro-h" class="intro-title">${esc(INTRO_CONFIG.appName)}?</h1>
       <p class="intro-lead">Simple answers about water tests in East Palestine.</p>
       <div class="intro-peek">${mascotArt("mascot intro-fade")}</div>
       <div class="intro-actions">

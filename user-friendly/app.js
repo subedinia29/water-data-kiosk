@@ -103,8 +103,8 @@ function renderPatron() {
 function renderWelcome() {
   // Same look as the opening page (intro/intro.css), without the picture or red title.
   document.body.dataset.intro = "welcome";
-  app.innerHTML = `<section class="intro intro-welcome" aria-labelledby="welcome-h"><h1 id="welcome-h">Welcome</h1>
-    <p class="big-result">This web app shows official water and soil test results for the East Palestine area.</p>
+  app.innerHTML = `<section class="intro intro-welcome" aria-labelledby="welcome-h">
+    <h1 id="welcome-h" class="big-result">This web app shows official water and soil test results for the East Palestine area.</h1>
     <div class="card"><h2>It can show you</h2>
       <ul><li>What was tested</li><li>Where and when it was tested</li><li>Which agency did the test</li><li>The result, and the federal limit</li><li>Where to read the full report</li></ul></div>
     <div class="card stop"><h2>It cannot tell you</h2>

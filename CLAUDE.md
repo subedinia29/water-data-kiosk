@@ -67,3 +67,9 @@ These come from the guide, which calls them non-negotiable. If a request conflic
 
 ## Working with the owner
 Nia is steering this project and isn't working as a traditional developer. Keep explanations concise and in plain language, and keep user-facing docs readable by non-technical people. Ask before pushing, merging or making the repo public.
+
+### How Nia wants questions handled
+- **Ask all your questions before starting a task**, in one go. Don't stop midway to ask more if you can avoid it.
+- **Give sample answer options with every question** (for example: "A) bigger button, B) different color, C) leave as is").
+- **Keep pondering minimal**, especially on non-technical things. Pick a sensible default when the choice doesn't matter much.
+- **For "do changes" tasks:** write your questions into `to-do-changes.md`, under the change they are about, before making that change. Wait for Nia's answers there.

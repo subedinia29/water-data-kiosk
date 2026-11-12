@@ -196,3 +196,4 @@ Two new screens now come before the Welcome page, using the app name "How's My W
 - **Colors:** cardinal red `#a8102a` with white text (about 7.6:1, AAA). High contrast mode turns these screens black and yellow. The rest of the app is unchanged for now.
 - **Switch:** `on: false` in `user-friendly/intro/intro.js` turns the screens off; `askName: false` drops only the name screen. To remove them fully, delete the "OPENING SCREENS" lines in `index.html` and the `intro/` folder.
 - `version 2.html` is a single-file snapshot kept on the owner's Mac to compare with `version 1.html`.
+- **No blue top bar (every page):** the colored bar with the app title is gone. The text-size buttons (A, A+, A++) and high contrast (◐) are now round buttons at the top right of every page, at least 52px and growing with the text size. The title is still in the page for screen readers, and printouts still carry their own heading.

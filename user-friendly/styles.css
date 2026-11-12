@@ -65,21 +65,21 @@ strong { font-weight: 700; }
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 16px; top: 8px; background: var(--bg); color: var(--fg); padding: 12px; z-index: 10; }
 
-/* ---------- Top bar ---------- */
-.topbar { background: var(--primary); color: var(--primary-fg); border-bottom: 3px solid var(--line); }
-.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-.brand { display: flex; flex-direction: column; }
-.brand-title { font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
-.brand-sub { font-size: 0.85rem; }
-.display { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.display-label { font-size: 0.85rem; margin-right: 2px; }
+/* ---------- Top bar (version 2): no colored bar, just round buttons at the top right ---------- */
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.topbar { background: transparent; color: var(--fg); }
+.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px 0; display: flex; justify-content: flex-end; }
+.display { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+.display-label { font-size: 0.8rem; color: var(--muted); margin-right: 2px; }
 .display button {
-  min-height: 48px; min-width: 48px; padding: 4px 10px;
-  font: inherit; font-size: 0.9rem; font-weight: 700;
-  background: var(--primary-fg); color: var(--primary);
-  border: 2px solid var(--primary-fg); border-radius: 8px; cursor: pointer;
+  width: max(52px, 2.7rem); height: max(52px, 2.7rem); padding: 0; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font: inherit; font-size: 0.8rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+  background: var(--bg); color: var(--primary);
+  border: 2px solid var(--line); cursor: pointer;
 }
-.display button[aria-pressed="true"] { outline: 3px solid var(--focus); outline-offset: 1px; }
+.display .contrast-btn { font-size: 1.4rem; }
+.display button[aria-pressed="true"] { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
 
 main { max-width: 1200px; margin: 0 auto; padding: 8px 16px 24px; }
 main:focus { outline: none; }
@@ -239,6 +239,6 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
 }
 
 /* High contrast top bar: black, with yellow buttons. */
-:root[data-contrast="high"] .topbar { background: #000; color: #fff; border-bottom-color: #ffff00; }
-:root[data-contrast="high"] .display button { background: #ffff00; color: #000; border-color: #ffff00; }
+:root[data-contrast="high"] .display button { background: #000; color: #ffff00; border-color: #ffff00; }
+:root[data-contrast="high"] .display button[aria-pressed="true"] { background: #ffff00; color: #000; }
 .summary th[scope=row] { font-weight: 700; }

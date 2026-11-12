@@ -108,6 +108,23 @@ check(`Test result sentences grade ${grade(recText)} (target 8 or lower)`, grade
   check(`Every data file in data.js is loaded by index.html`, files.every(f => html.includes(`<script src="${f}"></script>`)), files.join(", "));
 }
 
+// 12. Version 2 opening screens: the typed name is never saved or sent, and the
+// Welcome page (disclaimer and "I understand. Start.") still comes after them.
+if (!SAMPLE) {
+  const fs = require("fs");
+  const introSrc = fs.readFileSync(path.join(__dirname, "intro", "intro.js"), "utf8");
+  check(`Opening screens never save or send the name`, !/localStorage|sessionStorage|indexedDB|fetch\(|XMLHttpRequest|sendBeacon|document\.cookie/.test(introSrc));
+  const { Intro } = require(path.join(__dirname, "intro", "intro.js"));
+  Intro.reset(); Intro.next(); Intro.next();
+  const box = { value: "Sam<script>" }; Intro.submit({ querySelector: () => box });
+  check(`Name box keeps only letters`, Intro.name === "Samscript" && !Intro.pending(), Intro.name);
+  Intro.reset();
+  check(`"Done" forgets the name`, Intro.name === "" && Intro.pending());
+  const appSrc = fs.readFileSync(path.join(__dirname, "app.js"), "utf8");
+  check(`Welcome page still shows after the opening screens`, /Intro\.render\(app, esc\); return; \}\s*if \(hasIntro\) Intro\.finish\(\);\s*\/\/ FR-14 first-use screen\.\s*if \(!S\.ack \|\| !sessionId\) \{ renderWelcome\(\)/.test(appSrc));
+  check(`Emergency mode still comes before the opening screens`, appSrc.indexOf("if (S.emergency)") < appSrc.indexOf("Intro.render("));
+}
+
 // 11. Also run the checks on the made-up sample data (tests the disagreement flag and street picker).
 if (!SAMPLE) {
   const res = require("child_process").spawnSync(process.execPath, [__filename], { env: { ...process.env, KIOSK_USE_SAMPLE: "1" }, encoding: "utf8" });

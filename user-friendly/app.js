@@ -61,6 +61,7 @@ function startSession() {
 }
 function endSession() {
   last = null; sessionId = null; openTopic = null;
+  if (typeof Intro !== "undefined") Intro.reset();  // forget the typed name
   view.size = "1"; view.contrast = false; applyView();
   stopSpeaking();
   if (location.hash && location.hash !== "#/") go("#/"); else render();
@@ -77,6 +78,10 @@ function renderPatron() {
       <p>Questions are turned off right now. Please ask a librarian.</p>${footer()}`;
     return;
   }
+  // Version 2 opening screens (intro/), shown before the first-use screen. They never skip it.
+  const hasIntro = typeof Intro !== "undefined" && Intro.enabled();
+  if (!sessionId && hasIntro && Intro.pending()) { Intro.render(app, esc); return; }
+  if (hasIntro) Intro.finish();
   // FR-14 first-use screen.
   if (!S.ack || !sessionId) { renderWelcome(); return; }
 
@@ -96,7 +101,8 @@ function renderPatron() {
 }
 
 function renderWelcome() {
-  app.innerHTML = `<h1>Welcome</h1>
+  const hello = typeof Intro !== "undefined" && Intro.enabled() ? Intro.greeting() : "";
+  app.innerHTML = `${hello ? `<p class="intro-greeting">${esc(hello)}</p>` : ""}<h1>Welcome</h1>
     <p class="big-result">This web app shows official water and soil test results for the East Palestine area.</p>
     <div class="card"><h2>It can show you</h2>
       <ul><li>What was tested</li><li>Where and when it was tested</li><li>Which agency did the test</li><li>The result, and the federal limit</li><li>Where to read the full report</li></ul></div>
@@ -536,7 +542,7 @@ function drawAudit() {
 
 // ---------- One click handler for every button ----------
 document.addEventListener("click", e => {
-  const el = e.target.closest("[data-ask], [data-action], [data-topic], [data-size]");
+  const el = e.target.closest("[data-ask], [data-action], [data-topic], [data-size], [data-intro]");
   if (!el) return;
   if (el.dataset.size) { view.size = el.dataset.size; applyView(); return; }
   if (el.dataset.topic) {
@@ -547,6 +553,7 @@ document.addEventListener("click", e => {
     return;
   }
   if (el.dataset.ask) { e.preventDefault(); askQuestion(el.dataset.ask); return; }
+  if (typeof Intro !== "undefined" && Intro.click(el)) { render(); window.scrollTo(0, 0); return; }
   switch (el.dataset.action) {
     case "start": S.ack = true; startSession(); render(); window.scrollTo(0, 0); break;
     case "done": endSession(); break;
@@ -580,6 +587,9 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("submit", e => {
+  if (e.target.id === "intro-form" && typeof Intro !== "undefined") {
+    e.preventDefault(); Intro.submit(e.target); render(); window.scrollTo(0, 0); return;
+  }
   if (e.target.id !== "type-form") return;
   e.preventDefault();
   const box = $("#q"); const q = box.value; box.value = "";
@@ -590,12 +600,14 @@ document.addEventListener("submit", e => {
 let lastActivity = Date.now();
 ["pointerdown", "keydown", "scroll", "touchstart"].forEach(ev => window.addEventListener(ev, () => { lastActivity = Date.now(); }, { passive: true }));
 setInterval(() => {
-  if (sessionId && Date.now() - lastActivity > 10 * 60 * 1000 && location.hash !== "#/staff") endSession();
+  const introStarted = typeof Intro !== "undefined" && (Intro.step > 0 || Intro.name);
+  if ((sessionId || introStarted) && Date.now() - lastActivity > 10 * 60 * 1000 && location.hash !== "#/staff") endSession();
 }, 30000);
 
 // ---------- Router ----------
 function render() {
   stopSpeaking();
+  delete document.body.dataset.intro;  // the opening screens set it again if they show
   if (location.hash === "#/staff") renderStaff();
   else if (location.hash === "#/limits") renderLimits();
   else renderPatron();

@@ -186,3 +186,12 @@ The repo now holds only what the web app needs.
 - **Taken off GitHub but kept on the owner's Mac:** `PROJECT-HANDOFF.md`.
 - **Kept:** this file, the raw EPA spreadsheet in `user-friendly/data/raw/` (needed to refresh the data), and everything in `user-friendly/`.
 - **Saved versions:** `version 1.html` is a single-file snapshot of the app as of this date, kept on the owner's Mac (not uploaded) so later changes can be compared against it.
+
+## 2026-11-12: Version 2 begins, new opening screens
+Three new screens now come before the Welcome page, using the app name "How's My Water" and a cardinal mascot named Ruby: (1) a full red splash with the mascot's face, (2) a light page with the name, one line about the app and the mascot peeking up from the bottom, and (3) "Hi! I'm Ruby. What's your name?" with a name box, Continue and Skip.
+- **Layout idea only:** the flow follows a sample design the owner shared. None of its art, logo or character was copied. The cardinal is a simple original drawing in `user-friendly/intro/mascot.js`; new art replaces that one file.
+- **Name privacy:** the name is optional. It is kept in memory only to say "Nice to meet you" on the Welcome page. It is never saved, logged or sent, and "Done" or the 10-minute timer clears it. Only letters are kept. A test checks this.
+- **Safety unchanged:** emergency mode still comes first, and the Welcome page with the disclaimer and "I understand. Start." still always shows after the new screens. The new screens also say the app is not medical or safety advice.
+- **Colors:** cardinal red `#a8102a` with white text (about 7.6:1, AAA). High contrast mode turns these screens black and yellow. The rest of the app is unchanged for now.
+- **Switch:** `on: false` in `user-friendly/intro/intro.js` turns the screens off; `askName: false` drops only the name screen. To remove them fully, delete the "OPENING SCREENS" lines in `index.html` and the `intro/` folder.
+- `version 2.html` is a single-file snapshot kept on the owner's Mac to compare with `version 1.html`.

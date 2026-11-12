@@ -152,3 +152,24 @@ A second build for patrons who are older, have low vision, or don't want to type
 - **Reading level of chemical names** can't be lowered. They are official names and stay as published.
 - **User testing:** the design has not yet been tried with library patrons. A short session with a few older residents and the reference staff is the next step.
 - **Two versions:** once the library picks one, delete or archive the other so there is one `data.js` to maintain.
+
+## 2026-11-12: Real EPA data added (user-friendly version)
+Source: the public U.S. EPA East Palestine water sampling page listed in the requirements guide (https://www.epa.gov/east-palestine-oh-train-derailment/water-sampling-data), "EPA Lab Results: Water (through 09/30/2025)" CSV.
+
+### What changed
+- **Data lives in `user-friendly/data/`, one file per source.** `data.js` now holds only wording and settings, and merges the data files when the page loads. Adding, removing or replacing a source means one file plus one line in `DATASET_FILES` and one `<script>` line in `index.html`. A test checks that these two lists match.
+- **Real data:** `tools/import_epa_water.py` converts the CSV into `data/epa-water-sampling.js`: 3,943 of 3,944 rows, 183 chemicals, 56 sampling points, Feb 2023 to Aug 2025. The one row EPA's lab marked "R" (rejected) is skipped. Results EPA marks "J" are shown as "estimated", and "Prelim" ones as "preliminary". Units are normalized (ug/L, UG/L and ppb become µg/L).
+- **Placeholders** (`data/not-yet-available.js`): village tap water, county private wells, soil and dioxins, and the creek names Sulphur Run and Leslie Run. Asking about one gives "We don't have data on that yet" and names the missing source. Missing federal limits show "not entered yet".
+- **Made-up data** moved to `data/sample-made-up.js` and is switched off. Switching it on hides all real data, so the two are never mixed. The staff page warns when it is on. `test.js` runs its checks in both modes.
+- **Readability with real volumes:** when no chemical is named, the kiosk shows the main derailment chemicals first and counts the rest. When there are more than 12 results, it shows a short summary per chemical, lists only the places where it was found, and puts every result behind "Show every place".
+- **Everyday group words:** "creek(s)", "stream(s)", "surface water" cover all EPA stream points, and "monitoring well(s)" and "groundwater" cover all EPA wells. Monitoring wells are labeled as not being home drinking-water wells.
+- **Word questions** now count only when nothing else is asked ("What does monitoring well mean?"), so "latest monitoring well results" shows results.
+- **Topics** were rewritten for the real data. "Near my street" is hidden because EPA's file has no census tracts.
+
+### What could not be done, and why
+- **Location names:** EPA's CSV only has codes like `SW01-SR`. Names appear only in EPA's interactive map on another site (epa.maps.arcgis.com). The kiosk shows codes, and `data/location-names.js` has a placeholder for each code. Names must be confirmed before they are typed in.
+- **Census tracts:** not in the CSV, so "Near my street" can't work with real data yet.
+- **Disagreements between agencies:** only one agency's data is loaded, so nothing is flagged yet. The logic is still tested with the sample data.
+- **Other sources in the guide** (Ohio EPA, the village water system, county wells, soil and dioxins, the TASC summary, ATSDR fact cards) were not downloaded. They are listed as placeholders on the staff page.
+- **Shelf location** for the printed EPA file is a placeholder.
+- **Network:** epa.gov was blocked in the cloud environment, so a personal environment that allows `www.epa.gov` was created to download the file.

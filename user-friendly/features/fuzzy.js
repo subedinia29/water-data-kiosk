@@ -69,8 +69,8 @@
   // The choices shown for a vague question. Each one is a question the kiosk already answers.
   const CLARIFY = [
     { label: "Village tap water", q: "What are the latest results for the village tap water?" },
-    { label: "Sulphur Run (creek)", q: "What are the latest results for Sulphur Run?" },
-    { label: "Leslie Run (creek)", q: "What are the latest results for Leslie Run?" },
+    { label: "Creeks and streams", q: "What are the latest creek results?" },
+    { label: "Monitoring wells", q: "What are the latest monitoring well results?" },
     { label: "Private wells", q: "What are the latest private well results?" },
     { label: "Soil", q: "What are the latest soil results?" },
     { label: "All the newest results", q: "What are the latest test results?" }

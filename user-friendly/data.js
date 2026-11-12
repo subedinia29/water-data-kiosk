@@ -1,28 +1,23 @@
-// SAMPLE DATA ONLY. Every record below is made up for development.
-// Real agency data will be parsed into this same shape later (see ../DECISIONS.md).
-//
-// This is the ONE file to swap when real data arrives. The screens and the
-// question logic read everything from here. Keep the field names the same.
+// Kiosk content and settings: wording, word list, contacts, topics, limits.
+// The TEST RESULTS live in separate files in the data/ folder (see data/README.md):
+//   data/epa-water-sampling.js   real U.S. EPA water results (made by tools/import_epa_water.py)
+//   data/location-names.js       everyday names for EPA sampling-point codes (placeholders until confirmed)
+//   data/not-yet-available.js    placeholders for sources the kiosk doesn't have yet
+//   data/sample-made-up.js       made-up demo data, switched OFF
+// To add, remove or replace a data source: edit DATASET_FILES below AND the matching <script> lines in index.html.
+const DATASET_FILES = ["data/location-names.js", "data/not-yet-available.js", "data/epa-water-sampling.js", "data/sample-made-up.js"];
+
 const DATA = {
-  corpusVersion: "0.2.0-sample",
-  corpusUpdated: "2026-09-15",
-  isSample: true,
+  corpusVersion: "0.3.0",
+  corpusUpdated: "2026-11-12",   // date the data files were last refreshed
+  isSample: false,               // set automatically below
+  dataNote: "Data: U.S. EPA water lab results through September 30, 2025. Some sources are not added yet.",
 
   // Source documents (FR-1 closed corpus). cadenceDays = expected update interval (FR-18).
   // A document needs a `link` or a `shelf` location, or it won't be shown.
   documents: [
-    { id: "D1", title: "East Palestine Surface Water Sampling Results (sample)", agency: "U.S. EPA",
-      published: "2026-08-01", cadenceDays: 90, link: "https://www.epa.gov/east-palestine-oh-train-derailment/water-sampling-data", shelf: "Binder A, tab 1" },
-    { id: "D2", title: "Ohio EPA Stream Monitoring Summary (sample)", agency: "Ohio EPA",
-      published: "2026-07-10", cadenceDays: 90, link: "", shelf: "Binder A, tab 2" },
-    { id: "D3", title: "Columbiana County Private Well Testing Results (sample)", agency: "Columbiana County Health District",
-      published: "2026-03-01", cadenceDays: 90, link: "", shelf: "Binder B, tab 1" },
-    { id: "D4", title: "Village Municipal Water System Results (sample)", agency: "Ohio EPA",
-      published: "2026-08-20", cadenceDays: 90, link: "", shelf: "Binder B, tab 2" },
     { id: "D5", title: "National Primary Drinking Water Regulations", agency: "U.S. EPA",
       published: "2024-04-10", cadenceDays: 3650, link: "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations", shelf: "Binder C, tab 1" },
-    { id: "D6", title: "Soil Sampling Results Near Derailment Site (sample)", agency: "U.S. EPA",
-      published: "2026-06-15", cadenceDays: 90, link: "", shelf: "Binder A, tab 3" },
     // Where approved fact card text will come from. Cards stay placeholders until the panel approves them.
     { id: "D7", title: "ATSDR ToxFAQs fact sheets, printed copies for expert review (sample entry)", agency: "ATSDR",
       published: "2026-09-15", cadenceDays: 3650, link: "", shelf: "Binder C, tab 2" },
@@ -34,12 +29,24 @@ const DATA = {
   analytes: {
     vinyl_chloride: { name: "Vinyl chloride", aliases: ["vinyl chloride", "vinylchloride", "vc", "chloroethene"] },
     dioxins: { name: "Dioxins (2,3,7,8-TCDD)", aliases: ["dioxin", "dioxins", "tcdd"] },
-    butyl_acrylate: { name: "Butyl acrylate", aliases: ["butyl acrylate", "n-butyl acrylate"] },
+    butyl_acrylate: { name: "Butyl acrylate", aliases: ["butyl acrylate", "n-butyl acrylate", "n butyl acrylate"] },
     ethylhexyl_acrylate: { name: "Ethylhexyl acrylate", aliases: ["ethylhexyl acrylate", "2-ethylhexyl acrylate"] },
     egbe: { name: "Ethylene glycol monobutyl ether (EGBE)", aliases: ["ethylene glycol monobutyl ether", "egbe", "2-butoxyethanol"] }
   },
 
+  // The main derailment chemicals. When a question doesn't name a chemical, these are shown first.
+  keyAnalytes: ["vinyl_chloride", "butyl_acrylate", "ethylhexyl_acrylate", "egbe", "dioxins"],
+
+  // Groups of sampling points residents can ask about by everyday words.
+  siteGroups: {
+    streams: { name: "Creeks and streams (EPA sampling points)",
+      aliases: ["creek", "creeks", "stream", "streams", "surface water", "waterway", "waterways", "river"] },
+    monitoring_wells: { name: "EPA groundwater monitoring wells",
+      aliases: ["monitoring well", "monitoring wells", "groundwater", "ground water"] }
+  },
+
   // Federal MCLs from D5. null = no federal MCL exists (FR-12: state the absence).
+  // A chemical missing from this list = limit not entered yet (the kiosk says so).
   mcl: {
     vinyl_chloride: { value: 2, unit: "µg/L", docId: "D5" },
     dioxins: { value: 0.00003, unit: "µg/L", docId: "D5" },
@@ -48,45 +55,17 @@ const DATA = {
     egbe: null
   },
 
-  // `plain` is the short, everyday name shown on screen.
-  sites: {
-    sulphur_run: { name: "Sulphur Run", plain: "Sulphur Run (creek)", aliases: ["sulphur run", "sulfur run"] },
-    leslie_run: { name: "Leslie Run", plain: "Leslie Run (creek)", aliases: ["leslie run"] },
-    municipal: { name: "the village water system", plain: "Village tap water", aliases: ["municipal", "village water", "city water", "tap water", "public water"] },
-    private_wells: { name: "private wells (county program)", plain: "Private wells (county testing program)", aliases: ["private well", "private wells", "my well", "wells", "well water", "well"] },
-    derailment_site: { name: "the derailment area", plain: "Soil near the derailment site", aliases: ["soil", "derailment site", "dirt", "ground"] }
-  },
 
   // Everyday words for each kind of sample.
   mediumPlain: {
     "surface water": "creek water",
     "private well water": "well water",
     "treated drinking water": "treated tap water",
-    "soil": "soil (dirt)"
+    "soil": "soil (dirt)",
+    "groundwater (monitoring well)": "groundwater from a monitoring well",
+    "free product": "free product (a layer of chemical, not water)"
   },
 
-  // Sampling records. value null + detected false = not detected.
-  records: [
-    { docId: "D1", analyte: "vinyl_chloride", site: "sulphur_run", medium: "surface water", tract: "9516.01", sampleDate: "2023-03-02", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D2", analyte: "vinyl_chloride", site: "sulphur_run", medium: "surface water", tract: "9516.01", sampleDate: "2023-03-02", value: 0.6, detected: true, detectionLimit: 0.2, unit: "µg/L", agency: "Ohio EPA" },
-    { docId: "D1", analyte: "vinyl_chloride", site: "sulphur_run", medium: "surface water", tract: "9516.01", sampleDate: "2024-06-12", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D2", analyte: "vinyl_chloride", site: "sulphur_run", medium: "surface water", tract: "9516.01", sampleDate: "2026-06-03", value: null, detected: false, detectionLimit: 0.2, unit: "µg/L", agency: "Ohio EPA" },
-    { docId: "D1", analyte: "vinyl_chloride", site: "leslie_run", medium: "surface water", tract: "9516.02", sampleDate: "2023-04-11", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D1", analyte: "vinyl_chloride", site: "leslie_run", medium: "surface water", tract: "9516.02", sampleDate: "2025-05-20", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D1", analyte: "butyl_acrylate", site: "sulphur_run", medium: "surface water", tract: "9516.01", sampleDate: "2023-02-20", value: 3.1, detected: true, detectionLimit: 1, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D1", analyte: "butyl_acrylate", site: "sulphur_run", medium: "surface water", tract: "9516.01", sampleDate: "2023-08-15", value: 1.2, detected: true, detectionLimit: 1, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D1", analyte: "butyl_acrylate", site: "sulphur_run", medium: "surface water", tract: "9516.01", sampleDate: "2024-08-14", value: null, detected: false, detectionLimit: 1, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D1", analyte: "egbe", site: "leslie_run", medium: "surface water", tract: "9516.02", sampleDate: "2023-02-20", value: null, detected: false, detectionLimit: 5, unit: "µg/L", agency: "U.S. EPA" },
-    { docId: "D3", analyte: "vinyl_chloride", site: "private_wells", medium: "private well water", tract: "9516.02", sampleDate: "2023-06-01", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "Columbiana County Health District" },
-    { docId: "D3", analyte: "vinyl_chloride", site: "private_wells", medium: "private well water", tract: "9516.02", sampleDate: "2025-11-14", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "Columbiana County Health District" },
-    { docId: "D3", analyte: "butyl_acrylate", site: "private_wells", medium: "private well water", tract: "9517.00", sampleDate: "2025-11-14", value: null, detected: false, detectionLimit: 1, unit: "µg/L", agency: "Columbiana County Health District" },
-    { docId: "D4", analyte: "vinyl_chloride", site: "municipal", medium: "treated drinking water", tract: "9516.01", sampleDate: "2023-03-15", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "Ohio EPA" },
-    { docId: "D4", analyte: "vinyl_chloride", site: "municipal", medium: "treated drinking water", tract: "9516.01", sampleDate: "2025-08-05", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "Ohio EPA" },
-    { docId: "D4", analyte: "vinyl_chloride", site: "municipal", medium: "treated drinking water", tract: "9516.01", sampleDate: "2026-07-30", value: null, detected: false, detectionLimit: 0.5, unit: "µg/L", agency: "Ohio EPA" },
-    { docId: "D4", analyte: "ethylhexyl_acrylate", site: "municipal", medium: "treated drinking water", tract: "9516.01", sampleDate: "2026-07-30", value: null, detected: false, detectionLimit: 2, unit: "µg/L", agency: "Ohio EPA" },
-    { docId: "D6", analyte: "dioxins", site: "derailment_site", medium: "soil", tract: "9516.01", sampleDate: "2023-05-18", value: 9.4, detected: true, detectionLimit: 0.5, unit: "ng/kg", agency: "U.S. EPA" },
-    { docId: "D6", analyte: "dioxins", site: "derailment_site", medium: "soil", tract: "9516.01", sampleDate: "2024-05-21", value: 4.1, detected: true, detectionLimit: 0.5, unit: "ng/kg", agency: "U.S. EPA" }
-  ],
 
   // FR-6 glossary. Plain definitions of WORDS only. Never health content.
   // Keys are lower case. Any key that appears in an answer is explained under it.
@@ -106,6 +85,10 @@ const DATA = {
     "ohio epa": "Ohio EPA is the State of Ohio's environmental agency. It tests water in Ohio.",
     "atsdr": "ATSDR is the Agency for Toxic Substances and Disease Registry. It is a U.S. government agency. It writes fact sheets about chemicals.",
     "fact card": "A fact card is a short, official description of a chemical. On this kiosk, it will be copied word for word from ATSDR after experts approve it.",
+    "estimated": "Estimated means the lab found the chemical, but the exact amount is less certain.",
+    "preliminary": "Preliminary means the agency has not finished checking this result yet.",
+    "monitoring well": "A monitoring well is a well drilled so agencies can test groundwater. It is not a home drinking-water well.",
+    "free product": "Free product is a layer of chemical found in the ground or a well. It is not water.",
     "census tract": "A census tract is a small area used by the U.S. Census. The kiosk uses it to find results near your street. It does not save your address."
   },
 
@@ -143,12 +126,8 @@ const DATA = {
     numbers: ["Emergency: 911", "Columbiana County Health District: [CONFIRM NUMBER]", "Ohio EPA spill hotline: [CONFIRM NUMBER]"]
   },
 
-  // FR-20: transient address → census tract lookup (sample). Address is discarded right after.
-  // `streets` is the list shown in the "Near my street" picker.
-  streetToTract: { "main": "9516.01", "market": "9516.01", "taggart": "9516.02", "east taggart": "9516.02", "pleasant": "9517.00", "sulphur": "9516.01" },
-  streets: ["Main Street", "Market Street", "Taggart Street", "East Taggart Street", "Pleasant Drive", "Sulphur Street"],
 
-  knownLimitations: "[PLACEHOLDER: Known Limitations text written by the Expert Review Panel.] Until then: this kiosk only knows what is in its documents. It cannot tell you if something is safe. It cannot give medical or legal advice. It cannot explain why something happened. It does not have live readings. It only has test results that were already published.",
+  knownLimitations: "[PLACEHOLDER: Known Limitations text written by the Expert Review Panel.] Until then: this kiosk only knows what is in its documents. It cannot tell you if something is safe. It cannot give medical or legal advice. It cannot explain why something happened. It does not have live readings. It only has test results that were already published. EPA names its sampling points by code, so the kiosk may show a code instead of a place name. Some sources are not added yet.",
 
   // Topic buttons and tap-to-ask questions on the main screen.
   // Every question here is checked by test.js. Run it after any change.
@@ -156,24 +135,24 @@ const DATA = {
   topics: [
     { id: "newest", label: "Newest results", sub: "Latest test for each place", questions: [
       "What are the latest test results?",
-      "What are the latest results for the village tap water?",
-      "What are the latest private well results?",
+      "What are the latest creek results?",
+      "What are the latest monitoring well results?",
       "Show me all the test results"] },
     { id: "tap", label: "Tap water", sub: "Village water system", questions: [
       "What are the latest results for the village tap water?",
-      "Was vinyl chloride found in tap water?",
       "What is the limit for vinyl chloride?"] },
-    { id: "creeks", label: "Creeks", sub: "Sulphur Run, Leslie Run", questions: [
-      "What are the latest results for Sulphur Run?",
-      "What are the latest results for Leslie Run?",
-      "What was vinyl chloride at Sulphur Run in March 2023?"] },
-    { id: "wells", label: "Private wells", sub: "County testing program", questions: [
+    { id: "creeks", label: "Creeks", sub: "EPA stream sampling", questions: [
+      "What are the latest creek results?",
+      "What vinyl chloride results are there for the creeks?",
+      "What were the creek results in February 2023?",
+      "What are the latest results for Sulphur Run?"] },
+    { id: "wells", label: "Wells", sub: "Monitoring and private wells", questions: [
+      "What are the latest monitoring well results?",
       "What are the latest private well results?",
-      "Where can I read the well testing results?"] },
+      "Which report has the monitoring well results?"] },
     { id: "soil", label: "Soil", sub: "Near the derailment site", questions: [
       "What are the latest soil results?",
-      "Was dioxin tested in soil?",
-      "Which report has the soil results?"] },
+      "Was dioxin tested in soil?"] },
     { id: "chems", label: "Chemicals", sub: "What is…?", questions: [
       "What is vinyl chloride?",
       "What is dioxin?",
@@ -183,19 +162,19 @@ const DATA = {
     { id: "words", label: "Words explained", sub: "MCL, µg/L, and more", questions: [
       "What does MCL mean?",
       "What does not detected mean?",
-      "What does detection limit mean?",
+      "What does estimated mean?",
+      "What does monitoring well mean?",
       "What does µg/L mean?",
-      "What does ng/kg mean?",
+      "What does detection limit mean?",
       "What is ATSDR?"] },
     { id: "reports", label: "Find the reports", sub: "Where to read them", questions: [
       "Where can I read the reports?",
-      "Where can I read the well testing results?",
-      "Which report has the soil results?"] },
+      "Which report has the creek results?"] },
     { id: "explain", label: "Help me understand", sub: "Print a sheet for a librarian", questions: [
-      "Compare Sulphur Run and Leslie Run for vinyl chloride",
-      "Explain the dioxin soil results",
-      "What do the butyl acrylate numbers mean?"] },
-    { id: "street", label: "Near my street", sub: "Pick from a list", street: true },
+      "Compare the creek and monitoring well results for vinyl chloride",
+      "Explain the vinyl chloride creek results",
+      "What do the EGBE numbers mean?"] },
+    { id: "street", label: "Near my street", sub: "Pick from a list", street: true, needsTracts: true },
     { id: "help", label: "Health, safety, or legal", sub: "Who to ask", warn: true,
       intro: "This kiosk can't answer these questions. Tap one to see who can help.", questions: [
       "Is my water safe to drink?",
@@ -206,6 +185,48 @@ const DATA = {
 
   disclaimer: "Not medical, legal, or environmental engineering advice. Not affiliated with or endorsed by U.S. EPA, Ohio EPA, or Norfolk Southern. Neither IEEE nor Ohio University warrants the accuracy of agency data. IEEE's role is funding and dissemination only."
 };
+
+// ---------- Bring in the data files (do not edit below unless you know why) ----------
+// Each data file adds one "dataset". Real and made-up data are never mixed:
+// if the sample dataset is switched on, real datasets are left out.
+(function mergeDatasets() {
+  let sets = (typeof KIOSK_DATASETS !== "undefined") ? KIOSK_DATASETS : [];
+  let names = (typeof KIOSK_LOCATION_NAMES !== "undefined") ? KIOSK_LOCATION_NAMES : {};
+  if (typeof module !== "undefined" && typeof require === "function") {   // Node (tests)
+    const path = require("path");
+    sets = [];
+    for (const f of DATASET_FILES) {
+      const m = require(path.join(__dirname, f));
+      if (f.endsWith("location-names.js")) names = m; else sets.push(m);
+    }
+    const sample = sets.find(d => d.sample);
+    if (sample && process.env.KIOSK_USE_SAMPLE) sample.enabled = true;
+  }
+  const useSample = sets.some(d => d.sample && d.enabled);
+  const active = sets.filter(d => d.enabled !== false && !(useSample && d.real));
+  DATA.isSample = useSample;
+  if (useSample) DATA.dataNote = "";
+  Object.assign(DATA, { records: [], sites: {}, missingSources: [], streetToTract: {}, streets: [], importNotes: [] });
+  for (const d of active) {
+    (d.documents || (d.document ? [d.document] : [])).forEach(x => DATA.documents.push(x));
+    for (const [k, a] of Object.entries(d.analytes || {})) if (!DATA.analytes[k]) DATA.analytes[k] = a;
+    for (const [k, site] of Object.entries(d.sites || {})) {
+      if (site.code) {   // EPA sampling point: use a confirmed name, or say what it is plus its code
+        const nm = names[site.code];
+        const label = nm || (site.group === "streams" ? `EPA stream sampling point ${site.code}` : `EPA monitoring well ${site.code}`);
+        DATA.sites[k] = { ...site, name: label, plain: label,
+          aliases: [site.code.toLowerCase(), site.code.toLowerCase().replace(/-/g, " ")].concat(nm ? [nm.toLowerCase()] : []) };
+      } else DATA.sites[k] = site;
+    }
+    DATA.records.push(...(d.records || []));
+    Object.assign(DATA.streetToTract, d.streetToTract || {});
+    DATA.streets.push(...(d.streets || []));
+    DATA.missingSources.push(...(d.missingSources || []));
+    if (d.importNotes) DATA.importNotes.push({ id: d.id, ...d.importNotes });
+  }
+  // "Near my street" only works when results carry census tracts.
+  if (!DATA.records.some(r => r.tract)) DATA.topics = DATA.topics.filter(t => !t.needsTracts);
+})();
 
 // Small evaluation sets (FR-23). Real sets: 200 staff-received questions + 75 red-team items.
 // The benchmark list is unchanged from the root prototype (we don't invent benchmark questions).

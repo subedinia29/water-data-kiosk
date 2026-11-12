@@ -2,7 +2,7 @@
 
 This folder is the version of the kiosk meant for patrons: older residents, people with low vision, and anyone who doesn't want to type. It does the same job as the prototype in the main folder. It is easier to read and use.
 
-**All data in it is made up.** Do not use it with the public until real agency data and expert-approved text are added.
+**Data:** it now uses **real U.S. EPA water lab results** (through September 30, 2025). Other sources (village tap water, county private wells, soil, Ohio EPA) are placeholders that say "not added yet". Fact cards and contact numbers are still placeholders, so do not use it with the public until the expert panel approves them. See `data/README.md`.
 
 ## What patrons see
 - **Big text and strong colors.** Buttons at the top make text bigger (A+, A++) or switch to white-on-black (High contrast).
@@ -34,7 +34,9 @@ Double-clicking `index.html` also works. Nothing is sent to the internet.
 |---|---|---|
 | `index.html` | The page frame | Rarely |
 | `styles.css` | Colors, text size, layout | Changing the look |
-| `data.js` | **All the words and data:** reports, test results, chemicals, places, limits, word list, fact cards, who-to-call cards, disclaimer, topic buttons and their questions, test questions | Most changes happen here |
+| `data/` | **The test results**, one file per source, plus placeholders. See `data/README.md` | Adding or updating data |
+| `tools/import_epa_water.py` | Turns EPA's CSV into `data/epa-water-sampling.js` | When EPA posts a new file |
+| `data.js` | **All the words and settings:** reports, test results, chemicals, places, limits, word list, fact cards, who-to-call cards, disclaimer, topic buttons and their questions, test questions | Most changes happen here |
 | `core.js` | The "brain": safety check, finding results, sentence templates, tests | Changing how questions are understood |
 | `app.js` | The screens: patron screens, staff page, printing, reports | Changing what screens show |
 | `test.js` | Automatic checks | Run after every change |
@@ -51,25 +53,20 @@ Every line must say **PASS**, and the last line must say **All checks passed.** 
 You can also see the release-gate numbers on the staff page. Red-team refusal must be **100%**.
 
 ## Common tasks
-All of these are edits to `data.js`. Copy an existing line and change it. Keep commas and quote marks the same.
+Wording and settings are in `data.js`; test results are in `data/` (see `data/README.md`). Copy an existing line and change it. Keep commas and quote marks the same.
 
-- **Add a test result:** add a line to `records`. A result that wasn't found uses `value: null, detected: false`.
-- **Add a report:** add it to `documents`. It needs a `link` or a `shelf` location, or it won't be shown.
-- **Add a chemical:** add it to `analytes` (with the names people might type in `aliases`), to `mcl` (use `null` if there is no federal limit), and to `factCards` with the placeholder text.
-- **Add a place:** add it to `sites`, with a short everyday name in `plain` and the names people might type in `aliases`.
+- **Add or update test results:** see `data/README.md`. For EPA updates, re-run the import script; don't edit results by hand.
+- **Add a federal limit for a chemical:** add it to `mcl` in `data.js` (use `null` if no federal limit exists). Until then the kiosk says "not entered yet".
+- **Name an EPA sampling point:** edit `data/location-names.js`.
 - **Approve a fact card:** paste the exact ATSDR/IRIS text into `factCards`, set `approved: true` and set `approvedDate`. **Only do this with written expert panel sign-off.** Never write or reword health text yourself.
 - **Change contact numbers:** edit `referrals` and `emergency`. Every `[CONFIRM NUMBER]` must be replaced before real use.
 - **Change the topic buttons or their questions:** edit `topics`. Then run the checks. They test every question on every button.
 - **Add a word to the word list:** add it to `glossary`. Write short sentences. Explain words only. Never write health advice.
-- **Add a street to the "Near my street" list:** add it to `streets` and add its area to `streetToTract`.
+- **"Near my street":** hidden until results include census tracts. EPA's file has none.
 - **Reset the kiosk's saved info:** open the browser's developer console and run `localStorage.clear()`, then reload. This clears reports, counts and staff settings on that one browser.
 
-## When real data arrives
-Replace the sample parts of `data.js` with the real data in the same shape. Keep the field names the same. Then:
-1. Set `isSample: false`, and update `corpusVersion` and `corpusUpdated`.
-2. Check that each topic question still makes sense for the real places and chemicals.
-3. Run `node user-friendly/test.js`.
-4. On the staff page, press **Record signed quarterly refresh**.
+## Adding or updating data
+All test results are in the `data/` folder, one file per source. `data/README.md` explains how to update the EPA data, add a new source, name a sampling point, remove a source, or switch on the made-up demo data. Real and made-up data are never mixed.
 
 ## Staff page (`#/staff`)
 - **Kill switch:** turns questions off right away. Patrons then only see the list of reports.

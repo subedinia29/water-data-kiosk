@@ -26,6 +26,7 @@
   ];
   const tier3Match = q => { for (const [cat, ...res] of TIER3) if (res.some(re => re.test(q))) return cat; return null; };
 
+  const WORD_Q_WORDS = new Set("what is are does do did mean means meaning the a an of define definition stand stands for by whats what's word term".split(" "));
   const GLOSSARY_Q = /what (is|are|does|do)|what's|whats|define|meaning of|stand for/;
   const TIER2 = /\bcompare|comparison|versus|\bvs\b|higher|lower|more than|less than|\bworse|\bbetter|trend|\bmean\b|\bmeans\b|explain|interpret|normal|elevated|\bhigh\b|\blow\b|significant|\bwhy\b|\bshould\b|tell me about|what does .* tell/;
 
@@ -54,8 +55,11 @@
     const term = findGlossaryTerm(q);
     // NEW: a word question only counts if it isn't also about a chemical or place
     // ("What is the MCL for vinyl chloride?" now shows the actual limit).
-    const e = extract(question);
-    if (term && GLOSSARY_Q.test(q) && !e.analytes.length && !e.sites.length) return { tier: 1, category: "glossary", term };
+    // A word question asks only what the word means ("What does monitoring well mean?"), nothing else.
+    if (term && GLOSSARY_Q.test(q)) {
+      const rest = q.replace(" " + norm(term).trim() + " ", " ").split(" ").filter(w => w && !WORD_Q_WORDS.has(w.replace(/[?.!]+$/, "")));
+      if (!rest.length) return { tier: 1, category: "glossary", term };
+    }
     if (TIER2.test(q)) return { tier: 2, category: "interpret" };
     return { tier: 1, category: "facts" };
   }
@@ -73,7 +77,16 @@
   function extract(question) {
     const q = norm(question);
     const analytes = Object.keys(D.analytes).filter(k => D.analytes[k].aliases.some(a => hasWord(q, a)));
-    const sites = Object.keys(D.sites).filter(k => D.sites[k].aliases.some(a => hasWord(q, a)));
+    let sites = Object.keys(D.sites).filter(k => D.sites[k].aliases.some(a => hasWord(q, a)));
+    // NEW: everyday group words ("creek", "monitoring well") cover every sampling point in that group.
+    const groups = Object.keys(D.siteGroups || {}).filter(g => D.siteGroups[g].aliases.some(a => hasWord(q, a)));
+    if (groups.length) {
+      // A placeholder only counts if its words appear outside the group words ("monitoring well" is not "well").
+      let rest = q;
+      groups.forEach(g => D.siteGroups[g].aliases.forEach(a => { rest = rest.split(" " + a + " ").join("  "); }));
+      sites = sites.filter(k => !D.sites[k].waiting || D.sites[k].aliases.some(a => hasWord(rest, a)));
+      sites = [...new Set(sites.concat(Object.keys(D.sites).filter(k => groups.includes(D.sites[k].group))))];
+    }
     const yearM = q.match(/\b(20\d\d)\b/);
     const month = MONTHS.findIndex(m => hasWord(q, m) || (m !== "may" && hasWord(q, m.slice(0, 3))));
     return { analytes, sites, year: yearM ? yearM[1] : null, month: month >= 0 ? month + 1 : null };
@@ -110,17 +123,17 @@
   function mclText(analyte) {
     const m = D.mcl[analyte];
     const name = D.analytes[analyte].name;
-    if (m === undefined) return null;
+    if (m === undefined) return null;   // limit not entered yet (shown as a note, not as a cited fact)
     if (m === null) return { type: "limit", analyte, text: `There is no federal limit (MCL) for ${lc(name)} in drinking water.`, cite: citation("D5") };
     return { type: "limit", analyte, text: `The federal limit (MCL) for ${lc(name)} in public drinking water is ${m.value} ${m.unit}.`, cite: citation(m.docId) };
   }
   function resultText(r) {
-    return r.detected ? `${r.value} ${r.unit}` : `not found`;
+    return r.detected ? `${r.value} ${r.unit}${r.estimated ? " (estimated)" : ""}` : `not found`;
   }
   function recordText(r) {
     const a = D.analytes[r.analyte].name, s = D.sites[r.site].plain || D.sites[r.site].name;
     const extra = r.detected ? "" : ` This test can find as little as ${r.detectionLimit} ${r.unit}.`;
-    return `${a} in ${s}. Tested by ${r.agency} on ${fmtDate(r.sampleDate)}. Result: ${resultText(r)}.${extra}`;
+    return `${a} in ${s}. Tested by ${r.agency} on ${fmtDate(r.sampleDate)}. Result: ${resultText(r)}.${extra}${r.preliminary ? " This is a preliminary result." : ""}`;
   }
   function recordItem(r, conflictKeys) {
     return {
@@ -130,6 +143,7 @@
       kindOfSample: (D.mediumPlain && D.mediumPlain[r.medium]) || r.medium,
       date: r.sampleDate, agency: r.agency, detected: r.detected, value: r.value, unit: r.unit,
       detectionLimit: r.detectionLimit, result: resultText(r),
+      estimated: !!r.estimated, preliminary: !!r.preliminary, sampleId: r.sampleId || null,
       conflict: conflictKeys.has(groupKey(r) + "|" + r.sampleDate)
     };
   }
@@ -167,7 +181,16 @@
       (!e.year || r.sampleDate.startsWith(e.year)) &&
       (!e.month || Number(r.sampleDate.slice(5, 7)) === e.month));
 
-    const out = { relevant: true, entities: e, wantsLatest, records: recs, limits: [], docs: [], conflicts: [], absence: null };
+    // NEW: if no chemical was named, show the main derailment chemicals first and count the rest.
+    let otherChemicals = 0;
+    if (!e.analytes.length && recs.length && D.keyAnalytes) {
+      const key = recs.filter(r => D.keyAnalytes.includes(r.analyte));
+      if (key.length) { otherChemicals = new Set(recs.filter(r => !D.keyAnalytes.includes(r.analyte)).map(r => r.analyte)).size; recs = key; }
+    }
+    // NEW: placeholders for sources the kiosk doesn't have yet (data/not-yet-available.js).
+    const waiting = [...new Set(e.sites.map(k => D.sites[k].waiting).filter(Boolean))];
+
+    const out = { relevant: true, entities: e, wantsLatest, records: recs, limits: [], docs: [], conflicts: [], absence: null, otherChemicals, waiting };
 
     if (wantsLimit) out.limits = (e.analytes.length ? e.analytes : []).map(mclText).filter(Boolean);
     if (wantsDocs) {
@@ -183,7 +206,10 @@
     out.conflicts = Object.entries(groups).filter(([, g]) => g.length > 1 &&
       new Set(g.map(r => r.agency)).size > 1 && new Set(g.map(r => r.detected ? r.value : "ND")).size > 1);
 
-    if (!recs.length && !out.limits.length && !out.docs.length) {
+    if (!recs.length && !out.limits.length && !out.docs.length && waiting.length) {
+      out.absence = "We don't have data on that yet. " + waiting.join(" ");
+      out.waiting = [];
+    } else if (!recs.length && !out.limits.length && !out.docs.length) {
       const parts = [];
       if (e.analytes.length) parts.push(e.analytes.map(a => D.analytes[a].name.toLowerCase()).join(" or "));
       if (e.sites.length) parts.push("for " + e.sites.map(x => D.sites[x].plain || D.sites[x].name).join(" or "));
@@ -230,7 +256,7 @@
       const items = lim && lim.cite ? [lim] : [];
       const newest = recs.map(r => r.sampleDate).sort().pop() || null;
       return { ...base, kind: "factCard", analyte: a, name: D.analytes[a].name, card: factCard(a, suspended),
-        items, testCount: recs.length, newestTest: newest,
+        items, testCount: recs.length, newestTest: newest, limitPending: D.mcl[a] === undefined,
         absence: recs.length ? null : `We don't have test results for ${D.analytes[a].name.toLowerCase()}.`,
         dates: { corpusUpdated: D.corpusUpdated, newestSample: newest } };
     }
@@ -260,7 +286,8 @@
       wantsLatest: r.wantsLatest,
       items: latestItems, history: historyItems, limits: limitItems, docs: r.docs,
       conflicts: r.conflicts.map(([, g]) => g.map(x => ({ agency: x.agency, text: recordText(x), date: x.sampleDate }))),
-      absence: r.absence, dates: dateBanner(latestItems.concat(historyItems)) };
+      absence: r.absence, waiting: r.waiting, otherChemicals: r.otherChemicals,
+      dates: dateBanner(latestItems.concat(historyItems)) };
 
     if (cls.tier === 2) {
       const analytes = [...new Set(r.records.map(x => x.analyte).concat(r.entities.analytes))];
@@ -276,6 +303,7 @@
     (r.limits || []).forEach(i => t.push(i.text));
     (r.history || []).forEach(i => t.push(i.text));
     if (r.absence) t.push(r.absence);
+    (r.waiting || []).forEach(w => t.push(w));
     if (r.definition) t.push(r.definition);
     return t;
   }

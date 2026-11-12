@@ -241,3 +241,4 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
 /* High contrast top bar: black, with yellow buttons. */
 :root[data-contrast="high"] .topbar { background: #000; color: #fff; border-bottom-color: #ffff00; }
 :root[data-contrast="high"] .display button { background: #ffff00; color: #000; border-color: #ffff00; }
+.summary th[scope=row] { font-weight: 700; }

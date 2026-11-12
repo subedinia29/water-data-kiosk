@@ -50,7 +50,7 @@ function footer() {
     <p class="print-only"><strong>Print this and talk to a librarian.</strong> Notes:</p>
     <div class="print-only notes-lines"></div><div class="print-only notes-lines"></div><div class="print-only notes-lines"></div>
     <p class="disclaimer">${esc(DATA.disclaimer)}</p>
-    ${DATA.isSample ? `<p class="sample-note">Test version: all data on this kiosk is made-up sample data.</p>` : ""}
+    ${DATA.isSample ? `<p class="sample-note">Test version: all data on this kiosk is made-up sample data.</p>` : DATA.dataNote ? `<p class="sample-note">${esc(DATA.dataNote)}</p>` : ""}
     <p class="no-print">${onStaff ? `<a href="#/" class="staff-link">Back to the patron screen</a>` : `<a href="#/staff" class="staff-link">Staff</a>`}</p>
   </footer>`;
 }
@@ -200,13 +200,31 @@ function recordCard(i) {
     ${i.conflict ? `<span class="flag-badge">Agencies disagree on this test. See the note about agencies.</span>` : ""}
     <dl class="facts">
       <dt>Result</dt><dd><span class="big-result">${i.detected ? `${esc(i.value)} ${esc(i.unit)}` : "Not found"}</span>
-        ${i.detected ? "" : `<br>This test can find as little as ${esc(i.detectionLimit)} ${esc(i.unit)}.`}</dd>
+        ${i.estimated ? " (estimated)" : ""}
+        ${i.detected ? "" : `<br>This test can find as little as ${esc(i.detectionLimit)} ${esc(i.unit)}.`}
+        ${i.preliminary ? `<br>Preliminary result: not fully checked yet.` : ""}</dd>
       <dt>Tested on</dt><dd>${fmt(i.date)}</dd>
       <dt>Tested by</dt><dd>${esc(i.agency)}</dd>
-      <dt>Sample</dt><dd>${esc(i.kindOfSample)}</dd>
+      <dt>Sample</dt><dd>${esc(i.kindOfSample)}${i.sampleId ? ` (sample ${esc(i.sampleId)})` : ""}</dd>
     </dl>
     ${citeHTML(i.cite)}
   </div>`;
+}
+
+// Many results (e.g. dozens of sampling points): a short summary per chemical, the "found" results
+// as cards, and every result behind one button, so the page stays readable.
+function summaryBlock(items) {
+  const chems = [...new Set(items.map(i => i.analyteName))];
+  const rows = chems.map(c => {
+    const its = items.filter(i => i.analyteName === c), found = its.filter(i => i.detected);
+    const dates = its.map(i => i.date).sort();
+    return `<tr><th scope="row">${esc(c)}</th><td>${new Set(its.map(i => i.place)).size}</td><td>${found.length}</td><td>${dates[0] === dates[dates.length - 1] ? fmt(dates[0]) : `${fmt(dates[0])} to ${fmt(dates[dates.length - 1])}`}</td></tr>`;
+  }).join("");
+  const found = items.filter(i => i.detected);
+  return `<p>Newest test at each place, in short:</p>
+    <div class="table-wrap"><table class="summary"><tr><th>Chemical</th><th>Places tested</th><th>Places where it was found</th><th>Dates of these tests</th></tr>${rows}</table></div>
+    ${found.length ? `<h3>Where it was found (newest test)</h3>${byPlace(found)}` : `<p class="big-result">It was not found in the newest test at any of these places.</p>`}
+    <details class="history"><summary><span class="when-closed">Show every place</span><span class="when-open">Hide every place</span>&nbsp;(${items.length} results)</summary>${byPlace(items)}</details>`;
 }
 
 // Group result cards under a heading for each place.
@@ -229,11 +247,13 @@ function recordsBlock(r) {
   h += newConf.map(conflictCard).join("");
   if (oldConf.length) h += `<div class="banner stop" role="note"><p><strong>Note:</strong> In the older results, agencies reported different results for the same test. Tap <strong>Show history</strong> to see both.</p></div>`;
 
+  if (r.waiting && r.waiting.length) h += r.waiting.map(w => `<div class="banner date" role="note"><p><strong>Not added yet:</strong> ${esc(w)}</p></div>`).join("");
+  if (r.otherChemicals) h += `<div class="banner info"><p>We show the main derailment chemicals first. <strong>${r.otherChemicals} other chemicals</strong> were also tested. Ask about one by name, for example "benzene in the creeks".</p></div>`;
   if (r.items && r.items.length) {
     h += r.wantsLatest
       ? `<div class="banner info"><p><strong>You asked about the newest results.</strong> These are the latest tests on file for each place. They are not live readings.</p></div>`
       : `<div class="banner info"><p>The newest result for each place is shown first.${r.history && r.history.length ? ` Older results are under <strong>Show history</strong>.` : ""}</p></div>`;
-    h += `<h2>Newest results</h2>` + byPlace(r.items);
+    h += `<h2>Newest results</h2>` + (r.items.length > 12 ? summaryBlock(r.items) : byPlace(r.items));
   }
   if (r.history && r.history.length) {
     const n = r.history.length;
@@ -246,7 +266,8 @@ function recordsBlock(r) {
       r.limits.map(l => `<div class="card"><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("");
   }
   if (r.docs && r.docs.length) h += `<h2>Where to read it</h2>` + r.docs.map(c => `<div class="card">${citeHTML(c)}</div>`).join("");
-  if (r.absence) h += `<div class="card"><h2>We don't have data on that.</h2><p>${esc(r.absence)}</p>
+  if (r.absence) h += `<div class="card"><h2>${/^We don't have data on that yet\./.test(r.absence) ? "We don't have data on that yet." : "We don't have data on that."}</h2>
+    <p>${esc(r.absence.replace(/^We don't have data on that yet\. /, ""))}</p>
     <p>Try a topic button, or print this page and ask a librarian.</p></div>`;
   return h;
 }
@@ -300,6 +321,7 @@ function resultHTML(r) {
       const alias = DATA.analytes[r.analyte].aliases[0];
       body = `<h2>${esc(r.name)}</h2>${factCardHTML(r.card)}
         ${r.items.map(l => `<div class="card"><h3>Federal drinking-water limit</h3><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("")}
+        ${r.limitPending ? `<div class="banner date"><p><strong>Federal drinking-water limit:</strong> not entered in the kiosk yet. A librarian can look it up.</p></div>` : ""}
         <div class="card"><h3>Test results on file</h3>
         ${r.testCount ? `<p>${r.testCount} test result${r.testCount === 1 ? "" : "s"}. Newest test: ${fmt(r.newestTest)}.</p>
           <div class="row no-print"><button type="button" class="btn primary" data-ask="${esc(`What are the latest ${alias} results?`)}">Show the test results</button></div>`
@@ -436,6 +458,12 @@ function renderStaff() {
   <button type="button" class="btn" data-action="integrity">Run source link check</button></div>
   <div id="integrity"></div>
   <details class="more"><summary>Refresh history</summary><ul>${S.refreshLog.map(r => `<li>${esc(r.date)}: signed by ${esc(r.signedBy)} (v${esc(r.version)})</li>`).join("")}</ul></details>
+
+  <h2>Data sources</h2>
+  ${DATA.isSample ? `<div class="banner stop"><p><strong>Made-up sample data is ON.</strong> Real data is hidden. Switch it off in data/sample-made-up.js.</p></div>` : ""}
+  <ul>${DATA.documents.map(d => `<li>${esc(d.title)} (${esc(d.agency)})</li>`).join("")}</ul>
+  ${(DATA.importNotes || []).map(n => `<p class="hint">${esc(n.id)}: ${n.imported} of ${n.sourceRows} rows imported from ${esc(n.sourceFile)} on ${esc(n.importedOn)}.</p>`).join("")}
+  ${DATA.missingSources && DATA.missingSources.length ? `<details class="more"><summary>Not added yet (${DATA.missingSources.length})</summary><ul>${DATA.missingSources.map(m => `<li>${esc(m)}</li>`).join("")}</ul></details>` : ""}
 
   <h2>Pause a kind of answer (incident protocol)</h2>
   <p>Any panel member can pause a kind of answer. Pausing logs an incident.</p>

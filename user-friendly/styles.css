@@ -5,20 +5,20 @@
   --fg: #111111;
   --muted: #333333;
   --line: #4a4a4a;
-  --soft: #f2f4f7;
-  --primary: #0a3a85;     /* white text on this: about 11:1 */
+  --soft: #f7f0ee;
+  --primary: #a8102a;     /* cardinal red. White text on this: about 7.6:1 */
   --primary-fg: #ffffff;
-  --primary-hover: #072a61;
+  --primary-hover: #7d0a1e;
   --focus: #ffbf00;
   --note-bg: #fff4cc;     /* notes, dates, "data is old" */
   --note-line: #8a6d00;
   --stop-bg: #fde7e7;     /* "a person can help" referral cards */
   --stop-line: #a30000;
-  --info-bg: #e6eefc;
-  --info-line: #0a3a85;
+  --info-bg: #fbf1e3;
+  --info-line: #7d0a1e;
   --flag-bg: #ffe2c2;     /* agencies disagree */
   --flag-line: #9a4a00;
-  --link: #0a3a85;
+  --link: #a8102a;
   --radius: 12px;
   font-size: 125%;        /* 20px base. Text-size buttons raise this. */
 }
@@ -35,10 +35,10 @@
   --primary: #ffff00;
   --primary-fg: #000000;
   --primary-hover: #ffffff;
-  --focus: #00ffff;
+  --focus: #ff66ff;
   --note-bg: #000000; --note-line: #ffff00;
   --stop-bg: #000000; --stop-line: #ff8080;
-  --info-bg: #000000; --info-line: #80b3ff;
+  --info-bg: #000000; --info-line: #ffffff;
   --flag-bg: #000000; --flag-line: #ffb366;
   --link: #ffff00;
 }

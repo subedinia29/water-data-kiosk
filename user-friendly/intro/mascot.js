@@ -1,7 +1,8 @@
-// MASCOT ART (version 2 opening screens). Original simple drawing of a cardinal.
-// To use new art: replace the SVG text below, or set MASCOT_IMAGE to an image file
-// in this folder (for example "intro/cardinal.png"). Nothing else needs to change.
-const MASCOT_IMAGE = "";   // leave empty to use the drawing below
+// MASCOT ART (version 2 opening screens).
+// MASCOT_IMAGE: two cardinals cut out of the owner's photo, outlined in white (cardinals.png).
+// To use new art: put the file in this folder and change MASCOT_IMAGE. Nothing else needs to change.
+// Set it to "" to use the simple drawing below instead.
+const MASCOT_IMAGE = "intro/cardinals.png";
 
 const MASCOT_SVG = `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
   <!-- crest -->

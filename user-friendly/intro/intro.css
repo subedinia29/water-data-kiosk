@@ -1,9 +1,9 @@
-/* VERSION 2 OPENING SCREENS. Cardinal red. White on --cardinal is about 7.6:1 (AAA). */
+/* VERSION 2 OPENING SCREENS. Cardinal red on cream. White on --cardinal is about 7.6:1 (AAA). */
 :root {
   --cardinal: #a8102a;
   --cardinal-dark: #7d0a1e;
   --cardinal-ink: #7d0a1e;   /* red text on light background: about 10:1 */
-  --intro-light: #fff5f3;
+  --intro-light: #fbf1e3;   /* cream */
 }
 :root[data-contrast="high"] {
   --cardinal: #000000; --cardinal-dark: #000000; --cardinal-ink: #ffff00; --intro-light: #000000;
@@ -13,19 +13,8 @@
 .intro .mascot svg, .intro img.mascot { display: block; width: 100%; height: auto; }
 .intro-title { font-size: 2.2rem; line-height: 1.15; margin: 0.4em 0; }
 
-/* 1. Splash: full color */
-body[data-intro="0"] { background: var(--cardinal); }
-.intro-splash { min-height: 75vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; color: #fff; }
-.intro-splash .intro-title { color: #fff; font-size: 2.6rem; }
-.intro-face { width: min(60vw, 240px); aspect-ratio: 1; border-radius: 50%; background: #fff; border: 6px solid #fff; overflow: hidden; display: flex; align-items: flex-start; justify-content: center; padding-top: 6%; }
-.intro-face .mascot { width: 92%; }
-.btn.intro-go { background: #fff; color: var(--cardinal-dark); border: 3px solid #fff; font-size: 1.3rem; min-height: 64px; padding: 12px 36px; }
-.btn.intro-go:hover { background: var(--intro-light); }
-:root[data-contrast="high"] .intro-splash .intro-title { color: #ffff00; }
-:root[data-contrast="high"] .btn.intro-go { background: #ffff00; color: #000; border-color: #ffff00; }
-
-/* 2. Hello: light, big mascot peeking up from the bottom */
-body[data-intro="1"], body[data-intro="2"] { background: var(--intro-light); }
+/* 1. Hello: cream, the cardinals fade in at the bottom */
+body[data-intro] { background: var(--intro-light); }
 .intro-hello { min-height: 75vh; display: flex; flex-direction: column; overflow: hidden; }
 .intro-hello .intro-title, .intro-name .intro-bubble { color: var(--cardinal-ink); }
 .intro-lead { font-size: 1.25rem; margin: 0 0 1em; }
@@ -33,12 +22,12 @@ body[data-intro="1"], body[data-intro="2"] { background: var(--intro-light); }
 .intro .btn.primary { background: var(--cardinal); border-color: var(--cardinal); color: #fff; }
 .intro .btn.primary:hover { background: var(--cardinal-dark); }
 :root[data-contrast="high"] .intro .btn.primary { background: #ffff00; color: #000; border-color: #ffff00; }
-.intro-peek { margin: auto auto -16px; width: min(80vw, 340px); height: 210px; overflow: hidden; }
+.intro-peek { margin: 8px auto 0; width: min(85vw, 360px); }
 .intro-note { font-size: 0.9rem; color: var(--muted); margin-top: 1em; }
 
-/* 3. Name */
+/* 2. Name */
 .intro-bubble-wrap { display: flex; align-items: center; gap: 12px; text-align: left; margin: 8px 0 16px; }
-.intro .mascot-small { flex: 0 0 auto; width: 110px; }
+.intro .mascot-small, .intro img.mascot-small { flex: 0 0 auto; width: 140px; }
 .intro-bubble { position: relative; flex: 1; margin: 0; font-size: 1.5rem; background: var(--bg); border: 3px solid var(--cardinal); border-radius: 18px; padding: 14px 16px; }
 .intro-bubble::before { content: ""; position: absolute; left: -14px; top: 40%; border: 12px solid transparent; border-right-color: var(--cardinal); border-left: 0; }
 .intro-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
@@ -49,7 +38,9 @@ body[data-intro="1"], body[data-intro="2"] { background: var(--intro-light); }
 /* Greeting on the Welcome page */
 .intro-greeting { font-size: 1.4rem; font-weight: 700; color: var(--cardinal-ink); margin: 0.6em 0 0; }
 
+/* Gentle fade-in of the cardinals. Off for people who ask their device for less motion. */
 @media (prefers-reduced-motion: no-preference) {
-  .intro-peek .mascot { display: block; animation: peek 0.8s ease-out both; }
-  @keyframes peek { from { transform: translateY(60%); } to { transform: translateY(0); } }
+  .intro-fade { animation: intro-fade 1.2s ease-out both; }
+  .intro-peek .intro-fade { animation-delay: 0.2s; }
+  @keyframes intro-fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 }

@@ -115,7 +115,7 @@ if (!SAMPLE) {
   const introSrc = fs.readFileSync(path.join(__dirname, "intro", "intro.js"), "utf8");
   check(`Opening screens never save or send the name`, !/localStorage|sessionStorage|indexedDB|fetch\(|XMLHttpRequest|sendBeacon|document\.cookie/.test(introSrc));
   const { Intro } = require(path.join(__dirname, "intro", "intro.js"));
-  Intro.reset(); Intro.next(); Intro.next();
+  Intro.reset(); Intro.next();
   const box = { value: "Sam<script>" }; Intro.submit({ querySelector: () => box });
   check(`Name box keeps only letters`, Intro.name === "Samscript" && !Intro.pending(), Intro.name);
   Intro.reset();

@@ -1,4 +1,4 @@
-// VERSION 2 OPENING SCREENS: splash, hello, and "What's your name?".
+// VERSION 2 OPENING SCREENS: hello, and "What's your name?".
 // They come BEFORE the normal Welcome page. The Welcome page (what the app can and
 // cannot tell you, the disclaimer, and "I understand. Start.") is still always shown.
 // To turn these screens off: set on to false below. To remove them: delete the
@@ -14,10 +14,10 @@ const INTRO_CONFIG = {
 // It is never saved to the browser, never logged, and never sent anywhere.
 // "Done" and the 10-minute privacy timer clear it.
 const Intro = {
-  step: 0,          // 0 splash, 1 hello, 2 name, 3 finished
+  step: 0,          // 0 hello, 1 name, 2 finished
   name: "",
   enabled() { return INTRO_CONFIG.on; },
-  pending() { return INTRO_CONFIG.on && this.step < 3; },
+  pending() { return INTRO_CONFIG.on && this.step < 2; },
   reset() { this.step = 0; this.name = ""; },
   greeting() { return this.name ? `Nice to meet you, ${this.name}!` : ""; },
 
@@ -29,12 +29,6 @@ const Intro = {
     document.body.dataset.intro = String(this.step);
 
     if (this.step === 0) {
-      app.innerHTML = `<section class="intro intro-splash" aria-labelledby="intro-h">
-        <div class="intro-face">${mascotArt("mascot")}</div>
-        <h1 id="intro-h" class="intro-title">${name}</h1>
-        <button type="button" class="btn intro-go" data-intro="next">Tap to begin</button>
-      </section>`;
-    } else if (this.step === 1) {
       app.innerHTML = `<section class="intro intro-hello" aria-labelledby="intro-h">
         <h1 id="intro-h" class="intro-title">${name}</h1>
         <p class="intro-lead">Simple answers about water tests in East Palestine.</p>
@@ -43,12 +37,12 @@ const Intro = {
           ${readBtn}
         </div>
         ${note}
-        <div class="intro-peek">${mascotArt("mascot")}</div>
+        <div class="intro-peek">${mascotArt("mascot intro-fade")}</div>
       </section>`;
     } else {
       app.innerHTML = `<section class="intro intro-name" aria-labelledby="intro-h">
         <div class="intro-bubble-wrap">
-          ${mascotArt("mascot mascot-small")}
+          ${mascotArt("mascot mascot-small intro-fade")}
           <h1 id="intro-h" class="intro-bubble">Hi! I'm ${bird}.<br>What's your name?</h1>
         </div>
         <form id="intro-form" class="intro-form" autocomplete="off">
@@ -68,7 +62,7 @@ const Intro = {
   // Returns true when the intro handled the click.
   click(el) {
     if (!el.dataset.intro) return false;
-    if (el.dataset.intro === "skip") { this.name = ""; this.step = 3; }
+    if (el.dataset.intro === "skip") { this.name = ""; this.step = 2; }
     else this.next();
     return true;
   },
@@ -76,11 +70,11 @@ const Intro = {
     const box = form.querySelector("#intro-name");
     this.name = (box.value || "").replace(/[^\p{L}\p{M}' .-]/gu, "").trim().slice(0, 30);
     box.value = "";
-    this.step = 3;
+    this.step = 2;
   },
   next() {
     this.step++;
-    if (this.step === 2 && !INTRO_CONFIG.askName) this.step = 3;
+    if (this.step === 1 && !INTRO_CONFIG.askName) this.step = 2;
   },
   finish() { delete document.body.dataset.intro; }
 };

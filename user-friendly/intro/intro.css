@@ -50,7 +50,7 @@ body[data-intro="welcome"] .help-bar { display: none; }
 }
 
 /* Opening page (step 0): deep red page with cream text and buttons. High contrast keeps black and yellow. */
-:root:not([data-contrast="high"]) body[data-intro="0"] { --open-red: #6e0a1a; --open-cream: #fbf1e3; background: var(--open-red); color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] { --open-red: #8c0d22; --open-cream: #fbf1e3; background: var(--open-red); color: var(--open-cream); }
 :root:not([data-contrast="high"]) body[data-intro="0"] .intro-title,
 :root:not([data-contrast="high"]) body[data-intro="0"] .intro-note,
 :root:not([data-contrast="high"]) body[data-intro="0"] .display-label { color: var(--open-cream); }
@@ -60,3 +60,9 @@ body[data-intro="welcome"] .help-bar { display: none; }
 :root:not([data-contrast="high"]) body[data-intro="0"] .speak-btn { background: var(--open-cream); color: var(--open-red); border-color: var(--open-cream); }
 :root:not([data-contrast="high"]) body[data-intro="0"] .display button[aria-pressed="true"],
 :root:not([data-contrast="high"]) body[data-intro="0"] .speak-btn[aria-pressed="true"] { background: var(--open-red); color: var(--open-cream); border-color: var(--open-cream); }
+/* Opening page layout: room under the top buttons, smaller picture and tagline, friendly rounded title.
+   Fonts are the device's own (no downloads): rounded where the device has one, else Trebuchet or Verdana. */
+body[data-intro="0"] .intro-title { margin-top: 1em; font-family: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "Nunito", "Trebuchet MS", Verdana, sans-serif; font-weight: 700; letter-spacing: 0.01em; }
+body[data-intro="0"] .intro-lead { font-size: 0.9em; max-width: 26ch; text-wrap: balance; }
+body[data-intro="0"] .intro-peek { width: min(55vw, 220px); max-height: 24vh; margin-top: 0.5em; }
+body[data-intro="0"] .intro .mascot svg, body[data-intro="0"] .intro img.mascot { max-height: 24vh; }

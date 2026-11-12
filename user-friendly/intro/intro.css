@@ -37,6 +37,9 @@ body[data-intro] { background: var(--intro-light); }
 .v2-main { font-size: 1.125rem; }
 .v2-main .panel-box.type-first { border-top: 0; margin-top: 0; padding-top: 0; padding-bottom: 12px; border-bottom: 3px solid var(--line); }
 .v2-main .or-topics { font-weight: 700; margin-top: 14px; }
+/* Topics: one column of full-width pills. */
+.v2-main .topics { grid-template-columns: 1fr; }
+.v2-main .topic { border-radius: var(--btn-radius); padding: 10px 24px; min-height: 64px; }
 
 /* Gentle fade-in of the cardinals. Off for people who ask their device for less motion. */
 @media (prefers-reduced-motion: no-preference) {

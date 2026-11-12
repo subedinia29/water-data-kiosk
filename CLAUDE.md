@@ -73,3 +73,4 @@ Nia is steering this project and isn't working as a traditional developer. Keep 
 - **Give sample answer options with every question** (for example: "A) bigger button, B) different color, C) leave as is").
 - **Keep pondering minimal**, especially on non-technical things. Pick a sensible default when the choice doesn't matter much.
 - **For "do changes" tasks:** write your questions into `to-do-changes.md`, under the change they are about, before making that change. Wait for Nia's answers there.
+- **Visual changes:** before starting, give Nia options to pick from (a short description of each, with a sample image when useful). After the change, send a PNG screenshot of the updated look.

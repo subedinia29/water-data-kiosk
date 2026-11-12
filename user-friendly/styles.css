@@ -142,7 +142,6 @@ textarea, input[type=text], select {
 @media (min-width: 960px) {
   .layout { display: grid; grid-template-columns: minmax(360px, 440px) 1fr; gap: 32px; align-items: start; }
   .ask-panel { position: sticky; top: 8px; max-height: calc(100vh - 16px); overflow-y: auto; padding-right: 8px; }
-  .back-to-topics { display: none !important; }
 }
 
 /* ---------- Results ---------- */

@@ -16,6 +16,9 @@ const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch
 let sessionId = null;  // random, not tied to any person (FR-21)
 let last = null;       // last result, for printing / reporting
 let openTopic = null;  // which topic's questions are showing
+let answerHTML = "";   // what the answer page (#/answer) shows
+let fromMain = false;  // answer page was opened from the question page, so Back can use the browser history
+let shownHash = null;  // hash of the screen on show, so a hashchange we caused does not redraw it
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -60,7 +63,7 @@ function startSession() {
   S.sessionCount++; save();
 }
 function endSession() {
-  last = null; sessionId = null; openTopic = null;
+  last = null; sessionId = null; openTopic = null; answerHTML = ""; fromMain = false;
   if (typeof Intro !== "undefined") Intro.reset();  // next person sees the opening page
   view.size = "1"; view.contrast = false; applyView();
   stopSpeaking();
@@ -97,7 +100,21 @@ function renderPatron() {
       <h2>Reports you can read</h2>${docBrowser()}${footer()}`;
     return;
   }
+  // Answers have their own page (#/answer), so the phone's back gesture returns to the questions.
+  if (location.hash === "#/answer") {
+    if (answerHTML) { renderAnswer(); return; }
+    history.replaceState(null, "", "#/");  // reloaded with no answer: show the question page
+  }
   renderMain();
+}
+
+function renderAnswer() {
+  document.body.dataset.intro = "main";
+  app.innerHTML = `<div class="v2-main answer-page">
+    <div class="row no-print back-row"><button type="button" class="btn primary" data-action="back">‹ Back to questions</button></div>
+    <section id="result" aria-live="polite" tabindex="-1">${answerHTML}</section>
+  </div>${footer()}`;
+  $("#result").focus({ preventScroll: true });
 }
 
 function renderWelcome() {
@@ -135,7 +152,7 @@ function questionsHTML(id) {
 function renderMain() {
   // Version 2 look (intro/intro.css): cream page, 18px text, typing box first.
   document.body.dataset.intro = "main";
-  app.innerHTML = `<div class="layout v2-main">
+  app.innerHTML = `<div class="v2-main">
     <section class="ask-panel no-print" aria-labelledby="ask-h">
       <h1 id="ask-h">What would you like to know?</h1>
       <div class="panel-box type-first">
@@ -149,18 +166,12 @@ function renderMain() {
       <div class="topics">${TOPICS.map(topicButton).join("")}</div>
       <div id="questions">${openTopic ? questionsHTML(openTopic) : ""}</div>
     </section>
-    <section id="result" aria-live="polite" tabindex="-1">${last ? resultHTML(last) : placeholderHTML()}</section>
   </div>${footer()}`;
-}
-
-function placeholderHTML() {
-  return `<div class="banner info no-print"><p><strong>Your answer will show here.</strong></p>
-    <p>Not sure where to start? Tap <strong>Newest results</strong>.</p></div>`;
 }
 
 function askQuestion(q, opts = {}) {
   q = (q || "").trim();
-  if (!q) { showResult(`<div class="banner date"><p>Please type a question first, or tap a topic.</p></div>`); return; }
+  if (!q) { toast("Please type a question first, or tap a topic."); return; }
   const tract = opts.tract || null;
   if (tract) S.tractCounts[tract] = (S.tractCounts[tract] || 0) + 1;
   last = Core.answer(q, { tract, suspended: S.suspended });
@@ -173,14 +184,13 @@ function askQuestion(q, opts = {}) {
   showResult(resultHTML(last));
 }
 
+// Opens the answer page. It draws at once, so callers can add to #result right after.
 function showResult(html) {
-  const el = $("#result");
-  if (!el) return;
-  stopSpeaking();
-  el.innerHTML = html;
-  // On a phone the answer is below the topics, so move there.
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
-  el.focus({ preventScroll: true });
+  answerHTML = html;
+  openTopic = null;  // going back shows a fresh question page
+  if (location.hash !== "#/answer") { fromMain = true; location.hash = "#/answer"; }
+  render();
+  window.scrollTo(0, 0);
 }
 
 // ---------- Result rendering (FR-3, FR-4, FR-6..FR-12) ----------
@@ -303,7 +313,6 @@ function factCardHTML(f, opts = {}) {
 
 function resultHTML(r) {
   const asked = `<p class="you-asked"><strong>You asked:</strong> ${esc(r.question)}</p>`;
-  const back = `<div class="row no-print back-to-topics"><button type="button" class="btn" data-action="back">‹ Back to topics</button></div>`;
   const banner = dateBannerHTML(r.dates);
   let body = "";
   switch (r.kind) {
@@ -347,7 +356,7 @@ function resultHTML(r) {
         <h2>Fact cards</h2>${(r.factCards || []).map(f => factCardHTML(f, { heading: true })).join("") || "<p>None.</p>"}` + wordsHTML(r);
       break;
   }
-  return back + asked + banner + body + `<div class="row no-print"><button type="button" class="btn" data-action="back">Ask another question</button></div>`;
+  return asked + banner + body;
 }
 
 // FR-19 static document browser.
@@ -565,12 +574,9 @@ document.addEventListener("click", e => {
     case "limits": go("#/limits"); break;
     case "home": go("#/"); break;
     case "contrast": view.contrast = !view.contrast; applyView(); break;
-    case "back": {
-      stopSpeaking();
-      const panel = $(".ask-panel"); if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
-      const t = openTopic ? $(`.topic[data-topic="${openTopic}"]`) : $(".topic"); if (t) t.focus({ preventScroll: true });
+    case "back":  // same as the phone's back gesture when we came from the question page
+      if (fromMain) { fromMain = false; history.back(); } else go("#/");
       break;
-    }
     case "street": {
       const sel = $("#street");
       const street = sel ? sel.value : "";
@@ -606,11 +612,12 @@ setInterval(() => {
 // ---------- Router ----------
 function render() {
   stopSpeaking();
+  shownHash = location.hash;
   delete document.body.dataset.intro;  // the opening screens set it again if they show
   if (location.hash === "#/staff") renderStaff();
   else if (location.hash === "#/limits") renderLimits();
   else renderPatron();
 }
-window.addEventListener("hashchange", () => { render(); window.scrollTo(0, 0); });
+window.addEventListener("hashchange", () => { if (location.hash === shownHash) return; render(); window.scrollTo(0, 0); });
 applyView();
 render();

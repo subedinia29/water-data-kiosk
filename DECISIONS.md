@@ -206,3 +206,6 @@ Two new screens now come before the Welcome page, using the app name "How's My W
 - **"Done. Clear the screen for the next person" removed** from the question page at the owner's request. The 10-minute idle timer still clears the screen. The idea is kept in `KIOSK-SUGGESTIONS.md` for a future kiosk version.
 - **Question page (page 3):** same cream look and 18px text as the first two pages. The typing box now comes first ("Type your question"), then "Or tap a topic. Then tap a question." and the topic tiles.
 - **Welcome page:** the "Welcome" heading was removed; the line "This web app shows official water and soil test results…" is now the page heading.
+
+## 2026-11-12: Answers open on their own page
+Asking a question (typed, topic, street or "Did you mean?") now opens a separate answer page at `#/answer`. Its only back button, "‹ Back to questions", returns to a fresh question page with every topic closed. The phone's back gesture does the same. The answer page keeps everything it showed before: the citation, date banner, print, read aloud, report a problem, known limitations and the disclaimer. Reloading the page with no answer in memory shows the question page. Answers are never saved, so this changes nothing for privacy. The question page is now a single column on wide screens too.

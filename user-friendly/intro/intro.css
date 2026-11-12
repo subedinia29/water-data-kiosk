@@ -21,8 +21,8 @@ body[data-intro] { background: var(--intro-light); }
 .intro-peek { width: min(70vw, 300px); max-height: 34vh; display: flex; justify-content: center; }
 .intro .mascot svg, .intro img.mascot { display: block; max-width: 100%; max-height: 34vh; width: auto; height: auto; }
 /* Pill buttons as wide as the longest label, both the same width. */
-.intro-actions { display: inline-grid; grid-auto-rows: auto; gap: 0.6em; }
-.intro-actions .btn { width: 100%; padding-left: 2em; padding-right: 2em; }
+.intro-actions { display: inline-grid; grid-auto-rows: auto; gap: 0.5em; margin-top: 1.25em; }
+.intro-actions .btn { width: 100%; min-height: 48px; padding: 6px 1.6em; font-size: 0.9em; }
 .intro .btn.primary { background: var(--cardinal); border-color: var(--cardinal); color: #fff; }
 .intro .btn.primary:hover { background: var(--cardinal-dark); }
 :root[data-contrast="high"] .intro .btn.primary { background: #ffff00; color: #000; border-color: #ffff00; }

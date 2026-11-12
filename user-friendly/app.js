@@ -133,19 +133,21 @@ function questionsHTML(id) {
 }
 
 function renderMain() {
-  app.innerHTML = `<div class="layout">
+  // Version 2 look (intro/intro.css): cream page, 18px text, typing box first.
+  document.body.dataset.intro = "main";
+  app.innerHTML = `<div class="layout v2-main">
     <section class="ask-panel no-print" aria-labelledby="ask-h">
       <h1 id="ask-h">What would you like to know?</h1>
-      <p>Tap a topic. Then tap a question. You don't need to type.</p>
-      <div class="topics">${TOPICS.map(topicButton).join("")}</div>
-      <div id="questions">${openTopic ? questionsHTML(openTopic) : ""}</div>
-      <div class="panel-box">
+      <div class="panel-box type-first">
         <form id="type-form">
-          <label for="q">Or type your own question</label>
+          <label for="q">Type your question</label>
           <textarea id="q" rows="2" placeholder="Example: What is vinyl chloride?"></textarea>
           <div class="row"><button type="submit" class="btn primary wide">Ask</button></div>
         </form>
       </div>
+      <p class="or-topics">Or tap a topic. Then tap a question.</p>
+      <div class="topics">${TOPICS.map(topicButton).join("")}</div>
+      <div id="questions">${openTopic ? questionsHTML(openTopic) : ""}</div>
     </section>
     <section id="result" aria-live="polite" tabindex="-1">${last ? resultHTML(last) : placeholderHTML()}</section>
   </div>${footer()}`;

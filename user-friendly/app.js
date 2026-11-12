@@ -197,19 +197,20 @@ function showResult(html) {
 // ---------- Result rendering (FR-3, FR-4, FR-6..FR-12) ----------
 function dateBannerHTML(d) {
   d = d || {};
-  return `<div class="banner date" role="note">
-    <p><strong>Data last updated:</strong> ${fmt(d.corpusUpdated || DATA.corpusUpdated)}</p>
-    ${d.newestSample ? `<p><strong>Newest test on this page:</strong> ${fmt(d.newestSample)}</p>` : ""}
-    <p>This web app does not have live readings. It only shows results that agencies have already published.</p></div>`;
+  // One short line; tap for the note about live readings. Printing opens it.
+  return `<div class="banner date" role="note"><details class="tap"><summary><span><strong>Updated</strong> ${fmt(d.corpusUpdated || DATA.corpusUpdated)}${d.newestSample ? ` · <strong>Newest test</strong> ${fmt(d.newestSample)}` : ""}</span></summary>
+    <p>This web app does not have live readings. It only shows results that agencies have already published.</p></details></div>`;
 }
 
 function citeHTML(c) {
   if (!c) return "";
+  // Agency and date always show; tap for the full title and where to read it. Printing opens it.
   return `<div class="cite">
     ${c.stale ? `<p class="stale">This report may be out of date. A newer one was expected by now.</p>` : ""}
-    <p><strong>Source:</strong> ${esc(c.title)} (${esc(c.agency)})</p>
+    <details class="tap"><summary><span><strong>Source:</strong> ${esc(c.agency)}, ${fmt(c.published)}</span></summary>
+    <p>${esc(c.title)}</p>
     <p>Published ${fmt(c.published)}.${c.sampleDate ? ` Sample taken ${fmt(c.sampleDate)}.` : ""}</p>
-    <p><strong>Read it:</strong> Library binder: ${esc(c.shelf)}${c.link ? ` · <a href="${esc(c.link)}" target="_blank" rel="noopener">Online copy</a>` : ""}</p>
+    <p><strong>Read it:</strong> Library binder: ${esc(c.shelf)}${c.link ? ` · <a href="${esc(c.link)}" target="_blank" rel="noopener">Online copy</a>` : ""}</p></details>
   </div>`;
 }
 
@@ -294,8 +295,8 @@ function recordsBlock(r) {
 function wordsHTML(r) {
   const w = Core.wordsUsed(r);
   if (!w.length) return "";
-  return `<section class="words"><h2>What these words mean</h2><dl>
-    ${w.map(x => `<dt>${esc(termLabel(x.term))}</dt><dd>${esc(x.definition)}</dd>`).join("")}</dl></section>`;
+  return `<details class="tap words"><summary><span>What these words mean</span></summary><dl>
+    ${w.map(x => `<dt>${esc(termLabel(x.term))}</dt><dd>${esc(x.definition)}</dd>`).join("")}</dl></details>`;
 }
 function termLabel(t) {
   const special = { "mcl": "MCL", "ppb": "ppb", "µg/l": "µg/L", "ng/kg": "ng/kg", "epa": "EPA", "ohio epa": "Ohio EPA", "atsdr": "ATSDR" };
@@ -400,12 +401,12 @@ function updateSpeakButtons() {  // the round speaker button at the top left
 
 // ---------- Print ----------
 function printPage() {
-  $$("details.history").forEach(d => { d.open = true; });
+  $$("details.history, details.tap").forEach(d => { d.open = true; });
   const pd = $("#print-date"); if (pd) pd.textContent = Core.fmtDate(new Date().toISOString().slice(0, 10));
   window.print();
 }
 window.addEventListener("beforeprint", () => {
-  $$("details.history").forEach(d => { d.open = true; });
+  $$("details.history, details.tap").forEach(d => { d.open = true; });
   const pd = $("#print-date"); if (pd) pd.textContent = Core.fmtDate(new Date().toISOString().slice(0, 10));
 });
 

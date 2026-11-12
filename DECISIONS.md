@@ -212,3 +212,4 @@ Asking a question (typed, topic, street or "Did you mean?") now opens a separate
 - **Page 2 (Welcome) bottom buttons:** at the owner's request, only Read aloud shows there. Print, Report a problem, Known limitations and help tickets are hidden on that page only (CSS in `intro/intro.css`). The disclaimer still shows. This page has no results yet. Note: the requirements ask for these buttons on every screen, so confirm with the project lead.
 - **Question box label:** "Type your question" is hidden on screen but kept for screen readers.
 - **Read aloud (every screen):** now a round speaker button at the top left, next to the text-size buttons. It turns red while reading and its label changes to "Stop reading". It was removed from the bottom button row. On phones the words "Text size" are hidden so the buttons fit on one row.
+- **Date panel:** on the answer page it now comes after the answer instead of before it. Every answer still shows it.

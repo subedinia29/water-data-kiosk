@@ -356,7 +356,7 @@ function resultHTML(r) {
         <h2>Fact cards</h2>${(r.factCards || []).map(f => factCardHTML(f, { heading: true })).join("") || "<p>None.</p>"}` + wordsHTML(r);
       break;
   }
-  return asked + banner + body;
+  return asked + body + banner;  // date panel comes after the answer (owner request)
 }
 
 // FR-19 static document browser.

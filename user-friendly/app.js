@@ -17,6 +17,7 @@ let sessionId = null;  // random, not tied to any person (FR-21)
 let last = null;       // last result, for printing / reporting
 let openTopic = null;  // which topic's questions are showing
 let answerHTML = "";   // what the answer page (#/answer) shows
+let onAnswer = false;  // the answer page is showing (works even where the address bar can't change)
 let fromMain = false;  // answer page was opened from the question page, so Back can use the browser history
 let shownHash = null;  // hash of the screen on show, so a hashchange we caused does not redraw it
 
@@ -63,7 +64,7 @@ function startSession() {
   S.sessionCount++; save();
 }
 function endSession() {
-  last = null; sessionId = null; openTopic = null; answerHTML = ""; fromMain = false;
+  last = null; sessionId = null; openTopic = null; answerHTML = ""; fromMain = false; onAnswer = false;
   if (typeof Intro !== "undefined") Intro.reset();  // next person sees the opening page
   view.size = "1"; view.contrast = false; applyView();
   stopSpeaking();
@@ -101,10 +102,7 @@ function renderPatron() {
     return;
   }
   // Answers have their own page (#/answer), so the phone's back gesture returns to the questions.
-  if (location.hash === "#/answer") {
-    if (answerHTML) { renderAnswer(); return; }
-    history.replaceState(null, "", "#/");  // reloaded with no answer: show the question page
-  }
+  if (onAnswer && answerHTML) { renderAnswer(); return; }
   renderMain();
 }
 
@@ -188,7 +186,10 @@ function askQuestion(q, opts = {}) {
 function showResult(html) {
   answerHTML = html;
   openTopic = null;  // going back shows a fresh question page
-  if (location.hash !== "#/answer") { fromMain = true; location.hash = "#/answer"; }
+  if (!onAnswer) {
+    onAnswer = true; fromMain = true;
+    try { history.pushState({ answer: true }, "", "#/answer"); } catch {}  // lets the phone's back gesture work; some previews block it
+  }
   render();
   window.scrollTo(0, 0);
 }
@@ -575,7 +576,10 @@ document.addEventListener("click", e => {
     case "home": go("#/"); break;
     case "contrast": view.contrast = !view.contrast; applyView(); break;
     case "back":  // same as the phone's back gesture when we came from the question page
-      if (fromMain) { fromMain = false; history.back(); } else go("#/");
+      onAnswer = false;
+      if (fromMain && history.state && history.state.answer) { try { history.back(); } catch {} }
+      fromMain = false;
+      render(); window.scrollTo(0, 0);
       break;
     case "street": {
       const sel = $("#street");
@@ -618,6 +622,14 @@ function render() {
   else if (location.hash === "#/limits") renderLimits();
   else renderPatron();
 }
-window.addEventListener("hashchange", () => { if (location.hash === shownHash) return; render(); window.scrollTo(0, 0); });
+window.addEventListener("popstate", () => {  // phone back/forward between questions and answer
+  onAnswer = !!(history.state && history.state.answer) && !!answerHTML;
+  render(); window.scrollTo(0, 0);
+});
+window.addEventListener("hashchange", () => {
+  if (location.hash === shownHash) return;
+  onAnswer = location.hash === "#/answer" && !!answerHTML;  // phone back/forward
+  render(); window.scrollTo(0, 0);
+});
 applyView();
 render();

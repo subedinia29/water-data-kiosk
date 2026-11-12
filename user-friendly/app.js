@@ -236,14 +236,13 @@ function summaryBlock(items) {
   const chems = [...new Set(items.map(i => i.analyteName))];
   const rows = chems.map(c => {
     const its = items.filter(i => i.analyteName === c), found = its.filter(i => i.detected);
-    const dates = its.map(i => i.date).sort();
-    return `<tr><th scope="row">${esc(c)}</th><td>${new Set(its.map(i => i.place)).size}</td><td>${found.length}</td><td>${dates[0] === dates[dates.length - 1] ? fmt(dates[0]) : `${fmt(dates[0])} to ${fmt(dates[dates.length - 1])}`}</td></tr>`;
+    const places = new Set(its.map(i => i.place)).size, foundAt = new Set(found.map(i => i.place)).size, pl = places === 1 ? "place" : "places";
+    return `<li><strong>${esc(c)}:</strong> ${foundAt ? `found at ${foundAt} of ${places} ${pl}` : (places === 1 ? "not found at the 1 place tested" : `not found at any of ${places} places`)}.</li>`;
   }).join("");
   const found = items.filter(i => i.detected);
-  return `<p>Newest test at each place, in short:</p>
-    <div class="table-wrap"><table class="summary"><tr><th>Chemical</th><th>Places tested</th><th>Places where it was found</th><th>Dates of these tests</th></tr>${rows}</table></div>
+  return `<ul class="chem-summary">${rows}</ul>
     ${found.length ? `<h3>Where it was found (newest test)</h3>${byPlace(found)}` : `<p class="big-result">It was not found in the newest test at any of these places.</p>`}
-    <details class="history"><summary><span class="when-closed">Show every place</span><span class="when-open">Hide every place</span>&nbsp;(${items.length} results)</summary>${byPlace(items)}</details>`;
+    <details class="history"><summary><span><span class="when-closed">Show every place</span><span class="when-open">Hide every place</span> (${items.length} results)</span></summary>${byPlace(items)}</details>`;
 }
 
 // Group result cards under a heading for each place.
@@ -267,24 +266,24 @@ function recordsBlock(r) {
   if (oldConf.length) h += `<div class="banner stop" role="note"><p><strong>Note:</strong> In the older results, agencies reported different results for the same test. Tap <strong>Show history</strong> to see both.</p></div>`;
 
   if (r.waiting && r.waiting.length) h += r.waiting.map(w => `<div class="banner date" role="note"><p><strong>Not added yet:</strong> ${esc(w)}</p></div>`).join("");
-  if (r.otherChemicals) h += `<div class="banner info"><p>We show the main derailment chemicals first. <strong>${r.otherChemicals} other chemicals</strong> were also tested. Ask about one by name, for example "benzene in the creeks".</p></div>`;
   if (r.items && r.items.length) {
-    h += r.wantsLatest
-      ? `<div class="banner info"><p><strong>You asked about the newest results.</strong> These are the latest tests on file for each place. They are not live readings.</p></div>`
-      : `<div class="banner info"><p>The newest result for each place is shown first.${r.history && r.history.length ? ` Older results are under <strong>Show history</strong>.` : ""}</p></div>`;
     h += `<h2>Newest results</h2>` + (r.items.length > 12 ? summaryBlock(r.items) : byPlace(r.items));
   }
   if (r.history && r.history.length) {
     const n = r.history.length;
-    h += `<details class="history"><summary><span class="when-closed">Show history</span><span class="when-open">Hide history</span>&nbsp;(${n} older result${n === 1 ? "" : "s"})</summary>
+    h += `<details class="history"><summary><span><span class="when-closed">Show history</span><span class="when-open">Hide history</span> (${n} older result${n === 1 ? "" : "s"})</span></summary>
       <h2>Older results</h2><p>Newest first.</p>${oldConf.map(conflictCard).join("")}${byPlace(r.history)}</details>`;
   }
   if (r.limits && r.limits.length) {
-    h += `<h2>Federal drinking-water limits</h2>
-      <p>This is the published limit. The web app does not compare results to it. A librarian can help you read both.</p>` +
-      r.limits.map(l => `<div class="card"><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("");
+    const name = l => esc(DATA.analytes[l.analyte].name);
+    const has = r.limits.filter(l => DATA.mcl[l.analyte]), none = r.limits.filter(l => DATA.mcl[l.analyte] === null);
+    h += `<h2>Federal drinking-water limits</h2>` +
+      has.map(l => `<div class="limit-line"><p><strong>${name(l)}:</strong> ${esc(DATA.mcl[l.analyte].value)} ${esc(DATA.mcl[l.analyte].unit)}</p>${citeHTML(l.cite)}</div>`).join("") +
+      (none.length ? `<div class="limit-line"><p><strong>No federal limit:</strong> ${none.map(name).join(", ")}</p>${citeHTML(none[0].cite)}</div>` : "") +
+      `<p class="hint">The web app does not compare results to these limits.</p>`;
   }
   if (r.docs && r.docs.length) h += `<h2>Where to read it</h2>` + r.docs.map(c => `<div class="card">${citeHTML(c)}</div>`).join("");
+  if (r.otherChemicals) h += `<p class="hint">${r.otherChemicals} other chemicals were also tested. Ask about one by name, like "benzene in the creeks".</p>`;
   if (r.absence) h += `<div class="card"><h2>${/^We don't have data on that yet\./.test(r.absence) ? "We don't have data on that yet." : "We don't have data on that."}</h2>
     <p>${esc(r.absence.replace(/^We don't have data on that yet\. /, ""))}</p>
     <p>Try a topic button, or print this page and ask a librarian.</p></div>`;

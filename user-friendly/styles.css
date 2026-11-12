@@ -264,3 +264,10 @@ details.tap[open] > summary::after { transform: rotate(90deg); }
 .banner.date details.tap p { margin-top: 0.4em; }
 details.tap.words > summary { font-weight: 700; }
 @media print { details.tap > summary::after { content: ""; } }
+
+/* Results summary: one plain line per chemical. Limits: one line each. */
+.chem-summary { padding-left: 1.2em; margin: 8px 0 12px; }
+.chem-summary li { margin: 4px 0; }
+.limit-line { border-bottom: 2px solid var(--line); padding: 4px 0; }
+.limit-line p { margin: 0.2em 0; }
+.limit-line .cite { border-top: 0; margin-top: 0; padding-top: 0; }

@@ -28,6 +28,12 @@ body[data-intro] { background: var(--intro-light); }
 :root[data-contrast="high"] .intro .btn.primary { background: #ffff00; color: #000; border-color: #ffff00; }
 .intro-note { font-size: 0.8em; color: var(--muted); max-width: 32ch; }
 
+/* Page 2 (Welcome): same look, no picture, black title, cards keep left-aligned lists. */
+.intro-welcome h1 { font-size: 1.6em; }
+.intro-welcome .big-result { font-size: 1em; font-weight: 700; }
+.intro-welcome .card { width: 100%; text-align: left; margin: 0; }
+.intro-welcome .card h2 { font-size: 1.1em; }
+
 /* Gentle fade-in of the cardinals. Off for people who ask their device for less motion. */
 @media (prefers-reduced-motion: no-preference) {
   .intro-fade { animation: intro-fade 1.2s ease-out both; }

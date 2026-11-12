@@ -1,4 +1,4 @@
-# Water Data Kiosk: project handoff
+# Water Data web app: project handoff
 
 Paste or attach this file at the start of a new chat. It covers everything needed to keep working on the project one change at a time.
 
@@ -6,8 +6,8 @@ Paste or attach this file at the start of a new chat. It covers everything neede
 
 ## 1. What the project is
 - **IEEE Tech4Good 2026 project 26-T4G-227**: Ohio University with the East Palestine Memorial Public Library. Faculty lead: Dr. Chang Liu (GitHub `drchangliu`).
-- **The product** is a library kiosk that helps East Palestine residents find and read official environmental test results after the February 2023 train derailment.
-- **The final system** is meant to be a locally hosted RAG kiosk running an open-weight LLM (Ollama, about 7–8B, Chroma or FAISS).
+- **The product** is a library web app that helps East Palestine residents find and read official environmental test results after the February 2023 train derailment.
+- **The final system** is meant to be a locally hosted RAG web app running an open-weight LLM (Ollama, about 7–8B, Chroma or FAISS).
 - **Right now** it is a static, browser-only web app with rule-based logic, with no server and no AI model in the core.
 - **The person working on it is not a programmer.** Explain things in plain words, keep instructions step by step, and keep the app usable by older and low-vision residents.
 - **The requirements come from** "IEEE Student Requirements" (a .docx the student has). Key parts are summarized in Section 3.
@@ -17,9 +17,9 @@ Paste or attach this file at the start of a new chat. It covers everything neede
 - **Branches:**
   - `main`: the first, functionality-only prototype (root files).
   - `claude/relaxed-sagan-i8x7gl`: the user-friendly version, plus the Project 3.1 write-up. **Pushed. Open as PR #1** (https://github.com/subedinia29/water-data-kiosk/pull/1), not merged.
-  - `feature/kiosk-extras`: built on top of that branch. It has the 3.2 features and the real EPA data. **Committed locally only, not pushed yet.** The student wanted to see a demo before anything is pushed. The next step is to push it as its own branch and open a separate PR, so it is easy to drop later.
+  - `feature/kiosk-extras`: built on top of that branch. It has the 3.2 features and the real EPA data. **Pushed to GitHub.** The next step is to open a separate PR for it, so it is easy to drop later.
 - **iPhone/web preview (private Claude page):** https://claude.ai/artifact/LQVWzT23kQ6Y5orwEzuPBp. It's a phone build of `feature/kiosk-extras`. Printing, voice and the AI helper are turned off there, because the page viewer can't do them.
-- **One-file previews to download and double-click:** `preview/kiosk-real-data-preview.html` (current), `preview/kiosk-plus-features-preview.html` (3.2, made-up data), `preview/kiosk-preview.html` (3.1).
+- **One-file previews to download and double-click:** `preview/web-app-preview.html` (current), `preview/kiosk-plus-features-preview.html` (3.2, made-up data), `preview/kiosk-preview.html` (3.1).
 - **Separate local work:** `~/Desktop/functionality` on the student's Mac has a CLAUDE.md commit (`3c74e84`) on main that is not pushed. A cloud session can't reach it.
 - **Cloud environment:** a personal environment named "water-data-kiosk" allows `www.epa.gov`, for downloading EPA data. Other agency sites are blocked until they are added.
 
@@ -28,7 +28,7 @@ Paste or attach this file at the start of a new chat. It covers everything neede
 2. **Never write health text.** Fact cards show only expert-approved ATSDR/IRIS text, word for word. Until then, they say "Awaiting expert-approved ATSDR text."
 3. **Every answer has a citation** (title, agency, published date, sample date, link or shelf location) **and the date banner**. Answers without a citation are not shown.
 4. **When agencies disagree**, both results are shown and the disagreement is flagged.
-5. **When nothing matches**, the kiosk says "We don't have data on that." Missing sources say "We don't have data on that yet."
+5. **When nothing matches**, the web app says "We don't have data on that." Missing sources say "We don't have data on that yet."
 6. **On every screen:** "Print this and talk to a librarian", Report a problem, Known limitations, the disclaimer and read-aloud.
 7. **Staff page:** kill switch, emergency mode, "desk staffed" toggle, auto-sunset after 180 days without a signed refresh, an anonymous session count, the reports queue, the audit and the release gate.
 8. **Red-team refusal must stay at 100%.** The benchmark must stay at 95% or higher, and benchmark questions must not be invented.

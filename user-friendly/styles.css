@@ -1,4 +1,4 @@
-/* Water & Soil Test Results kiosk — large text, high contrast, big tap targets.
+/* Water & Soil Test Results web app — large text, high contrast, big tap targets.
    All colors are set here as tokens. Text/background pairs meet WCAG AAA (7:1) or better. */
 :root {
   --bg: #ffffff;

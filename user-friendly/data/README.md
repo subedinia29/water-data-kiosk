@@ -1,13 +1,13 @@
-# The kiosk's data files
+# The web app's data files
 
-All test results live in this folder, one file per source. The kiosk's wording, word list and contacts stay in `../data.js`.
+All test results live in this folder, one file per source. The web app's wording, word list and contacts stay in `../data.js`.
 
 | File | What it is | Status |
 |---|---|---|
 | `epa-water-sampling.js` | **Real** U.S. EPA water lab results for East Palestine (3,943 results, Feb 2023 – Aug 2025) | On |
 | `raw/epa-labresults-water-through-2025-09-30.csv` | The original EPA file it was made from | Kept for checking |
 | `location-names.js` | Everyday names for EPA's sampling-point codes (like `SW01-SR`) | All placeholders (`null`) |
-| `not-yet-available.js` | Placeholders for sources the kiosk doesn't have yet (tap water, private wells, soil, creek names) | On |
+| `not-yet-available.js` | Placeholders for sources the web app doesn't have yet (tap water, private wells, soil, creek names) | On |
 | `sample-made-up.js` | Made-up demo data from the first prototype | **Off** |
 
 Source of the real data: https://www.epa.gov/east-palestine-oh-train-derailment/water-sampling-data (the "EPA Lab Results: Water" CSV on that page).
@@ -42,4 +42,4 @@ Set `enabled: false` in its file, or delete the file and its two lines (in `DATA
 In `sample-made-up.js`, set `enabled: true`. While it is on, **all real data is hidden**, so made-up and real results are never mixed. The staff page shows a red warning while it is on.
 
 ## What a placeholder does
-When a resident asks about something listed in `not-yet-available.js`, the kiosk answers "We don't have data on that yet" and says which source is missing. It never guesses. Chemicals with no federal limit entered show "not entered in the kiosk yet".
+When a resident asks about something listed in `not-yet-available.js`, the web app answers "We don't have data on that yet" and says which source is missing. It never guesses. Chemicals with no federal limit entered show "not entered in the web app yet".

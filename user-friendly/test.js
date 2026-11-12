@@ -1,6 +1,6 @@
-// Checks for the user-friendly kiosk. Run from the repo folder:
+// Checks for the user-friendly web app. Run from the repo folder:
 //   node user-friendly/test.js
-// Every line should say PASS. If any says FAIL, do not put the change on the kiosk.
+// Every line should say PASS. If any says FAIL, do not put the change live.
 const path = require("path");
 const SAMPLE = !!process.env.KIOSK_USE_SAMPLE;
 const Core = require(path.join(__dirname, "core.js"));

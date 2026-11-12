@@ -7,13 +7,13 @@ Four new features that help residents who don't know the "right" words, can't ty
 **1. "Did you mean?" (offline)**
 - Fixes spelling mistakes. Typing "what is vinly cloride" gives *Did you mean "what is vinyl chloride"?* with **Yes** and **No** buttons.
 - Vague questions like "show me the water numbers" get **"Which do you mean?"** with big buttons: Tap water, Sulphur Run, Leslie Run, Private wells, Soil, or All the newest results.
-- **Safety:** misspelled safety questions are still refused. "is it saef to drink" is read as "is it safe to drink", and the kiosk shows the "A person can help with this" card.
+- **Safety:** misspelled safety questions are still refused. "is it saef to drink" is read as "is it safe to drink", and the web app shows the "A person can help with this" card.
 
 **2. Ask in your own words (AI helper, demo only)**
-- When the kiosk doesn't understand a typed question, it asks Claude (Anthropic's AI) which of the kiosk's own known questions means the same thing. For example, "what's going on with the creek lately" becomes "What are the latest results for Sulphur Run?".
-- **The AI never writes answers.** It only picks a question from the kiosk's list, and the normal cited answer is shown. The screen says plainly that an AI helped, and offers a **That's not what I meant** button.
-- Safety questions are refused by the kiosk's own safety gate *before* the AI is asked. If the AI thinks a question is about safety or health, the kiosk shows the referral card.
-- **Needs internet and an API key.** If the helper isn't running, the kiosk skips this step and works as before.
+- When the web app doesn't understand a typed question, it asks Claude (Anthropic's AI) which of the web app's own known questions means the same thing. For example, "what's going on with the creek lately" becomes "What are the latest results for Sulphur Run?".
+- **The AI never writes answers.** It only picks a question from the web app's list, and the normal cited answer is shown. The screen says plainly that an AI helped, and offers a **That's not what I meant** button.
+- Safety questions are refused by the web app's own safety gate *before* the AI is asked. If the AI thinks a question is about safety or health, the web app shows the referral card.
+- **Needs internet and an API key.** If the helper isn't running, the web app skips this step and works as before.
 
 **3. Get help from a librarian (offline)**
 - A **Get help from a librarian** button appears on every screen. It gives the resident a big ticket number to show at the desk (and to print), and saves no name.
@@ -25,7 +25,7 @@ Four new features that help residents who don't know the "right" words, can't ty
 - It uses the browser's built-in speech tools and works best in Chrome and Edge. Chrome may send the voice audio to Google to turn it into text. The button doesn't appear in browsers that can't do this.
 
 ## Demo in class
-1. From the project folder, start the kiosk:
+1. From the project folder, start the web app:
    ```bash
    python3 -m http.server 8765
    ```
@@ -51,7 +51,7 @@ Open `features/config.js` and change any `true` to `false`. Nothing else needs t
 1. In `user-friendly/index.html`, delete the lines marked **EXTRA FEATURES**: one stylesheet line near the top, and the comment plus 3 script lines at the bottom.
 2. Delete the `user-friendly/features/` folder.
 
-The kiosk then works exactly as before. This was tested.
+The web app then works exactly as before. This was tested.
 
 ## Checks
 ```bash

@@ -66,7 +66,7 @@
   const VAGUE = /\b(water|results?|tests?|tested|samples?|levels?|chemicals?|data|creeks?|streams?|faucet|tap|wells?|soil|dirt|numbers?)\b/;
   const isVague = q => VAGUE.test(String(q || "").toLowerCase());
 
-  // The choices shown for a vague question. Each one is a question the kiosk already answers.
+  // The choices shown for a vague question. Each one is a question the web app already answers.
   const CLARIFY = [
     { label: "Village tap water", q: "What are the latest results for the village tap water?" },
     { label: "Creeks and streams", q: "What are the latest creek results?" },

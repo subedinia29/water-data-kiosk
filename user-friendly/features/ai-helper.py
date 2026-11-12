@@ -1,8 +1,8 @@
-"""AI helper for the kiosk's "ask in your own words" feature (Project 3.2 demo).
+"""AI helper for the web app's "ask in your own words" feature (Project 3.2 demo).
 
-It does ONE job: given a resident's typed question and the kiosk's list of known questions,
+It does ONE job: given a resident's typed question and the web app's list of known questions,
 it asks Claude which known question (by number) means the same thing. It never writes answers.
-The kiosk runs its safety gate BEFORE calling this helper, and checks the result again after.
+The web app runs its safety gate BEFORE calling this helper, and checks the result again after.
 
 How to run (needs internet and an Anthropic API key):
     pip install anthropic
@@ -10,7 +10,7 @@ How to run (needs internet and an Anthropic API key):
     python3 user-friendly/features/ai-helper.py
 
 It listens only on this computer (localhost:8766). Stop it with Ctrl+C. If it isn't running,
-the kiosk simply skips this step and uses its normal rules.
+the web app simply skips this step and uses its normal rules.
 """
 import json
 import re
@@ -23,12 +23,12 @@ MODEL = "claude-opus-5-5"
 client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment
 
 SYSTEM = (
-    "You help a public library kiosk that shows official water and soil test results for East Palestine, Ohio. "
-    "A resident typed a question. Pick the ONE numbered kiosk question that asks for the same information. "
+    "You help a public library web app that shows official water and soil test results for East Palestine, Ohio. "
+    "A resident typed a question. Pick the ONE numbered app question that asks for the same information. "
     "Reply with only the number. "
     "If the resident asks whether anything is safe, healthy, dangerous or okay, or asks about health, risk, "
     "symptoms, legal matters or property, reply with only the word SAFETY. "
-    "If no kiosk question fits, reply with only the word NONE."
+    "If no app question fits, reply with only the word NONE."
 )
 
 
@@ -41,7 +41,7 @@ def interpret(question, options):
         betas=["server-side-fallback-2026-07-01"],
         fallbacks="default",
         system=SYSTEM,
-        messages=[{"role": "user", "content": f"Kiosk questions:\n{listing}\n\nResident's question: {question}"}],
+        messages=[{"role": "user", "content": f"App questions:\n{listing}\n\nResident's question: {question}"}],
     )
     if response.stop_reason == "refusal":
         return {"safety": True}

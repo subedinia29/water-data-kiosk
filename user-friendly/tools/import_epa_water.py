@@ -1,4 +1,4 @@
-"""Turn U.S. EPA's East Palestine water lab results CSV into the kiosk's data file.
+"""Turn U.S. EPA's East Palestine water lab results CSV into the web app's data file.
 
 Source page: https://www.epa.gov/east-palestine-oh-train-derailment/water-sampling-data
 CSV link on that page: "EPA Lab Results: Water (through 09/30/2025) - East Palestine, OH Response (csv)"
@@ -22,7 +22,7 @@ DATA_DIR = os.path.join(HERE, "..", "data")
 OUT = os.path.join(DATA_DIR, "epa-water-sampling.js")
 NAMES = os.path.join(DATA_DIR, "location-names.js")
 
-# Chemicals the kiosk already knows (keys used in data.js). Everything else gets a new key.
+# Chemicals the web app already knows (keys used in data.js). Everything else gets a new key.
 KNOWN = {
     "vinyl chloride": "vinyl_chloride",
     "n-butyl acrylate": "butyl_acrylate",
@@ -116,7 +116,7 @@ def main(path):
     }
     with open(OUT, "w", encoding="utf-8") as f:
         f.write("// GENERATED FILE: do not edit by hand. Made by tools/import_epa_water.py from EPA's public CSV.\n")
-        f.write("// Real U.S. EPA data. To remove it from the kiosk, set \"enabled\": false below,\n")
+        f.write("// Real U.S. EPA data. To remove it from the web app, set \"enabled\": false below,\n")
         f.write("// or delete this file and its <script> line in index.html (and its name in data.js DATASET_FILES).\n")
         f.write("var KIOSK_DATASETS = (typeof KIOSK_DATASETS !== 'undefined') ? KIOSK_DATASETS : [];\n")
         f.write("KIOSK_DATASETS.push(" + json.dumps(dataset, ensure_ascii=False, separators=(",", ":"))
@@ -133,7 +133,7 @@ def main(path):
         lines.append(f'  "{code}": {existing.get(code, "null")},   // {"stream" if sites[k]["group"] == "streams" else "monitoring well"}')
     with open(NAMES, "w", encoding="utf-8") as f:
         f.write("// Everyday names for EPA sampling points. EPA's CSV only gives codes (like SW01-SR).\n")
-        f.write("// null = name not known yet, so the kiosk shows the code instead.\n")
+        f.write("// null = name not known yet, so the web app shows the code instead.\n")
         f.write('// To add a name, replace null with text in quotes, e.g. "SW01-SR": "Sulphur Run at Main Street",\n')
         f.write("// Only use names confirmed from EPA's map or documents. Re-running the import script keeps your names.\n")
         f.write("var KIOSK_LOCATION_NAMES = {\n" + "\n".join(lines) + "\n};\n")

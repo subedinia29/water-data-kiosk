@@ -187,7 +187,7 @@
       const key = recs.filter(r => D.keyAnalytes.includes(r.analyte));
       if (key.length) { otherChemicals = new Set(recs.filter(r => !D.keyAnalytes.includes(r.analyte)).map(r => r.analyte)).size; recs = key; }
     }
-    // NEW: placeholders for sources the kiosk doesn't have yet (data/not-yet-available.js).
+    // NEW: placeholders for sources the web app doesn't have yet (data/not-yet-available.js).
     const waiting = [...new Set(e.sites.map(k => D.sites[k].waiting).filter(Boolean))];
 
     const out = { relevant: true, entities: e, wantsLatest, records: recs, limits: [], docs: [], conflicts: [], absence: null, otherChemicals, waiting };

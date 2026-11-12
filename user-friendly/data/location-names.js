@@ -1,5 +1,5 @@
 // Everyday names for EPA sampling points. EPA's CSV only gives codes (like SW01-SR).
-// null = name not known yet, so the kiosk shows the code instead.
+// null = name not known yet, so the web app shows the code instead.
 // To add a name, replace null with text in quotes, e.g. "SW01-SR": "Sulphur Run at Main Street",
 // Only use names confirmed from EPA's map or documents. Re-running the import script keeps your names.
 var KIOSK_LOCATION_NAMES = {

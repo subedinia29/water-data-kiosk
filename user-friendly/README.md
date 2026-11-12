@@ -1,6 +1,6 @@
-# Water & Soil Test Results kiosk: easy-to-use version
+# Water & Soil Test Results web app: easy-to-use version
 
-This folder is the version of the kiosk meant for patrons: older residents, people with low vision, and anyone who doesn't want to type. It does the same job as the prototype in the main folder. It is easier to read and use.
+This folder is the version of the web app meant for patrons: older residents, people with low vision, and anyone who doesn't want to type. It does the same job as the prototype in the main folder. It is easier to read and use.
 
 **Data:** it now uses **real U.S. EPA water lab results** (through September 30, 2025). Other sources (village tap water, county private wells, soil, Ohio EPA) are placeholders that say "not added yet". Fact cards and contact numbers are still placeholders, so do not use it with the public until the expert panel approves them. See `data/README.md`.
 
@@ -43,7 +43,7 @@ Double-clicking `index.html` also works. Nothing is sent to the internet.
 
 The files in the main folder (the first prototype) are separate. Changing this folder does not change them.
 
-## Before you put any change on the kiosk
+## Before you put any change live
 Run the checks. In Terminal, from the project folder:
 ```bash
 node user-friendly/test.js
@@ -56,14 +56,14 @@ You can also see the release-gate numbers on the staff page. Red-team refusal mu
 Wording and settings are in `data.js`; test results are in `data/` (see `data/README.md`). Copy an existing line and change it. Keep commas and quote marks the same.
 
 - **Add or update test results:** see `data/README.md`. For EPA updates, re-run the import script; don't edit results by hand.
-- **Add a federal limit for a chemical:** add it to `mcl` in `data.js` (use `null` if no federal limit exists). Until then the kiosk says "not entered yet".
+- **Add a federal limit for a chemical:** add it to `mcl` in `data.js` (use `null` if no federal limit exists). Until then the web app says "not entered yet".
 - **Name an EPA sampling point:** edit `data/location-names.js`.
 - **Approve a fact card:** paste the exact ATSDR/IRIS text into `factCards`, set `approved: true` and set `approvedDate`. **Only do this with written expert panel sign-off.** Never write or reword health text yourself.
 - **Change contact numbers:** edit `referrals` and `emergency`. Every `[CONFIRM NUMBER]` must be replaced before real use.
 - **Change the topic buttons or their questions:** edit `topics`. Then run the checks. They test every question on every button.
 - **Add a word to the word list:** add it to `glossary`. Write short sentences. Explain words only. Never write health advice.
 - **"Near my street":** hidden until results include census tracts. EPA's file has none.
-- **Reset the kiosk's saved info:** open the browser's developer console and run `localStorage.clear()`, then reload. This clears reports, counts and staff settings on that one browser.
+- **Reset the web app's saved info:** open the browser's developer console and run `localStorage.clear()`, then reload. This clears reports, counts and staff settings on that one browser.
 
 ## Adding or updating data
 All test results are in the `data/` folder, one file per source. `data/README.md` explains how to update the EPA data, add a new source, name a sampling point, remove a source, or switch on the made-up demo data. Real and made-up data are never mixed.
@@ -90,4 +90,4 @@ All test results are in the `data/` folder, one file per source. `data/README.md
 See `../DECISIONS.md` for why things work the way they do.
 
 ## One-file preview
-`preview/kiosk-preview.html` (in the main folder) is the whole kiosk in a single file, for quick viewing: download it and double-click. It is a copy, so it does **not** update by itself. After changing anything in `user-friendly/`, ask the project team to rebuild it, or delete it.
+`preview/web-app-preview.html` (in the main folder) is the whole web app in a single file, for quick viewing: download it and double-click. It is a copy, so it does **not** update by itself. After changing anything in `user-friendly/`, ask the project team to rebuild it, or delete it.

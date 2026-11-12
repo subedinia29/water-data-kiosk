@@ -29,7 +29,7 @@
   // 1. Safety gate on the question as typed (inside the normal answer).
   // 2. Safety gate again on the typo-fixed question, so "is it saef" is still refused.
   // 3. Normal answer if it found something. 4. "Did you mean?" for typos.
-  // 5. AI helper picks one of the kiosk's known questions. 6. "Which do you mean?" buttons. 7. "We don't have data on that."
+  // 5. AI helper picks one of the web app's known questions. 6. "Which do you mean?" buttons. 7. "We don't have data on that."
   async function ask(q, opts = {}) {
     q = (q || "").trim();
     if (!q || opts.tract || opts.direct) return finish(baseAsk(q, opts), opts);
@@ -62,7 +62,7 @@
         if (el) el.insertAdjacentHTML("afterbegin", `<div class="banner info ai-note" role="note">
           <p><strong>You typed:</strong> ${esc(q)}</p>
           <p><strong>We understood it as:</strong> ${esc(ai.question)}</p>
-          <p class="hint">Understood with help from an AI (Claude), for this demo. The answer below comes from the kiosk's records, not from the AI.</p>
+          <p class="hint">Understood with help from an AI (Claude), for this demo. The answer below comes from the web app's records, not from the AI.</p>
           <div class="row no-print"><button type="button" class="btn" data-feature="not-meant" data-q="${esc(q)}">That's not what I meant</button></div></div>`);
         return finish(null, opts);
       }
@@ -133,7 +133,7 @@
       form.querySelector(".row").insertAdjacentHTML("afterbegin",
         `<button type="button" class="btn wide mic" data-feature="mic" aria-pressed="false"><span aria-hidden="true">🎤</span> Speak your question</button>`);
     if (F.ownWords) form.insertAdjacentHTML("beforeend",
-      `<p class="hint">Demo: if the kiosk doesn't understand your typed question, it may ask an AI (Claude) to help. Please don't type your name or address.</p>`);
+      `<p class="hint">Demo: if the web app doesn't understand your typed question, it may ask an AI (Claude) to help. Please don't type your name or address.</p>`);
   };
   window.renderStaff = function () {
     baseRenderStaff();

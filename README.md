@@ -1,6 +1,6 @@
 # Water Data Help Desk: functionality prototype
 
-A working prototype of the library kiosk from the IEEE Tech4Good project (26-T4G-227). It focuses on behavior, not looks. All data is made up.
+A working prototype of the library web app from the IEEE Tech4Good project (26-T4G-227). It focuses on behavior, not looks. All data is made up.
 
 ## How to open it
 1. Open Terminal and run:

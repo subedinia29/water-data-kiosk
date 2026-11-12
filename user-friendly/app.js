@@ -1,5 +1,5 @@
-// Screens for the user-friendly kiosk. Adapted from ../app.js.
-// Prototype state lives in this browser's localStorage; the real kiosk would use local SQLite.
+// Screens for the user-friendly web app. Adapted from ../app.js.
+// Prototype state lives in this browser's localStorage; the real app would use local SQLite.
 // Uses its own storage key, so it does not mix with the root prototype.
 const KEY = "ehl-kiosk-friendly-state";
 const defaults = {
@@ -50,7 +50,7 @@ function footer() {
     <p class="print-only"><strong>Print this and talk to a librarian.</strong> Notes:</p>
     <div class="print-only notes-lines"></div><div class="print-only notes-lines"></div><div class="print-only notes-lines"></div>
     <p class="disclaimer">${esc(DATA.disclaimer)}</p>
-    ${DATA.isSample ? `<p class="sample-note">Test version: all data on this kiosk is made-up sample data.</p>` : DATA.dataNote ? `<p class="sample-note">${esc(DATA.dataNote)}</p>` : ""}
+    ${DATA.isSample ? `<p class="sample-note">Test version: all data in this web app is made-up sample data.</p>` : DATA.dataNote ? `<p class="sample-note">${esc(DATA.dataNote)}</p>` : ""}
     <p class="no-print">${onStaff ? `<a href="#/" class="staff-link">Back to the patron screen</a>` : `<a href="#/staff" class="staff-link">Staff</a>`}</p>
   </footer>`;
 }
@@ -97,7 +97,7 @@ function renderPatron() {
 
 function renderWelcome() {
   app.innerHTML = `<h1>Welcome</h1>
-    <p class="big-result">This kiosk shows official water and soil test results for the East Palestine area.</p>
+    <p class="big-result">This web app shows official water and soil test results for the East Palestine area.</p>
     <div class="card"><h2>It can show you</h2>
       <ul><li>What was tested</li><li>Where and when it was tested</li><li>Which agency did the test</li><li>The result, and the federal limit</li><li>Where to read the full report</li></ul></div>
     <div class="card stop"><h2>It cannot tell you</h2>
@@ -181,7 +181,7 @@ function dateBannerHTML(d) {
   return `<div class="banner date" role="note">
     <p><strong>Data last updated:</strong> ${fmt(d.corpusUpdated || DATA.corpusUpdated)}</p>
     ${d.newestSample ? `<p><strong>Newest test on this page:</strong> ${fmt(d.newestSample)}</p>` : ""}
-    <p>This kiosk does not have live readings. It only shows results that agencies have already published.</p></div>`;
+    <p>This web app does not have live readings. It only shows results that agencies have already published.</p></div>`;
 }
 
 function citeHTML(c) {
@@ -262,7 +262,7 @@ function recordsBlock(r) {
   }
   if (r.limits && r.limits.length) {
     h += `<h2>Federal drinking-water limits</h2>
-      <p>This is the published limit. The kiosk does not compare results to it. A librarian can help you read both.</p>` +
+      <p>This is the published limit. The web app does not compare results to it. A librarian can help you read both.</p>` +
       r.limits.map(l => `<div class="card"><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("");
   }
   if (r.docs && r.docs.length) h += `<h2>Where to read it</h2>` + r.docs.map(c => `<div class="card">${citeHTML(c)}</div>`).join("");
@@ -289,7 +289,7 @@ function factCardHTML(f, opts = {}) {
     <p class="hint">Copied word for word from ${esc(f.source)}. Approved by experts on ${fmt(f.approvedDate)}.</p>${citeHTML(f.cite)}</div>`;
   return `<div class="card fact">${h}
     <p class="big-result">Awaiting expert-approved ATSDR text.</p>
-    <p>This kiosk does not write health information itself. When experts approve it, this card will show official text, word for word${f.source ? `, from: <strong>${esc(f.source)}</strong>` : ""}.</p>
+    <p>This web app does not write health information itself. When experts approve it, this card will show official text, word for word${f.source ? `, from: <strong>${esc(f.source)}</strong>` : ""}.</p>
     <p>A librarian can help you find official fact sheets now.</p></div>`;
 }
 
@@ -301,14 +301,14 @@ function resultHTML(r) {
   switch (r.kind) {
     case "referral":
       body = `<div class="card stop"><h2>A person can help with this</h2>
-        <p>This kiosk can't answer questions about <strong>${esc(r.referral.label)}</strong>. It only shows published test results.</p>
+        <p>This web app can't answer questions about <strong>${esc(r.referral.label)}</strong>. It only shows published test results.</p>
         <dl class="facts"><dt>Who can help</dt><dd>${esc(r.referral.to)}</dd>
         ${r.referral.contact ? `<dt>How to reach them</dt><dd>${esc(r.referral.contact)}</dd>` : ""}</dl>
         <p>You can also talk to a librarian at the reference desk.</p></div>`;
       break;
     case "noAnswer":
       body = `<div class="card"><h2>We don't have data on that.</h2>
-        <p>This kiosk only has published water and soil test results for the East Palestine area.</p>
+        <p>This web app only has published water and soil test results for the East Palestine area.</p>
         <p>Try a topic button, or print this page and ask a librarian.</p></div>`;
       break;
     case "suspended":
@@ -321,7 +321,7 @@ function resultHTML(r) {
       const alias = DATA.analytes[r.analyte].aliases[0];
       body = `<h2>${esc(r.name)}</h2>${factCardHTML(r.card)}
         ${r.items.map(l => `<div class="card"><h3>Federal drinking-water limit</h3><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("")}
-        ${r.limitPending ? `<div class="banner date"><p><strong>Federal drinking-water limit:</strong> not entered in the kiosk yet. A librarian can look it up.</p></div>` : ""}
+        ${r.limitPending ? `<div class="banner date"><p><strong>Federal drinking-water limit:</strong> not entered in the web app yet. A librarian can look it up.</p></div>` : ""}
         <div class="card"><h3>Test results on file</h3>
         ${r.testCount ? `<p>${r.testCount} test result${r.testCount === 1 ? "" : "s"}. Newest test: ${fmt(r.newestTest)}.</p>
           <div class="row no-print"><button type="button" class="btn primary" data-ask="${esc(`What are the latest ${alias} results?`)}">Show the test results</button></div>`
@@ -443,7 +443,7 @@ function renderStaff() {
     <div class="status"><div>Data age</div><div class="big">${days} days</div><div>${days > 180 ? "Auto-sunset is ON" : `Auto-sunset in ${180 - days} days`}</div></div>
   </div>
 
-  <h2>Kiosk controls</h2>
+  <h2>Web app controls</h2>
   <div class="row">
     <button type="button" class="btn ${S.killSwitch ? "on" : "primary"}" data-action="toggle" data-key="killSwitch">${S.killSwitch ? "Turn questions back ON" : "KILL SWITCH: turn questions OFF"}</button>
     <button type="button" class="btn ${S.emergency ? "on" : ""}" data-action="toggle" data-key="emergency">${S.emergency ? "End emergency mode" : "Start emergency mode"}</button>
@@ -497,7 +497,7 @@ function renderStaff() {
 
   <h2>Release gate check</h2>
   <p>Benchmark tier accuracy: <strong>${ev.benchPct}%</strong> (need 95 or more) · Red-team refusal: <strong>${ev.redPct}%</strong> (need 100) ·
-    Gate: <strong>${ev.gatePass ? "PASS (still needs written ERP approval)" : "FAIL. The kiosk stays closed."}</strong></p>
+    Gate: <strong>${ev.gatePass ? "PASS (still needs written ERP approval)" : "FAIL. The web app stays closed."}</strong></p>
   <details class="more"><summary>Details</summary><div class="table-wrap"><table><tr><th>Set</th><th>Question</th><th>Result</th></tr>
     ${ev.bench.map(b => `<tr><td>benchmark</td><td>${esc(b.q)}</td><td>${b.pass ? "pass" : "FAIL"} (tier ${b.got}, expected ${b.expected})</td></tr>`).join("")}
     ${ev.red.map(b => `<tr><td>red-team</td><td>${esc(b.q)}</td><td>${b.pass ? "refused: " + esc(b.category) : "FAIL: not refused"}</td></tr>`).join("")}
@@ -517,10 +517,10 @@ function signedRefresh() {
   const date = new Date().toISOString().slice(0, 10);
   S.lastSignedRefresh = date; S.refreshLog.push({ date, signedBy: by, version: DATA.corpusVersion }); save(); render();
 }
-// FR-18: the real check runs weekly on the kiosk's maintainer machine. Browsers can't read cross-site
+// FR-18: the real check runs weekly on the maintainer's machine. Browsers can't read cross-site
 // status codes, so this prototype only checks that each document has a link or shelf location.
 function integrityCheck() {
-  const rows = DATA.documents.map(d => `<li>${esc(d.title)}: ${d.link ? "link on file (live check runs on the kiosk)" : d.shelf ? "shelf copy only" : "MISSING SOURCE"}</li>`);
+  const rows = DATA.documents.map(d => `<li>${esc(d.title)}: ${d.link ? "link on file (live check runs on the maintainer's machine)" : d.shelf ? "shelf copy only" : "MISSING SOURCE"}</li>`);
   $("#integrity").innerHTML = `<ul>${rows.join("")}</ul>`;
 }
 function sendReport(id) { const r = S.reports.find(x => x.id === id); if (r) { r.status = "sent to ERP"; save(); render(); } }

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Water and Soil Test Results</title>
 <style>
-/* Water & Soil Test Results kiosk — large text, high contrast, big tap targets.
+/* Water & Soil Test Results web app — large text, high contrast, big tap targets.
    All colors are set here as tokens. Text/background pairs meet WCAG AAA (7:1) or better. */
 :root {
   --bg: #ffffff;
@@ -315,7 +315,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
 <!-- DATA FILES. Keep this list the same as DATASET_FILES in data.js. See data/README.md. -->
 <script>
 // Everyday names for EPA sampling points. EPA's CSV only gives codes (like SW01-SR).
-// null = name not known yet, so the kiosk shows the code instead.
+// null = name not known yet, so the web app shows the code instead.
 // To add a name, replace null with text in quotes, e.g. "SW01-SR": "Sulphur Run at Main Street",
 // Only use names confirmed from EPA's map or documents. Re-running the import script keeps your names.
 var KIOSK_LOCATION_NAMES = {
@@ -380,8 +380,8 @@ if (typeof module !== 'undefined') module.exports = KIOSK_LOCATION_NAMES;
 
 </script>
 <script>
-// PLACEHOLDERS for information the kiosk does not have yet.
-// When a resident asks about one of these, the kiosk says the data hasn't been added yet,
+// PLACEHOLDERS for information the web app does not have yet.
+// When a resident asks about one of these, the web app says the data hasn't been added yet,
 // instead of guessing or showing nothing.
 //
 // When real data for one of these arrives: add it as its own data file (like epa-water-sampling.js),
@@ -394,19 +394,19 @@ KIOSK_DATASETS.push({
   sites: {
     municipal: { name: "the village water system", plain: "Village tap water",
       aliases: ["municipal", "village water", "city water", "tap water", "public water", "town water", "faucet", "my tap"],
-      waiting: "Village water system test results have not been added to this kiosk yet." },
+      waiting: "Village water system test results have not been added to this web app yet." },
     private_wells: { name: "private wells", plain: "Private wells (county testing program)",
       aliases: ["private well", "private wells", "my well", "well water", "home well", "well", "wells"],
-      waiting: "Columbiana County Health District private well results have not been added to this kiosk yet. EPA monitoring well results are available: ask for \"monitoring well results\". Monitoring wells are not home drinking-water wells." },
+      waiting: "Columbiana County Health District private well results have not been added to this web app yet. EPA monitoring well results are available: ask for \"monitoring well results\". Monitoring wells are not home drinking-water wells." },
     derailment_site: { name: "soil near the derailment site", plain: "Soil near the derailment site",
       aliases: ["soil", "dirt", "ground", "derailment site"],
-      waiting: "Soil results (including dioxins) have not been added to this kiosk yet. This kiosk only has EPA water results so far." },
+      waiting: "Soil results (including dioxins) have not been added to this web app yet. This web app only has EPA water results so far." },
     sulphur_run: { name: "Sulphur Run", plain: "Sulphur Run (creek)", aliases: ["sulphur run", "sulfur run"],
-      waiting: "EPA's data file names sampling points by code, not by creek name, so the kiosk can't tell yet which points are on Sulphur Run. Ask for \"creek results\" to see all EPA stream sampling points." },
+      waiting: "EPA's data file names sampling points by code, not by creek name, so the web app can't tell yet which points are on Sulphur Run. Ask for \"creek results\" to see all EPA stream sampling points." },
     leslie_run: { name: "Leslie Run", plain: "Leslie Run (creek)", aliases: ["leslie run"],
-      waiting: "EPA's data file names sampling points by code, not by creek name, so the kiosk can't tell yet which points are on Leslie Run. Ask for \"creek results\" to see all EPA stream sampling points." }
+      waiting: "EPA's data file names sampling points by code, not by creek name, so the web app can't tell yet which points are on Leslie Run. Ask for \"creek results\" to see all EPA stream sampling points." }
   },
-  // Sources the requirements list that are not in the kiosk yet (shown on the staff page).
+  // Sources the requirements list that are not in the web app yet (shown on the staff page).
   missingSources: [
     "Ohio EPA water monitoring results",
     "Village of East Palestine water system results",
@@ -422,7 +422,7 @@ if (typeof module !== 'undefined') module.exports = KIOSK_DATASETS[KIOSK_DATASET
 </script>
 <script>
 // GENERATED FILE: do not edit by hand. Made by tools/import_epa_water.py from EPA's public CSV.
-// Real U.S. EPA data. To remove it from the kiosk, set "enabled": false below,
+// Real U.S. EPA data. To remove it from the web app, set "enabled": false below,
 // or delete this file and its <script> line in index.html (and its name in data.js DATASET_FILES).
 var KIOSK_DATASETS = (typeof KIOSK_DATASETS !== 'undefined') ? KIOSK_DATASETS : [];
 KIOSK_DATASETS.push({"id":"epa-water","real":true,"enabled":true,"document":{"id":"EPA-W","title":"EPA Lab Results: Water (through 09/30/2025) - East Palestine, OH Response","agency":"U.S. EPA","published":"2026-10-13","cadenceDays":90,"link":"https://www.epa.gov/east-palestine-oh-train-derailment/water-sampling-data","shelf":"[PLACEHOLDER: binder and tab for the printed copy]"},"analytes":{"c_1_1_1_2_tetrachloroethane":{"name":"1,1,1,2-tetrachloroethane","aliases":["1 1 1 2-tetrachloroethane","1,1,1,2-tetrachloroethane"]},"c_1_1_1_trichloroethane":{"name":"1,1,1-trichloroethane","aliases":["1 1 1-trichloroethane","1,1,1-trichloroethane"]},"c_1_1_2_2_tetrachloroethane":{"name":"1,1,2,2-tetrachloroethane","aliases":["1 1 2 2-tetrachloroethane","1,1,2,2-tetrachloroethane"]},"c_1_1_2_trichloroethane":{"name":"1,1,2-trichloroethane","aliases":["1 1 2-trichloroethane","1,1,2-trichloroethane"]},"c_1_1_2_trichlorotrifluoroethane":{"name":"1,1,2-trichlorotrifluoroethane","aliases":["1 1 2-trichlorotrifluoroethane","1,1,2-trichlorotrifluoroethane"]},"c_1_1_biphenyl":{"name":"1,1`-biphenyl","aliases":["1 1 -biphenyl","1,1`-biphenyl"]},"c_1_1_dichloroethane":{"name":"1,1-dichloroethane","aliases":["1 1-dichloroethane","1,1-dichloroethane"]},"c_1_1_dichloroethene":{"name":"1,1-dichloroethene","aliases":["1 1-dichloroethene","1,1-dichloroethene"]},"c_1_1_dichloropropene":{"name":"1,1-dichloropropene","aliases":["1 1-dichloropropene","1,1-dichloropropene"]},"c_1_2_3_trichlorobenzene":{"name":"1,2,3-trichlorobenzene","aliases":["1 2 3-trichlorobenzene","1,2,3-trichlorobenzene"]},"c_1_2_3_trichloropropane":{"name":"1,2,3-trichloropropane","aliases":["1 2 3-trichloropropane","1,2,3-trichloropropane"]},"c_1_2_4_5_tetrachlorobenzene":{"name":"1,2,4,5-tetrachlorobenzene","aliases":["1 2 4 5-tetrachlorobenzene","1,2,4,5-tetrachlorobenzene"]},"c_1_2_4_trichlorobenzene":{"name":"1,2,4-trichlorobenzene","aliases":["1 2 4-trichlorobenzene","1,2,4-trichlorobenzene"]},"c_1_2_4_trimethylbenzene":{"name":"1,2,4-trimethylbenzene","aliases":["1 2 4-trimethylbenzene","1,2,4-trimethylbenzene"]},"c_1_2_dibromo_3_chloropropane":{"name":"1,2-dibromo 3-chloropropane","aliases":["1 2-dibromo 3-chloropropane","1,2-dibromo 3-chloropropane"]},"c_1_2_dibromoethane":{"name":"1,2-dibromoethane","aliases":["1 2-dibromoethane","1,2-dibromoethane"]},"c_1_2_dichloro_1_1_2_trifluoroethane":{"name":"1,2-Dichloro-1,1,2-trifluoroethane","aliases":["1 2-dichloro-1 1 2-trifluoroethane","1,2-dichloro-1,1,2-trifluoroethane"]},"c_1_2_dichlorobenzene":{"name":"1,2-dichlorobenzene","aliases":["1 2-dichlorobenzene","1,2-dichlorobenzene"]},"c_1_2_dichloroethane":{"name":"1,2-dichloroethane","aliases":["1 2-dichloroethane","1,2-dichloroethane"]},"c_1_2_dichloropropane":{"name":"1,2-dichloropropane","aliases":["1 2-dichloropropane","1,2-dichloropropane"]},"c_1_2_propylene_glycol":{"name":"1,2-Propylene glycol","aliases":["1 2-propylene glycol","1,2-propylene glycol"]},"c_1_3_5_trimethylbenzene":{"name":"1,3,5-trimethylbenzene","aliases":["1 3 5-trimethylbenzene","1,3,5-trimethylbenzene"]},"c_1_3_dichlorobenzene":{"name":"1,3-dichlorobenzene","aliases":["1 3-dichlorobenzene","1,3-dichlorobenzene"]},"c_1_3_dichloropropane":{"name":"1,3-dichloropropane","aliases":["1 3-dichloropropane","1,3-dichloropropane"]},"c_1_4_dichloro_2_butene":{"name":"1,4-Dichloro-2-butene","aliases":["1 4-dichloro-2-butene","1,4-dichloro-2-butene"]},"c_1_4_dichlorobenzene":{"name":"1,4-dichlorobenzene","aliases":["1 4-dichlorobenzene","1,4-dichlorobenzene"]},"c_1_4_dioxane":{"name":"1,4-dioxane","aliases":["1 4-dioxane","1,4-dioxane"]},"c_1_chlorohexane":{"name":"1-chlorohexane","aliases":["1-chlorohexane"]},"c_1_methylnaphthalene":{"name":"1-methylnaphthalene","aliases":["1-methylnaphthalene"]},"c_2_2_dichloropropane":{"name":"2,2-dichloropropane","aliases":["2 2-dichloropropane","2,2-dichloropropane"]},"c_2_2_oxybis_1_chloropropane":{"name":"2,2`-Oxybis(1-chloropropane)","aliases":["2 2 -oxybis 1-chloropropane","2,2`-oxybis(1-chloropropane)"]},"c_2_3_4_6_tetrachlorophenol":{"name":"2,3,4,6-tetrachlorophenol","aliases":["2 3 4 6-tetrachlorophenol","2,3,4,6-tetrachlorophenol"]},"c_2_3_dichloro_1_propene":{"name":"2,3-Dichloro-1-propene","aliases":["2 3-dichloro-1-propene","2,3-dichloro-1-propene"]},"c_2_4_5_trichlorophenol":{"name":"2,4,5-trichlorophenol","aliases":["2 4 5-trichlorophenol","2,4,5-trichlorophenol"]},"c_2_4_6_trichlorophenol":{"name":"2,4,6-trichlorophenol","aliases":["2 4 6-trichlorophenol","2,4,6-trichlorophenol"]},"c_2_4_dichlorophenol":{"name":"2,4-dichlorophenol","aliases":["2 4-dichlorophenol","2,4-dichlorophenol"]},"c_2_4_dimethylphenol":{"name":"2,4-dimethylphenol","aliases":["2 4-dimethylphenol","2,4-dimethylphenol"]},"c_2_4_dinitrophenol":{"name":"2,4-dinitrophenol","aliases":["2 4-dinitrophenol","2,4-dinitrophenol"]},"c_2_4_dinitrotoluene":{"name":"2,4-dinitrotoluene","aliases":["2 4-dinitrotoluene","2,4-dinitrotoluene"]},"c_2_6_dinitrotoluene":{"name":"2,6-dinitrotoluene","aliases":["2 6-dinitrotoluene","2,6-dinitrotoluene"]},"c_2_butanone":{"name":"2-butanone","aliases":["2-butanone"]},"c_2_chloronaphthalene":{"name":"2-chloronaphthalene","aliases":["2-chloronaphthalene"]},"c_2_chlorophenol":{"name":"2-chlorophenol","aliases":["2-chlorophenol"]},"c_2_chlorotoluene":{"name":"2-chlorotoluene","aliases":["2-chlorotoluene"]},"c_2_hexanone":{"name":"2-hexanone","aliases":["2-hexanone"]},"c_2_methylnaphthalene":{"name":"2-methylnaphthalene","aliases":["2-methylnaphthalene"]},"c_2_methylphenol":{"name":"2-methylphenol","aliases":["2-methylphenol"]},"c_2_nitroaniline":{"name":"2-nitroaniline","aliases":["2-nitroaniline"]},"c_2_nitrophenol":{"name":"2-nitrophenol","aliases":["2-nitrophenol"]},"c_2_nitropropane":{"name":"2-nitropropane","aliases":["2-nitropropane"]},"c_3_3_dichlorobenzidine":{"name":"3,3´-dichlorobenzidine","aliases":["3 3 -dichlorobenzidine","3,3´-dichlorobenzidine"]},"c_3_4_methylphenol":{"name":"3 & 4 methylphenol","aliases":["3 & 4 methylphenol","3 4 methylphenol"]},"c_3_nitroaniline":{"name":"3-nitroaniline","aliases":["3-nitroaniline"]},"c_4_6_dinitro_2_methylphenol":{"name":"4,6-Dinitro-2-methylphenol","aliases":["4 6-dinitro-2-methylphenol","4,6-dinitro-2-methylphenol"]},"c_4_bromophenyl_phenyl_ether":{"name":"4-Bromophenyl phenyl ether","aliases":["4-bromophenyl phenyl ether"]},"c_4_chloro_3_methylphenol":{"name":"4-Chloro-3-methylphenol","aliases":["4-chloro-3-methylphenol"]},"c_4_chloroaniline":{"name":"4-chloroaniline","aliases":["4-chloroaniline"]},"c_4_chlorophenyl_phenyl_ether":{"name":"4-Chlorophenyl phenyl ether","aliases":["4-chlorophenyl phenyl ether"]},"c_4_chlorotoluene":{"name":"4-chlorotoluene","aliases":["4-chlorotoluene"]},"c_4_methyl_2_pentanone":{"name":"4-Methyl-2-pentanone","aliases":["4-methyl-2-pentanone"]},"c_4_nitroaniline":{"name":"4-nitroaniline","aliases":["4-nitroaniline"]},"c_4_nitrophenol":{"name":"4-nitrophenol","aliases":["4-nitrophenol"]},"c_acenaphthene":{"name":"Acenaphthene","aliases":["acenaphthene"]},"c_acenaphthylene":{"name":"Acenaphthylene","aliases":["acenaphthylene"]},"c_acetone":{"name":"Acetone","aliases":["acetone"]},"c_acetophenone":{"name":"Acetophenone","aliases":["acetophenone"]},"c_acrylonitrile":{"name":"Acrylonitrile","aliases":["acrylonitrile"]},"c_anthracene":{"name":"Anthracene","aliases":["anthracene"]},"c_atrazine":{"name":"Atrazine","aliases":["atrazine"]},"c_benzaldehyde":{"name":"Benzaldehyde","aliases":["benzaldehyde"]},"c_benzene":{"name":"Benzene","aliases":["benzene"]},"c_benzo_a_anthracene":{"name":"Benzo(a)anthracene","aliases":["benzo a anthracene","benzo(a)anthracene"]},"c_benzo_a_pyrene":{"name":"Benzo(a)pyrene","aliases":["benzo a pyrene","benzo(a)pyrene"]},"c_benzo_b_fluoranthene":{"name":"Benzo(b)fluoranthene","aliases":["benzo b fluoranthene","benzo(b)fluoranthene"]},"c_benzo_g_h_i_perylene":{"name":"Benzo(g,h,i)perylene","aliases":["benzo g h i perylene","benzo(g,h,i)perylene"]},"c_benzo_k_fluoranthene":{"name":"Benzo(k)fluoranthene","aliases":["benzo k fluoranthene","benzo(k)fluoranthene"]},"c_benzoic_acid":{"name":"Benzoic acid","aliases":["benzoic acid"]},"c_benzyl_alcohol":{"name":"Benzyl alcohol","aliases":["benzyl alcohol"]},"c_bis_2_chloroethoxy_methane":{"name":"Bis(2-chloroethoxy)methane","aliases":["bis 2-chloroethoxy methane","bis(2-chloroethoxy)methane"]},"c_bis_2_chloroethyl_ether":{"name":"Bis(2-chloroethyl)ether","aliases":["bis 2-chloroethyl ether","bis(2-chloroethyl)ether"]},"c_bis_2_ethylhexyl_phthalate":{"name":"Bis(2-ethylhexyl)phthalate","aliases":["bis 2-ethylhexyl phthalate","bis(2-ethylhexyl)phthalate"]},"c_bromobenzene":{"name":"Bromobenzene","aliases":["bromobenzene"]},"c_bromochloromethane":{"name":"Bromochloromethane","aliases":["bromochloromethane"]},"c_bromodichloromethane":{"name":"Bromodichloromethane","aliases":["bromodichloromethane"]},"c_bromoform":{"name":"Bromoform","aliases":["bromoform"]},"c_bromomethane":{"name":"Bromomethane","aliases":["bromomethane"]},"c_butanoic_acid":{"name":"Butanoic acid","aliases":["butanoic acid"]},"c_butyl_benzyl_phthalate":{"name":"Butyl benzyl phthalate","aliases":["butyl benzyl phthalate"]},"c_caprolactam":{"name":"Caprolactam","aliases":["caprolactam"]},"c_carbazole":{"name":"Carbazole","aliases":["carbazole"]},"c_carbon_dioxide":{"name":"Carbon dioxide","aliases":["carbon dioxide"]},"c_carbon_disulfide":{"name":"Carbon disulfide","aliases":["carbon disulfide"]},"c_carbon_tetrachloride":{"name":"Carbon tetrachloride","aliases":["carbon tetrachloride"]},"c_chlorobenzene":{"name":"Chlorobenzene","aliases":["chlorobenzene"]},"c_chloroethane":{"name":"Chloroethane","aliases":["chloroethane"]},"c_chloroform":{"name":"Chloroform","aliases":["chloroform"]},"c_chloromethane":{"name":"Chloromethane","aliases":["chloromethane"]},"c_chrysene":{"name":"Chrysene","aliases":["chrysene"]},"c_cis_1_2_dichloroethene":{"name":"cis-1,2-Dichloroethene","aliases":["cis-1 2-dichloroethene","cis-1,2-dichloroethene"]},"c_cis_1_3_dichloropropene":{"name":"cis-1,3-Dichloropropene","aliases":["cis-1 3-dichloropropene","cis-1,3-dichloropropene"]},"c_cyclohexane":{"name":"Cyclohexane","aliases":["cyclohexane"]},"c_di_n_butyl_phthalate":{"name":"Di-n-butyl phthalate","aliases":["di-n-butyl phthalate"]},"c_di_n_octyl_phthalate":{"name":"Di-n-octyl phthalate","aliases":["di-n-octyl phthalate"]},"c_dibenzo_a_h_anthracene":{"name":"Dibenzo(a,h)anthracene","aliases":["dibenzo a h anthracene","dibenzo(a,h)anthracene"]},"c_dibenzofuran":{"name":"Dibenzofuran","aliases":["dibenzofuran"]},"c_dibromochloromethane":{"name":"Dibromochloromethane","aliases":["dibromochloromethane"]},"c_dibromodifluoromethane":{"name":"Dibromodifluoromethane","aliases":["dibromodifluoromethane"]},"c_dibromomethane":{"name":"Dibromomethane","aliases":["dibromomethane"]},"c_dichlorodifluoromethane_cfc_12":{"name":"Dichlorodifluoromethane (CFC 12)","aliases":["dichlorodifluoromethane (cfc 12)","dichlorodifluoromethane cfc 12"]},"c_dichlorofluoromethane":{"name":"Dichlorofluoromethane","aliases":["dichlorofluoromethane"]},"c_diethyl_ether":{"name":"Diethyl ether","aliases":["diethyl ether"]},"c_diethyl_phthalate":{"name":"Diethyl phthalate","aliases":["diethyl phthalate"]},"c_diethylene_glycol":{"name":"Diethylene glycol","aliases":["diethylene glycol"]},"c_dimethyl_phthalate":{"name":"Dimethyl phthalate","aliases":["dimethyl phthalate"]},"c_dro_c10_c28":{"name":"Dro (c10-c28)","aliases":["dro (c10-c28)","dro c10-c28"]},"c_ethylbenzene":{"name":"Ethylbenzene","aliases":["ethylbenzene"]},"c_ethylene_glycol":{"name":"Ethylene glycol","aliases":["ethylene glycol"]},"c_fluoranthene":{"name":"Fluoranthene","aliases":["fluoranthene"]},"c_fluorene":{"name":"Fluorene","aliases":["fluorene"]},"c_gro_c6_c10":{"name":"Gro (c6-c10)","aliases":["gro (c6-c10)","gro c6-c10"]},"c_hexachlorobenzene":{"name":"Hexachlorobenzene","aliases":["hexachlorobenzene"]},"c_hexachlorobutadiene":{"name":"Hexachlorobutadiene","aliases":["hexachlorobutadiene"]},"c_hexachlorocyclopentadiene":{"name":"Hexachlorocyclopentadiene","aliases":["hexachlorocyclopentadiene"]},"c_hexachloroethane":{"name":"Hexachloroethane","aliases":["hexachloroethane"]},"c_hexane":{"name":"Hexane","aliases":["hexane"]},"c_hfpo_da":{"name":"Hfpo-da","aliases":["hfpo-da"]},"c_indeno_1_2_3_cd_pyrene":{"name":"Indeno(1,2,3-cd)pyrene","aliases":["indeno 1 2 3-cd pyrene","indeno(1,2,3-cd)pyrene"]},"c_isophorone":{"name":"Isophorone","aliases":["isophorone"]},"c_isopropyl_ether":{"name":"Isopropyl ether","aliases":["isopropyl ether"]},"c_isopropylbenzene":{"name":"Isopropylbenzene","aliases":["isopropylbenzene"]},"c_m_p_xylenes":{"name":"m,p-Xylenes","aliases":["m p-xylenes","m,p-xylenes"]},"c_methyl_acetate":{"name":"Methyl acetate","aliases":["methyl acetate"]},"c_methyl_acrylate":{"name":"Methyl acrylate","aliases":["methyl acrylate"]},"c_methyl_iodide":{"name":"Methyl iodide","aliases":["methyl iodide"]},"c_methyl_methacrylate":{"name":"Methyl methacrylate","aliases":["methyl methacrylate"]},"c_methyl_tert_butyl_ether":{"name":"Methyl tert-butyl ether","aliases":["methyl tert-butyl ether"]},"c_methylcyclohexane":{"name":"Methylcyclohexane","aliases":["methylcyclohexane"]},"c_methylene_chloride":{"name":"Methylene chloride","aliases":["methylene chloride"]},"c_n_butanol":{"name":"N-butanol","aliases":["n-butanol"]},"c_n_butylbenzene":{"name":"N-butylbenzene","aliases":["n-butylbenzene"]},"c_n_nitrosodi_n_propylamine":{"name":"N-Nitrosodi-n-propylamine","aliases":["n-nitrosodi-n-propylamine"]},"c_n_nitrosodiphenylamine":{"name":"N-nitrosodiphenylamine","aliases":["n-nitrosodiphenylamine"]},"c_naphthalene":{"name":"Naphthalene","aliases":["naphthalene"]},"c_nitrobenzene":{"name":"Nitrobenzene","aliases":["nitrobenzene"]},"c_o_xylene":{"name":"o-Xylene","aliases":["o-xylene"]},"c_oil_and_grease":{"name":"Oil and Grease","aliases":["oil and grease"]},"c_oro_c28_c40":{"name":"Oro (c28-c40)","aliases":["oro (c28-c40)","oro c28-c40"]},"c_p_cymene":{"name":"p-Cymene","aliases":["p-cymene"]},"c_pentachlorophenol":{"name":"Pentachlorophenol","aliases":["pentachlorophenol"]},"c_perfluorobutanesulfonic_acid_pfbs":{"name":"Perfluorobutanesulfonic Acid (PFBS)","aliases":["perfluorobutanesulfonic acid (pfbs)","perfluorobutanesulfonic acid pfbs"]},"c_perfluorobutanoic_acid_pfba":{"name":"Perfluorobutanoic Acid (PFBA)","aliases":["perfluorobutanoic acid (pfba)","perfluorobutanoic acid pfba"]},"c_perfluorohexanesulfonic_acid_pfhxs":{"name":"Perfluorohexanesulfonic Acid (PFHxS)","aliases":["perfluorohexanesulfonic acid (pfhxs)","perfluorohexanesulfonic acid pfhxs"]},"c_perfluorohexanoic_acid_pfhxa":{"name":"Perfluorohexanoic Acid (PFHxA)","aliases":["perfluorohexanoic acid (pfhxa)","perfluorohexanoic acid pfhxa"]},"c_perfluorononanoic_acid_pfna":{"name":"Perfluorononanoic Acid (PFNA)","aliases":["perfluorononanoic acid (pfna)","perfluorononanoic acid pfna"]},"c_perfluorooctanesulfonic_acid_pfos":{"name":"Perfluorooctanesulfonic Acid (PFOS)","aliases":["perfluorooctanesulfonic acid (pfos)","perfluorooctanesulfonic acid pfos"]},"c_perfluorooctanoic_acid_pfoa":{"name":"Perfluorooctanoic Acid (PFOA)","aliases":["perfluorooctanoic acid (pfoa)","perfluorooctanoic acid pfoa"]},"c_ph_laboratory":{"name":"pH (laboratory)","aliases":["ph (laboratory)","ph laboratory"]},"c_phenanthrene":{"name":"Phenanthrene","aliases":["phenanthrene"]},"c_phenol":{"name":"Phenol","aliases":["phenol"]},"c_propylbenzene":{"name":"Propylbenzene","aliases":["propylbenzene"]},"c_propylene_oxide":{"name":"Propylene oxide","aliases":["propylene oxide"]},"c_pyrene":{"name":"Pyrene","aliases":["pyrene"]},"c_pyridine":{"name":"Pyridine","aliases":["pyridine"]},"c_scan_for_semi_volatile_organics":{"name":"Scan for Semi-Volatile Organics","aliases":["scan for semi-volatile organics"]},"c_scan_for_volatile_organics":{"name":"Scan for Volatile Organics","aliases":["scan for volatile organics"]},"c_sec_butylbenzene":{"name":"Sec-butylbenzene","aliases":["sec-butylbenzene"]},"c_styrene":{"name":"Styrene","aliases":["styrene"]},"c_temperature":{"name":"Temperature","aliases":["temperature"]},"c_tert_butylbenzene":{"name":"tert-Butylbenzene","aliases":["tert-butylbenzene"]},"c_tetrachloroethene":{"name":"Tetrachloroethene","aliases":["tetrachloroethene"]},"c_tetrahydrofuran":{"name":"Tetrahydrofuran","aliases":["tetrahydrofuran"]},"c_toluene":{"name":"Toluene","aliases":["toluene"]},"c_total_organic_carbon":{"name":"Total organic carbon","aliases":["total organic carbon"]},"c_trans_1_2_dichloroethene":{"name":"trans-1,2-Dichloroethene","aliases":["trans-1 2-dichloroethene","trans-1,2-dichloroethene"]},"c_trans_1_3_dichloropropene":{"name":"trans-1,3-Dichloropropene","aliases":["trans-1 3-dichloropropene","trans-1,3-dichloropropene"]},"c_trichloroethene":{"name":"Trichloroethene","aliases":["trichloroethene"]},"c_trichlorofluoromethane":{"name":"Trichlorofluoromethane","aliases":["trichlorofluoromethane"]},"c_vinyl_acetate":{"name":"Vinyl acetate","aliases":["vinyl acetate"]},"c_xylenes_total":{"name":"Xylenes, total","aliases":["xylenes total","xylenes, total"]}},"sites":{"epa_eestw_01":{"code":"EESTW-01","group":"monitoring_wells"},"epa_eestw_02":{"code":"EESTW-02","group":"monitoring_wells"},"epa_eestw_04":{"code":"EESTW-04","group":"monitoring_wells"},"epa_eestw_05":{"code":"EESTW-05","group":"monitoring_wells"},"epa_eestw_06":{"code":"EESTW-06","group":"monitoring_wells"},"epa_mw_03":{"code":"MW-03","group":"monitoring_wells"},"epa_mw_05":{"code":"MW-05","group":"monitoring_wells"},"epa_mw_07":{"code":"MW-07","group":"monitoring_wells"},"epa_mw_10":{"code":"MW-10","group":"monitoring_wells"},"epa_mw_7":{"code":"MW-7","group":"monitoring_wells"},"epa_smw_04s":{"code":"SMW-04S","group":"monitoring_wells"},"epa_smw_08":{"code":"SMW-08","group":"monitoring_wells"},"epa_smw_09":{"code":"SMW-09","group":"monitoring_wells"},"epa_smw_18":{"code":"SMW-18","group":"monitoring_wells"},"epa_stw_13":{"code":"STW-13","group":"monitoring_wells"},"epa_stw_14":{"code":"STW-14","group":"monitoring_wells"},"epa_stw_15s":{"code":"STW-15S","group":"monitoring_wells"},"epa_stw_2":{"code":"STW-2","group":"monitoring_wells"},"epa_stw_21":{"code":"STW-21","group":"monitoring_wells"},"epa_stw_23":{"code":"STW-23","group":"monitoring_wells"},"epa_stw_24":{"code":"STW-24","group":"monitoring_wells"},"epa_stw_26":{"code":"STW-26","group":"monitoring_wells"},"epa_stw_26r":{"code":"STW-26R","group":"monitoring_wells"},"epa_stw_29":{"code":"STW-29","group":"monitoring_wells"},"epa_stw_31":{"code":"STW-31","group":"monitoring_wells"},"epa_stw_32s":{"code":"STW-32S","group":"monitoring_wells"},"epa_stw_34":{"code":"STW-34","group":"monitoring_wells"},"epa_stw_36":{"code":"STW-36","group":"monitoring_wells"},"epa_stw_36r":{"code":"STW-36R","group":"monitoring_wells"},"epa_stw_37":{"code":"STW-37","group":"monitoring_wells"},"epa_stw_38":{"code":"STW-38","group":"monitoring_wells"},"epa_stw_38r":{"code":"STW-38R","group":"monitoring_wells"},"epa_stw_39":{"code":"STW-39","group":"monitoring_wells"},"epa_stw_40":{"code":"STW-40","group":"monitoring_wells"},"epa_stw_7":{"code":"STW-7","group":"monitoring_wells"},"epa_stw_7r":{"code":"STW-7R","group":"monitoring_wells"},"epa_stw_8":{"code":"STW-8","group":"monitoring_wells"},"epa_stw_8r":{"code":"STW-8R","group":"monitoring_wells"},"epa_sw01_sr":{"code":"SW01-SR","group":"streams"},"epa_sw02_sr":{"code":"SW02-SR","group":"streams"},"epa_sw03_sr":{"code":"SW03-SR","group":"streams"},"epa_sw_01":{"code":"SW-01","group":"streams"},"epa_sw_02":{"code":"SW-02","group":"streams"},"epa_sw_03":{"code":"SW-03","group":"streams"},"epa_sw_04":{"code":"SW-04","group":"streams"},"epa_sw_05":{"code":"SW-05","group":"streams"},"epa_sw_06":{"code":"SW-06","group":"streams"},"epa_sw_07":{"code":"SW-07","group":"streams"},"epa_sw_08":{"code":"SW-08","group":"streams"},"epa_sw_09":{"code":"SW-09","group":"streams"},"epa_sw_10":{"code":"SW-10","group":"streams"},"epa_sw_11":{"code":"SW-11","group":"streams"},"epa_w010":{"code":"W010","group":"streams"},"epa_wlstw_01":{"code":"WLSTW-01","group":"monitoring_wells"},"epa_wlstw_02":{"code":"WLSTW-02","group":"monitoring_wells"},"epa_wlstw_03":{"code":"WLSTW-03","group":"monitoring_wells"}},"records":[
@@ -4429,11 +4429,11 @@ if (typeof module !== 'undefined') module.exports = KIOSK_DATASETS[KIOSK_DATASET
 
 </script>
 <script>
-// Kiosk content and settings: wording, word list, contacts, topics, limits.
+// Web app content and settings: wording, word list, contacts, topics, limits.
 // The TEST RESULTS live in separate files in the data/ folder (see data/README.md):
 //   data/epa-water-sampling.js   real U.S. EPA water results (made by tools/import_epa_water.py)
 //   data/location-names.js       everyday names for EPA sampling-point codes (placeholders until confirmed)
-//   data/not-yet-available.js    placeholders for sources the kiosk doesn't have yet
+//   data/not-yet-available.js    placeholders for sources the web app doesn't have yet
 //   data/sample-made-up.js       made-up demo data, switched OFF
 // To add, remove or replace a data source: edit DATASET_FILES below AND the matching <script> lines in index.html.
 const DATASET_FILES = ["data/location-names.js", "data/not-yet-available.js", "data/epa-water-sampling.js", "data/sample-made-up.js"];
@@ -4452,8 +4452,8 @@ const DATA = {
     // Where approved fact card text will come from. Cards stay placeholders until the panel approves them.
     { id: "D7", title: "ATSDR ToxFAQs fact sheets, printed copies for expert review (sample entry)", agency: "ATSDR",
       published: "2026-09-15", cadenceDays: 3650, link: "", shelf: "Binder C, tab 2" },
-    // The kiosk's own word list (glossary). Plain definitions of words, never health text.
-    { id: "G1", title: "Kiosk word list: plain-language definitions (sample, needs expert review)", agency: "Project team",
+    // The web app's own word list (glossary). Plain definitions of words, never health text.
+    { id: "G1", title: "Web app word list: plain-language definitions (sample, needs expert review)", agency: "Project team",
       published: "2026-09-15", cadenceDays: 365, link: "", shelf: "Binder C, tab 3" }
   ],
 
@@ -4477,7 +4477,7 @@ const DATA = {
   },
 
   // Federal MCLs from D5. null = no federal MCL exists (FR-12: state the absence).
-  // A chemical missing from this list = limit not entered yet (the kiosk says so).
+  // A chemical missing from this list = limit not entered yet (the web app says so).
   mcl: {
     vinyl_chloride: { value: 2, unit: "µg/L", docId: "D5" },
     dioxins: { value: 0.00003, unit: "µg/L", docId: "D5" },
@@ -4505,7 +4505,7 @@ const DATA = {
     "maximum contaminant level": "See MCL. It is the highest amount of a chemical the U.S. EPA allows in public drinking water.",
     "detection limit": "The detection limit is the smallest amount a lab test can measure. Below it, the result is reported as \"not detected.\"",
     "not detected": "Not detected means the lab did not find the chemical above the test's detection limit.",
-    "not found": "On this kiosk, \"not found\" means the lab reported \"not detected.\" The test did not find the chemical above the smallest amount it can measure.",
+    "not found": "In this web app, \"not found\" means the lab reported \"not detected.\" The test did not find the chemical above the smallest amount it can measure.",
     "µg/l": "µg/L means micrograms per liter. It is the same as parts per billion (ppb) in water. It is a very small amount.",
     "ppb": "ppb means parts per billion. In water, 1 ppb is the same as 1 µg/L.",
     "ng/kg": "ng/kg means nanograms per kilogram. It is used for amounts in soil. It is a very small amount.",
@@ -4515,12 +4515,12 @@ const DATA = {
     "epa": "EPA means the U.S. Environmental Protection Agency. It is the federal agency that sets drinking-water limits. It also tests water and soil.",
     "ohio epa": "Ohio EPA is the State of Ohio's environmental agency. It tests water in Ohio.",
     "atsdr": "ATSDR is the Agency for Toxic Substances and Disease Registry. It is a U.S. government agency. It writes fact sheets about chemicals.",
-    "fact card": "A fact card is a short, official description of a chemical. On this kiosk, it will be copied word for word from ATSDR after experts approve it.",
+    "fact card": "A fact card is a short, official description of a chemical. In this web app, it will be copied word for word from ATSDR after experts approve it.",
     "estimated": "Estimated means the lab found the chemical, but the exact amount is less certain.",
     "preliminary": "Preliminary means the agency has not finished checking this result yet.",
     "monitoring well": "A monitoring well is a well drilled so agencies can test groundwater. It is not a home drinking-water well.",
     "free product": "Free product is a layer of chemical found in the ground or a well. It is not water.",
-    "census tract": "A census tract is a small area used by the U.S. Census. The kiosk uses it to find results near your street. It does not save your address."
+    "census tract": "A census tract is a small area used by the U.S. Census. The web app uses it to find results near your street. It does not save your address."
   },
 
   // FR-9 fact cards. Text MUST be transcribed verbatim from ATSDR ToxFAQs / EPA IRIS
@@ -4548,7 +4548,7 @@ const DATA = {
     causation: { label: "whether the derailment caused something", to: "Your doctor. A librarian can show you published research.", contact: "Ask at the reference desk." },
     legal:     { label: "the settlement, claims, or legal questions", to: "The settlement administrator, or your own lawyer.", contact: "Settlement administrator: [CONFIRM CONTACT]" },
     property:  { label: "property value, insurance, or moving", to: "This is outside what the library can help with. Please talk to a professional in that field.", contact: "" },
-    agency:    { label: "opinions about agencies", to: "This kiosk only reports what agencies published. It does not judge them. A librarian can help you find the original documents.", contact: "Ask at the reference desk." },
+    agency:    { label: "opinions about agencies", to: "This web app only reports what agencies published. It does not judge them. A librarian can help you find the original documents.", contact: "Ask at the reference desk." },
     misuse:    { label: "this kind of request", to: "Please ask a librarian.", contact: "Ask at the reference desk." }
   },
 
@@ -4558,11 +4558,11 @@ const DATA = {
   },
 
 
-  knownLimitations: "[PLACEHOLDER: Known Limitations text written by the Expert Review Panel.] Until then: this kiosk only knows what is in its documents. It cannot tell you if something is safe. It cannot give medical or legal advice. It cannot explain why something happened. It does not have live readings. It only has test results that were already published. EPA names its sampling points by code, so the kiosk may show a code instead of a place name. Some sources are not added yet.",
+  knownLimitations: "[PLACEHOLDER: Known Limitations text written by the Expert Review Panel.] Until then: this web app only knows what is in its documents. It cannot tell you if something is safe. It cannot give medical or legal advice. It cannot explain why something happened. It does not have live readings. It only has test results that were already published. EPA names its sampling points by code, so the web app may show a code instead of a place name. Some sources are not added yet.",
 
   // Topic buttons and tap-to-ask questions on the main screen.
   // Every question here is checked by test.js. Run it after any change.
-  // street: true = the "Near my street" picker. warn: true = red border (questions the kiosk refers on).
+  // street: true = the "Near my street" picker. warn: true = red border (questions the web app refers on).
   topics: [
     { id: "newest", label: "Newest results", sub: "Latest test for each place", questions: [
       "What are the latest test results?",
@@ -4607,7 +4607,7 @@ const DATA = {
       "What do the EGBE numbers mean?"] },
     { id: "street", label: "Near my street", sub: "Pick from a list", street: true, needsTracts: true },
     { id: "help", label: "Health, safety, or legal", sub: "Who to ask", warn: true,
-      intro: "This kiosk can't answer these questions. Tap one to see who can help.", questions: [
+      intro: "This web app can't answer these questions. Tap one to see who can help.", questions: [
       "Is my water safe to drink?",
       "Could the chemicals make me sick?",
       "Am I eligible for the settlement?",
@@ -4899,7 +4899,7 @@ if (typeof module !== "undefined") module.exports = { DATA, EVAL };
       const key = recs.filter(r => D.keyAnalytes.includes(r.analyte));
       if (key.length) { otherChemicals = new Set(recs.filter(r => !D.keyAnalytes.includes(r.analyte)).map(r => r.analyte)).size; recs = key; }
     }
-    // NEW: placeholders for sources the kiosk doesn't have yet (data/not-yet-available.js).
+    // NEW: placeholders for sources the web app doesn't have yet (data/not-yet-available.js).
     const waiting = [...new Set(e.sites.map(k => D.sites[k].waiting).filter(Boolean))];
 
     const out = { relevant: true, entities: e, wantsLatest, records: recs, limits: [], docs: [], conflicts: [], absence: null, otherChemicals, waiting };
@@ -5060,8 +5060,8 @@ if (typeof module !== "undefined") module.exports = { DATA, EVAL };
 
 </script>
 <script>
-// Screens for the user-friendly kiosk. Adapted from ../app.js.
-// Prototype state lives in this browser's localStorage; the real kiosk would use local SQLite.
+// Screens for the user-friendly web app. Adapted from ../app.js.
+// Prototype state lives in this browser's localStorage; the real app would use local SQLite.
 // Uses its own storage key, so it does not mix with the root prototype.
 const KEY = "ehl-kiosk-friendly-state";
 const defaults = {
@@ -5112,7 +5112,7 @@ function footer() {
     <p class="print-only"><strong>Print this and talk to a librarian.</strong> Notes:</p>
     <div class="print-only notes-lines"></div><div class="print-only notes-lines"></div><div class="print-only notes-lines"></div>
     <p class="disclaimer">${esc(DATA.disclaimer)}</p>
-    ${DATA.isSample ? `<p class="sample-note">Test version: all data on this kiosk is made-up sample data.</p>` : DATA.dataNote ? `<p class="sample-note">${esc(DATA.dataNote)}</p>` : ""}
+    ${DATA.isSample ? `<p class="sample-note">Test version: all data in this web app is made-up sample data.</p>` : DATA.dataNote ? `<p class="sample-note">${esc(DATA.dataNote)}</p>` : ""}
     <p class="no-print">${onStaff ? `<a href="#/" class="staff-link">Back to the patron screen</a>` : `<a href="#/staff" class="staff-link">Staff</a>`}</p>
   </footer>`;
 }
@@ -5159,7 +5159,7 @@ function renderPatron() {
 
 function renderWelcome() {
   app.innerHTML = `<h1>Welcome</h1>
-    <p class="big-result">This kiosk shows official water and soil test results for the East Palestine area.</p>
+    <p class="big-result">This web app shows official water and soil test results for the East Palestine area.</p>
     <div class="card"><h2>It can show you</h2>
       <ul><li>What was tested</li><li>Where and when it was tested</li><li>Which agency did the test</li><li>The result, and the federal limit</li><li>Where to read the full report</li></ul></div>
     <div class="card stop"><h2>It cannot tell you</h2>
@@ -5243,7 +5243,7 @@ function dateBannerHTML(d) {
   return `<div class="banner date" role="note">
     <p><strong>Data last updated:</strong> ${fmt(d.corpusUpdated || DATA.corpusUpdated)}</p>
     ${d.newestSample ? `<p><strong>Newest test on this page:</strong> ${fmt(d.newestSample)}</p>` : ""}
-    <p>This kiosk does not have live readings. It only shows results that agencies have already published.</p></div>`;
+    <p>This web app does not have live readings. It only shows results that agencies have already published.</p></div>`;
 }
 
 function citeHTML(c) {
@@ -5324,7 +5324,7 @@ function recordsBlock(r) {
   }
   if (r.limits && r.limits.length) {
     h += `<h2>Federal drinking-water limits</h2>
-      <p>This is the published limit. The kiosk does not compare results to it. A librarian can help you read both.</p>` +
+      <p>This is the published limit. The web app does not compare results to it. A librarian can help you read both.</p>` +
       r.limits.map(l => `<div class="card"><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("");
   }
   if (r.docs && r.docs.length) h += `<h2>Where to read it</h2>` + r.docs.map(c => `<div class="card">${citeHTML(c)}</div>`).join("");
@@ -5351,7 +5351,7 @@ function factCardHTML(f, opts = {}) {
     <p class="hint">Copied word for word from ${esc(f.source)}. Approved by experts on ${fmt(f.approvedDate)}.</p>${citeHTML(f.cite)}</div>`;
   return `<div class="card fact">${h}
     <p class="big-result">Awaiting expert-approved ATSDR text.</p>
-    <p>This kiosk does not write health information itself. When experts approve it, this card will show official text, word for word${f.source ? `, from: <strong>${esc(f.source)}</strong>` : ""}.</p>
+    <p>This web app does not write health information itself. When experts approve it, this card will show official text, word for word${f.source ? `, from: <strong>${esc(f.source)}</strong>` : ""}.</p>
     <p>A librarian can help you find official fact sheets now.</p></div>`;
 }
 
@@ -5363,14 +5363,14 @@ function resultHTML(r) {
   switch (r.kind) {
     case "referral":
       body = `<div class="card stop"><h2>A person can help with this</h2>
-        <p>This kiosk can't answer questions about <strong>${esc(r.referral.label)}</strong>. It only shows published test results.</p>
+        <p>This web app can't answer questions about <strong>${esc(r.referral.label)}</strong>. It only shows published test results.</p>
         <dl class="facts"><dt>Who can help</dt><dd>${esc(r.referral.to)}</dd>
         ${r.referral.contact ? `<dt>How to reach them</dt><dd>${esc(r.referral.contact)}</dd>` : ""}</dl>
         <p>You can also talk to a librarian at the reference desk.</p></div>`;
       break;
     case "noAnswer":
       body = `<div class="card"><h2>We don't have data on that.</h2>
-        <p>This kiosk only has published water and soil test results for the East Palestine area.</p>
+        <p>This web app only has published water and soil test results for the East Palestine area.</p>
         <p>Try a topic button, or print this page and ask a librarian.</p></div>`;
       break;
     case "suspended":
@@ -5383,7 +5383,7 @@ function resultHTML(r) {
       const alias = DATA.analytes[r.analyte].aliases[0];
       body = `<h2>${esc(r.name)}</h2>${factCardHTML(r.card)}
         ${r.items.map(l => `<div class="card"><h3>Federal drinking-water limit</h3><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("")}
-        ${r.limitPending ? `<div class="banner date"><p><strong>Federal drinking-water limit:</strong> not entered in the kiosk yet. A librarian can look it up.</p></div>` : ""}
+        ${r.limitPending ? `<div class="banner date"><p><strong>Federal drinking-water limit:</strong> not entered in the web app yet. A librarian can look it up.</p></div>` : ""}
         <div class="card"><h3>Test results on file</h3>
         ${r.testCount ? `<p>${r.testCount} test result${r.testCount === 1 ? "" : "s"}. Newest test: ${fmt(r.newestTest)}.</p>
           <div class="row no-print"><button type="button" class="btn primary" data-ask="${esc(`What are the latest ${alias} results?`)}">Show the test results</button></div>`
@@ -5505,7 +5505,7 @@ function renderStaff() {
     <div class="status"><div>Data age</div><div class="big">${days} days</div><div>${days > 180 ? "Auto-sunset is ON" : `Auto-sunset in ${180 - days} days`}</div></div>
   </div>
 
-  <h2>Kiosk controls</h2>
+  <h2>Web app controls</h2>
   <div class="row">
     <button type="button" class="btn ${S.killSwitch ? "on" : "primary"}" data-action="toggle" data-key="killSwitch">${S.killSwitch ? "Turn questions back ON" : "KILL SWITCH: turn questions OFF"}</button>
     <button type="button" class="btn ${S.emergency ? "on" : ""}" data-action="toggle" data-key="emergency">${S.emergency ? "End emergency mode" : "Start emergency mode"}</button>
@@ -5559,7 +5559,7 @@ function renderStaff() {
 
   <h2>Release gate check</h2>
   <p>Benchmark tier accuracy: <strong>${ev.benchPct}%</strong> (need 95 or more) · Red-team refusal: <strong>${ev.redPct}%</strong> (need 100) ·
-    Gate: <strong>${ev.gatePass ? "PASS (still needs written ERP approval)" : "FAIL. The kiosk stays closed."}</strong></p>
+    Gate: <strong>${ev.gatePass ? "PASS (still needs written ERP approval)" : "FAIL. The web app stays closed."}</strong></p>
   <details class="more"><summary>Details</summary><div class="table-wrap"><table><tr><th>Set</th><th>Question</th><th>Result</th></tr>
     ${ev.bench.map(b => `<tr><td>benchmark</td><td>${esc(b.q)}</td><td>${b.pass ? "pass" : "FAIL"} (tier ${b.got}, expected ${b.expected})</td></tr>`).join("")}
     ${ev.red.map(b => `<tr><td>red-team</td><td>${esc(b.q)}</td><td>${b.pass ? "refused: " + esc(b.category) : "FAIL: not refused"}</td></tr>`).join("")}
@@ -5579,10 +5579,10 @@ function signedRefresh() {
   const date = new Date().toISOString().slice(0, 10);
   S.lastSignedRefresh = date; S.refreshLog.push({ date, signedBy: by, version: DATA.corpusVersion }); save(); render();
 }
-// FR-18: the real check runs weekly on the kiosk's maintainer machine. Browsers can't read cross-site
+// FR-18: the real check runs weekly on the maintainer's machine. Browsers can't read cross-site
 // status codes, so this prototype only checks that each document has a link or shelf location.
 function integrityCheck() {
-  const rows = DATA.documents.map(d => `<li>${esc(d.title)}: ${d.link ? "link on file (live check runs on the kiosk)" : d.shelf ? "shelf copy only" : "MISSING SOURCE"}</li>`);
+  const rows = DATA.documents.map(d => `<li>${esc(d.title)}: ${d.link ? "link on file (live check runs on the maintainer's machine)" : d.shelf ? "shelf copy only" : "MISSING SOURCE"}</li>`);
   $("#integrity").innerHTML = `<ul>${rows.join("")}</ul>`;
 }
 function sendReport(id) { const r = S.reports.find(x => x.id === id); if (r) { r.status = "sent to ERP"; save(); render(); } }
@@ -5750,7 +5750,7 @@ const KIOSK_FEATURES = {
   const VAGUE = /\b(water|results?|tests?|tested|samples?|levels?|chemicals?|data|creeks?|streams?|faucet|tap|wells?|soil|dirt|numbers?)\b/;
   const isVague = q => VAGUE.test(String(q || "").toLowerCase());
 
-  // The choices shown for a vague question. Each one is a question the kiosk already answers.
+  // The choices shown for a vague question. Each one is a question the web app already answers.
   const CLARIFY = [
     { label: "Village tap water", q: "What are the latest results for the village tap water?" },
     { label: "Creeks and streams", q: "What are the latest creek results?" },
@@ -5804,7 +5804,7 @@ const KIOSK_FEATURES = {
   // 1. Safety gate on the question as typed (inside the normal answer).
   // 2. Safety gate again on the typo-fixed question, so "is it saef" is still refused.
   // 3. Normal answer if it found something. 4. "Did you mean?" for typos.
-  // 5. AI helper picks one of the kiosk's known questions. 6. "Which do you mean?" buttons. 7. "We don't have data on that."
+  // 5. AI helper picks one of the web app's known questions. 6. "Which do you mean?" buttons. 7. "We don't have data on that."
   async function ask(q, opts = {}) {
     q = (q || "").trim();
     if (!q || opts.tract || opts.direct) return finish(baseAsk(q, opts), opts);
@@ -5837,7 +5837,7 @@ const KIOSK_FEATURES = {
         if (el) el.insertAdjacentHTML("afterbegin", `<div class="banner info ai-note" role="note">
           <p><strong>You typed:</strong> ${esc(q)}</p>
           <p><strong>We understood it as:</strong> ${esc(ai.question)}</p>
-          <p class="hint">Understood with help from an AI (Claude), for this demo. The answer below comes from the kiosk's records, not from the AI.</p>
+          <p class="hint">Understood with help from an AI (Claude), for this demo. The answer below comes from the web app's records, not from the AI.</p>
           <div class="row no-print"><button type="button" class="btn" data-feature="not-meant" data-q="${esc(q)}">That's not what I meant</button></div></div>`);
         return finish(null, opts);
       }
@@ -5908,7 +5908,7 @@ const KIOSK_FEATURES = {
       form.querySelector(".row").insertAdjacentHTML("afterbegin",
         `<button type="button" class="btn wide mic" data-feature="mic" aria-pressed="false"><span aria-hidden="true">🎤</span> Speak your question</button>`);
     if (F.ownWords) form.insertAdjacentHTML("beforeend",
-      `<p class="hint">Demo: if the kiosk doesn't understand your typed question, it may ask an AI (Claude) to help. Please don't type your name or address.</p>`);
+      `<p class="hint">Demo: if the web app doesn't understand your typed question, it may ask an AI (Claude) to help. Please don't type your name or address.</p>`);
   };
   window.renderStaff = function () {
     baseRenderStaff();

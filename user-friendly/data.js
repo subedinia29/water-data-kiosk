@@ -1,8 +1,8 @@
-// Kiosk content and settings: wording, word list, contacts, topics, limits.
+// Web app content and settings: wording, word list, contacts, topics, limits.
 // The TEST RESULTS live in separate files in the data/ folder (see data/README.md):
 //   data/epa-water-sampling.js   real U.S. EPA water results (made by tools/import_epa_water.py)
 //   data/location-names.js       everyday names for EPA sampling-point codes (placeholders until confirmed)
-//   data/not-yet-available.js    placeholders for sources the kiosk doesn't have yet
+//   data/not-yet-available.js    placeholders for sources the web app doesn't have yet
 //   data/sample-made-up.js       made-up demo data, switched OFF
 // To add, remove or replace a data source: edit DATASET_FILES below AND the matching <script> lines in index.html.
 const DATASET_FILES = ["data/location-names.js", "data/not-yet-available.js", "data/epa-water-sampling.js", "data/sample-made-up.js"];
@@ -21,8 +21,8 @@ const DATA = {
     // Where approved fact card text will come from. Cards stay placeholders until the panel approves them.
     { id: "D7", title: "ATSDR ToxFAQs fact sheets, printed copies for expert review (sample entry)", agency: "ATSDR",
       published: "2026-09-15", cadenceDays: 3650, link: "", shelf: "Binder C, tab 2" },
-    // The kiosk's own word list (glossary). Plain definitions of words, never health text.
-    { id: "G1", title: "Kiosk word list: plain-language definitions (sample, needs expert review)", agency: "Project team",
+    // The web app's own word list (glossary). Plain definitions of words, never health text.
+    { id: "G1", title: "Web app word list: plain-language definitions (sample, needs expert review)", agency: "Project team",
       published: "2026-09-15", cadenceDays: 365, link: "", shelf: "Binder C, tab 3" }
   ],
 
@@ -46,7 +46,7 @@ const DATA = {
   },
 
   // Federal MCLs from D5. null = no federal MCL exists (FR-12: state the absence).
-  // A chemical missing from this list = limit not entered yet (the kiosk says so).
+  // A chemical missing from this list = limit not entered yet (the web app says so).
   mcl: {
     vinyl_chloride: { value: 2, unit: "µg/L", docId: "D5" },
     dioxins: { value: 0.00003, unit: "µg/L", docId: "D5" },
@@ -74,7 +74,7 @@ const DATA = {
     "maximum contaminant level": "See MCL. It is the highest amount of a chemical the U.S. EPA allows in public drinking water.",
     "detection limit": "The detection limit is the smallest amount a lab test can measure. Below it, the result is reported as \"not detected.\"",
     "not detected": "Not detected means the lab did not find the chemical above the test's detection limit.",
-    "not found": "On this kiosk, \"not found\" means the lab reported \"not detected.\" The test did not find the chemical above the smallest amount it can measure.",
+    "not found": "In this web app, \"not found\" means the lab reported \"not detected.\" The test did not find the chemical above the smallest amount it can measure.",
     "µg/l": "µg/L means micrograms per liter. It is the same as parts per billion (ppb) in water. It is a very small amount.",
     "ppb": "ppb means parts per billion. In water, 1 ppb is the same as 1 µg/L.",
     "ng/kg": "ng/kg means nanograms per kilogram. It is used for amounts in soil. It is a very small amount.",
@@ -84,12 +84,12 @@ const DATA = {
     "epa": "EPA means the U.S. Environmental Protection Agency. It is the federal agency that sets drinking-water limits. It also tests water and soil.",
     "ohio epa": "Ohio EPA is the State of Ohio's environmental agency. It tests water in Ohio.",
     "atsdr": "ATSDR is the Agency for Toxic Substances and Disease Registry. It is a U.S. government agency. It writes fact sheets about chemicals.",
-    "fact card": "A fact card is a short, official description of a chemical. On this kiosk, it will be copied word for word from ATSDR after experts approve it.",
+    "fact card": "A fact card is a short, official description of a chemical. In this web app, it will be copied word for word from ATSDR after experts approve it.",
     "estimated": "Estimated means the lab found the chemical, but the exact amount is less certain.",
     "preliminary": "Preliminary means the agency has not finished checking this result yet.",
     "monitoring well": "A monitoring well is a well drilled so agencies can test groundwater. It is not a home drinking-water well.",
     "free product": "Free product is a layer of chemical found in the ground or a well. It is not water.",
-    "census tract": "A census tract is a small area used by the U.S. Census. The kiosk uses it to find results near your street. It does not save your address."
+    "census tract": "A census tract is a small area used by the U.S. Census. The web app uses it to find results near your street. It does not save your address."
   },
 
   // FR-9 fact cards. Text MUST be transcribed verbatim from ATSDR ToxFAQs / EPA IRIS
@@ -117,7 +117,7 @@ const DATA = {
     causation: { label: "whether the derailment caused something", to: "Your doctor. A librarian can show you published research.", contact: "Ask at the reference desk." },
     legal:     { label: "the settlement, claims, or legal questions", to: "The settlement administrator, or your own lawyer.", contact: "Settlement administrator: [CONFIRM CONTACT]" },
     property:  { label: "property value, insurance, or moving", to: "This is outside what the library can help with. Please talk to a professional in that field.", contact: "" },
-    agency:    { label: "opinions about agencies", to: "This kiosk only reports what agencies published. It does not judge them. A librarian can help you find the original documents.", contact: "Ask at the reference desk." },
+    agency:    { label: "opinions about agencies", to: "This web app only reports what agencies published. It does not judge them. A librarian can help you find the original documents.", contact: "Ask at the reference desk." },
     misuse:    { label: "this kind of request", to: "Please ask a librarian.", contact: "Ask at the reference desk." }
   },
 
@@ -127,11 +127,11 @@ const DATA = {
   },
 
 
-  knownLimitations: "[PLACEHOLDER: Known Limitations text written by the Expert Review Panel.] Until then: this kiosk only knows what is in its documents. It cannot tell you if something is safe. It cannot give medical or legal advice. It cannot explain why something happened. It does not have live readings. It only has test results that were already published. EPA names its sampling points by code, so the kiosk may show a code instead of a place name. Some sources are not added yet.",
+  knownLimitations: "[PLACEHOLDER: Known Limitations text written by the Expert Review Panel.] Until then: this web app only knows what is in its documents. It cannot tell you if something is safe. It cannot give medical or legal advice. It cannot explain why something happened. It does not have live readings. It only has test results that were already published. EPA names its sampling points by code, so the web app may show a code instead of a place name. Some sources are not added yet.",
 
   // Topic buttons and tap-to-ask questions on the main screen.
   // Every question here is checked by test.js. Run it after any change.
-  // street: true = the "Near my street" picker. warn: true = red border (questions the kiosk refers on).
+  // street: true = the "Near my street" picker. warn: true = red border (questions the web app refers on).
   topics: [
     { id: "newest", label: "Newest results", sub: "Latest test for each place", questions: [
       "What are the latest test results?",
@@ -176,7 +176,7 @@ const DATA = {
       "What do the EGBE numbers mean?"] },
     { id: "street", label: "Near my street", sub: "Pick from a list", street: true, needsTracts: true },
     { id: "help", label: "Health, safety, or legal", sub: "Who to ask", warn: true,
-      intro: "This kiosk can't answer these questions. Tap one to see who can help.", questions: [
+      intro: "This web app can't answer these questions. Tap one to see who can help.", questions: [
       "Is my water safe to drink?",
       "Could the chemicals make me sick?",
       "Am I eligible for the settlement?",

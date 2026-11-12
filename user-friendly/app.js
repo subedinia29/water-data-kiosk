@@ -555,7 +555,7 @@ function drawAudit() {
 
 // ---------- One click handler for every button ----------
 document.addEventListener("click", e => {
-  const el = e.target.closest("[data-ask], [data-action], [data-topic], [data-size], [data-intro]");
+  const el = e.target.closest("[data-ask], [data-action], [data-topic], [data-size], [data-intro]:not(body)");  // body also carries data-intro (page look)
   if (!el) return;
   if (el.dataset.size) { view.size = el.dataset.size; applyView(); return; }
   if (el.dataset.topic) {

@@ -30,7 +30,7 @@ const Intro = {
 
   // Returns true when the intro handled the click.
   click(el) {
-    if (!el.dataset.intro) return false;
+    if (!el.dataset.intro || el.tagName === "BODY") return false;  // body's data-intro only sets the page look
     this.step = 1;
     return true;
   },

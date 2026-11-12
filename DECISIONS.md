@@ -179,3 +179,10 @@ This is a web application, so every screen and guide now says "web app" instead 
 - **Changed:** all wording people see (welcome page, answers, "We don't have data" messages, the staff page heading, now "Web app controls"), the README files, `data/README.md`, `features/FEATURES.md`, `PROJECT-HANDOFF.md`, code comments, and the AI helper's instructions.
 - **New one-file preview:** `preview/web-app-preview.html`, rebuilt from `user-friendly/` with the new wording. It replaces `preview/kiosk-real-data-preview.html`.
 - **Kept as they were:** internal code names such as `KIOSK_USE_SAMPLE` and `KIOSK_DATASETS`, and the browser's saved-settings name (renaming them changes nothing on screen and could break things or wipe saved settings); branch names and the repo name `water-data-kiosk`; past commits; the root prototype files; the submitted write-ups in `docs/` and the older previews they link to; and earlier entries in this file, which record what was true at the time.
+
+## 2026-11-12: Cleanup, only the app stays
+The repo now holds only what the web app needs.
+- **Removed:** the assignment write-ups and screenshots (`docs/`), the one-file previews (`preview/`), and the first prototype files in the main folder (`index.html`, `data.js`, `core.js`, `app.js`). They stay in git history if ever needed.
+- **Taken off GitHub but kept on the owner's Mac:** `PROJECT-HANDOFF.md`.
+- **Kept:** this file, the raw EPA spreadsheet in `user-friendly/data/raw/` (needed to refresh the data), and everything in `user-friendly/`.
+- **Saved versions:** `version 1.html` is a single-file snapshot of the app as of this date, kept on the owner's Mac (not uploaded) so later changes can be compared against it.

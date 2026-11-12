@@ -1,4 +1,4 @@
-// Screens for the user-friendly web app. Adapted from ../app.js.
+// Screens for the user-friendly web app. Adapted from the first prototype (removed; see git history).
 // Prototype state lives in this browser's localStorage; the real app would use local SQLite.
 // Uses its own storage key, so it does not mix with the root prototype.
 const KEY = "ehl-kiosk-friendly-state";

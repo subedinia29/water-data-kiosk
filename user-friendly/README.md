@@ -1,6 +1,6 @@
 # Water & Soil Test Results web app: easy-to-use version
 
-This folder is the version of the web app meant for patrons: older residents, people with low vision, and anyone who doesn't want to type. It does the same job as the prototype in the main folder. It is easier to read and use.
+This folder is the version of the web app meant for patrons: older residents, people with low vision, and anyone who doesn't want to type. It is the app itself; the first prototype was removed on 2026-11-12.
 
 **Data:** it now uses **real U.S. EPA water lab results** (through September 30, 2025). Other sources (village tap water, county private wells, soil, Ohio EPA) are placeholders that say "not added yet". Fact cards and contact numbers are still placeholders, so do not use it with the public until the expert panel approves them. See `data/README.md`.
 
@@ -89,5 +89,5 @@ All test results are in the `data/` folder, one file per source. `data/README.md
 
 See `../DECISIONS.md` for why things work the way they do.
 
-## One-file preview
-`preview/web-app-preview.html` (in the main folder) is the whole web app in a single file, for quick viewing: download it and double-click. It is a copy, so it does **not** update by itself. After changing anything in `user-friendly/`, ask the project team to rebuild it, or delete it.
+## Saved versions to compare
+Single-file snapshots such as `version 1.html` sit in the main folder on the owner's Mac (not uploaded to GitHub). Double-click one to open it. They are copies, so they do **not** update by themselves.

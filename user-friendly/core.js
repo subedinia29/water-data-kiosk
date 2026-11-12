@@ -1,5 +1,5 @@
 // Core logic: pure functions, no screen code. Runs in the browser and in Node (for tests).
-// Adapted from ../core.js. Main changes are marked "NEW" below.
+// Adapted from the first prototype (removed; see git history). Main changes are marked "NEW" below.
 (function (root) {
   const D = (typeof DATA !== "undefined") ? DATA : require("./data.js").DATA;
 
@@ -7,7 +7,7 @@
 
   // ---------- FR-5 / FR-8: deterministic Tier-3 gate (runs before anything else) ----------
   // Order matters: earlier categories win. Over-refusal is preferred to under-refusal.
-  // Same rules as ../core.js, plus a few extra phrasings (marked NEW) that the original missed.
+  // Same rules as the first prototype, plus a few extra phrasings (marked NEW) that the original missed.
   const TIER3 = [
     ["misuse",    /ignore (all|any|previous|prior|the|your)|system prompt|pretend|role ?play|you are now|jailbreak|developer mode|\bact as\b|forget (your|the) rules/],
     ["legal",     /settlement|lawsuit|\bsue\b|\bsuing\b|lawyer|attorney|\blegal(?! (limit|level))|compensation|payout|\bclaims?\b|eligib|deadline|\bliab/],

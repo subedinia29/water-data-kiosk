@@ -121,11 +121,10 @@ function renderWelcome() {
     <p class="intro-credit">Water &amp; Soil Test Results<br>East Palestine Memorial Public Library</p>
     <h1 id="welcome-h" class="big-result">This web app shows official water and soil test results for the East Palestine area.</h1>
     <div class="card"><h2>It can show you</h2>
-      <ul><li>What was tested</li><li>Where and when it was tested</li><li>Which agency did the test</li><li>The result, and the federal limit</li><li>Where to read the full report</li></ul></div>
+      <ul><li>What was tested</li><li>Where and when</li><li>The result and the federal limit</li></ul></div>
     <div class="card stop"><h2>It cannot tell you</h2>
-      <ul><li>If something is safe</li><li>Anything about your health</li><li>Legal or money advice</li><li>Why something happened</li></ul>
+      <ul><li>If it's safe</li><li>Health, legal or money advice</li><li>Why it happened</li></ul>
       <p>For those questions, it will tell you who can help.</p></div>
-    <p>Is the text too small? Tap <strong>A+</strong> or <strong>A++</strong> at the top of the screen.</p>
     <div class="intro-actions"><button type="button" class="btn primary" data-action="start">I understand. Start.</button></div>
     </section>${footer()}`;
 }

@@ -69,7 +69,7 @@ strong { font-weight: 700; }
 /* ---------- Top bar (version 2): no colored bar, just round buttons at the top right ---------- */
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .topbar { background: transparent; color: var(--fg); }
-.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px 0; display: flex; justify-content: flex-end; }
+.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px 0; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .display { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
 .display-label { font-size: 0.8rem; color: var(--muted); margin-right: 2px; }
 .display button {
@@ -80,6 +80,16 @@ strong { font-weight: 700; }
   border: 2px solid var(--line); cursor: pointer;
 }
 .display .contrast-btn { font-size: 1.4rem; }
+/* Read aloud: round speaker button at the top left of every screen. */
+.speak-btn {
+  flex: none; width: max(52px, 2.7rem); height: max(52px, 2.7rem); padding: 0; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg); color: var(--primary); border: 2px solid var(--line); cursor: pointer;
+}
+.speak-btn svg { width: 55%; height: 55%; }
+.speak-btn[aria-pressed="true"] { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+:root[data-contrast="high"] .speak-btn { background: #000; color: #ffff00; border-color: #ffff00; }
+:root[data-contrast="high"] .speak-btn[aria-pressed="true"] { background: #ffff00; color: #000; }
 .display button[aria-pressed="true"] { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
 
 main { max-width: 1200px; margin: 0 auto; padding: 8px 16px 24px; }
@@ -242,3 +252,5 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
 :root[data-contrast="high"] .display button { background: #000; color: #ffff00; border-color: #ffff00; }
 :root[data-contrast="high"] .display button[aria-pressed="true"] { background: #ffff00; color: #000; }
 .summary th[scope=row] { font-weight: 700; }
+/* Phones: hide the "Text size" word so all buttons fit on one row (screen readers still hear it). */
+@media (max-width: 420px) { .display-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }

@@ -32,9 +32,8 @@ body[data-intro] { background: var(--intro-light); }
 .intro-welcome h1.big-result { font-size: 1.1em; line-height: 1.4; font-weight: 700; margin-top: 1em; }
 .intro-welcome .card { width: 100%; text-align: left; margin: 0; }
 .intro-welcome .card h2 { font-size: 1.1em; }
-/* Page 2 keeps only Read aloud from the bottom buttons. */
-body[data-intro="welcome"] .help-bar > :not([data-action="speak"]) { display: none; }
-body[data-intro="welcome"] .help-bar { grid-template-columns: 1fr; }
+/* Page 2 has no bottom buttons (Read aloud is at the top left). */
+body[data-intro="welcome"] .help-bar { display: none; }
 
 /* Page 3 (questions): same cream look and 18px text. Typing box comes first. */
 .v2-main { font-size: 1.125rem; }

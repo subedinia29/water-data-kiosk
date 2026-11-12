@@ -47,7 +47,6 @@ function footer() {
   return `<footer class="site-footer">
     <div class="help-bar no-print">
       <button type="button" class="btn primary print-cta" data-action="print">Print this and talk to a librarian</button>
-      <button type="button" class="btn" data-action="speak">${speaking ? "Stop reading" : "Read aloud"}</button>
       <button type="button" class="btn" data-action="report">Report a problem</button>
       <button type="button" class="btn" data-action="limits">Known limitations</button>
     </div>
@@ -394,7 +393,9 @@ function speak() {
   speaking = true; updateSpeakButtons();
 }
 function stopSpeaking() { if ("speechSynthesis" in window) speechSynthesis.cancel(); speaking = false; updateSpeakButtons(); }
-function updateSpeakButtons() { $$('[data-action="speak"]').forEach(b => { b.textContent = speaking ? "Stop reading" : "Read aloud"; }); }
+function updateSpeakButtons() {  // the round speaker button at the top left
+  $$('[data-action="speak"]').forEach(b => { const l = speaking ? "Stop reading" : "Read aloud"; b.setAttribute("aria-pressed", String(speaking)); b.setAttribute("aria-label", l); b.title = l; });
+}
 
 // ---------- Print ----------
 function printPage() {

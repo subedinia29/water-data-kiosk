@@ -155,7 +155,7 @@ function renderMain() {
       <h1 id="ask-h">What would you like to know?</h1>
       <div class="panel-box type-first">
         <form id="type-form">
-          <label for="q">Type your question</label>
+          <label for="q" class="visually-hidden">Type your question</label>
           <textarea id="q" rows="2" placeholder="Example: What is vinyl chloride?"></textarea>
           <div class="row"><button type="submit" class="btn primary wide">Ask</button></div>
         </form>

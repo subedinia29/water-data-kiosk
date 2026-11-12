@@ -38,6 +38,7 @@ const Intro = {
         </div>
         ${note}
         <div class="intro-peek">${mascotArt("mascot intro-fade")}</div>
+        <p class="intro-credit">Water &amp; Soil Test Results<br>East Palestine Memorial Public Library</p>
       </section>`;
     } else {
       app.innerHTML = `<section class="intro intro-name" aria-labelledby="intro-h">

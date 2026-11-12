@@ -25,6 +25,8 @@ body[data-intro] { background: var(--intro-light); }
 .intro-peek { margin: 8px auto 0; width: min(85vw, 360px); }
 .intro-note { font-size: 0.9rem; color: var(--muted); margin-top: 1em; }
 
+.intro-credit { font-size: 0.9rem; color: var(--muted); margin: 16px 0 0; }
+
 /* 2. Name */
 .intro-bubble-wrap { display: flex; align-items: center; gap: 12px; text-align: left; margin: 8px 0 16px; }
 .intro .mascot-small, .intro img.mascot-small { flex: 0 0 auto; width: 140px; }

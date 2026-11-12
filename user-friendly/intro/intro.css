@@ -66,3 +66,6 @@ body[data-intro="0"] .intro-title { margin-top: 1em; font-family: ui-rounded, "S
 body[data-intro="0"] .intro-lead { font-size: 0.9em; max-width: 26ch; text-wrap: balance; }
 body[data-intro="0"] .intro-peek { width: min(55vw, 220px); max-height: 24vh; margin-top: 0.5em; }
 body[data-intro="0"] .intro .mascot svg, body[data-intro="0"] .intro img.mascot { max-height: 24vh; }
+/* Center the whole block (title to note) up and down in the space under the top buttons. */
+body[data-intro="0"] .intro { min-height: calc(100vh - 110px); min-height: calc(100svh - 110px); justify-content: center; }
+body[data-intro="0"] .intro-title { margin-top: 0; }

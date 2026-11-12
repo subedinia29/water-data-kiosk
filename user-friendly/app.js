@@ -61,7 +61,7 @@ function startSession() {
 }
 function endSession() {
   last = null; sessionId = null; openTopic = null;
-  if (typeof Intro !== "undefined") Intro.reset();  // forget the typed name
+  if (typeof Intro !== "undefined") Intro.reset();  // next person sees the opening page
   view.size = "1"; view.contrast = false; applyView();
   stopSpeaking();
   if (location.hash && location.hash !== "#/") go("#/"); else render();
@@ -101,8 +101,7 @@ function renderPatron() {
 }
 
 function renderWelcome() {
-  const hello = typeof Intro !== "undefined" && Intro.enabled() ? Intro.greeting() : "";
-  app.innerHTML = `${hello ? `<p class="intro-greeting">${esc(hello)}</p>` : ""}<h1>Welcome</h1>
+  app.innerHTML = `<h1>Welcome</h1>
     <p class="big-result">This web app shows official water and soil test results for the East Palestine area.</p>
     <div class="card"><h2>It can show you</h2>
       <ul><li>What was tested</li><li>Where and when it was tested</li><li>Which agency did the test</li><li>The result, and the federal limit</li><li>Where to read the full report</li></ul></div>
@@ -587,9 +586,6 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("submit", e => {
-  if (e.target.id === "intro-form" && typeof Intro !== "undefined") {
-    e.preventDefault(); Intro.submit(e.target); render(); window.scrollTo(0, 0); return;
-  }
   if (e.target.id !== "type-form") return;
   e.preventDefault();
   const box = $("#q"); const q = box.value; box.value = "";
@@ -600,7 +596,7 @@ document.addEventListener("submit", e => {
 let lastActivity = Date.now();
 ["pointerdown", "keydown", "scroll", "touchstart"].forEach(ev => window.addEventListener(ev, () => { lastActivity = Date.now(); }, { passive: true }));
 setInterval(() => {
-  const introStarted = typeof Intro !== "undefined" && (Intro.step > 0 || Intro.name);
+  const introStarted = typeof Intro !== "undefined" && Intro.step > 0;
   if ((sessionId || introStarted) && Date.now() - lastActivity > 10 * 60 * 1000 && location.hash !== "#/staff") endSession();
 }, 30000);
 

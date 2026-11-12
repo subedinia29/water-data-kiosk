@@ -23,7 +23,6 @@ const Intro = {
       <div class="intro-peek">${mascotArt("mascot intro-fade")}</div>
       <div class="intro-actions">
         <button type="button" class="btn primary" data-intro="next">Let's go</button>
-        <button type="button" class="btn" data-action="speak">Read aloud</button>
       </div>
       <p class="intro-note">This app shows test results only. It is not medical or safety advice.</p>
     </section>`;

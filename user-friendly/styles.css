@@ -5,25 +5,26 @@
   --fg: #111111;
   --muted: #333333;
   --line: #4a4a4a;
-  --soft: #f2f4f7;
-  --primary: #0a3a85;     /* white text on this: about 11:1 */
+  --soft: #f7f0ee;
+  --primary: #a8102a;     /* cardinal red. White text on this: about 7.6:1 */
   --primary-fg: #ffffff;
-  --primary-hover: #072a61;
+  --primary-hover: #7d0a1e;
   --focus: #ffbf00;
   --note-bg: #fff4cc;     /* notes, dates, "data is old" */
   --note-line: #8a6d00;
   --stop-bg: #fde7e7;     /* "a person can help" referral cards */
   --stop-line: #a30000;
-  --info-bg: #e6eefc;
-  --info-line: #0a3a85;
+  --info-bg: #fbf1e3;
+  --info-line: #7d0a1e;
   --flag-bg: #ffe2c2;     /* agencies disagree */
   --flag-line: #9a4a00;
-  --link: #0a3a85;
+  --link: #a8102a;
   --radius: 12px;
-  font-size: 125%;        /* 20px base. Text-size buttons raise this. */
+  --btn-radius: 999px;   /* buttons and topic tiles: 999px = pill shape */
+  font-size: 100%;        /* 16px base. Text-size buttons raise this. */
 }
-:root[data-size="2"] { font-size: 150%; }
-:root[data-size="3"] { font-size: 175%; }
+:root[data-size="2"] { font-size: 125%; }
+:root[data-size="3"] { font-size: 150%; }
 
 /* High contrast: white and yellow on black. */
 :root[data-contrast="high"] {
@@ -35,10 +36,10 @@
   --primary: #ffff00;
   --primary-fg: #000000;
   --primary-hover: #ffffff;
-  --focus: #00ffff;
+  --focus: #ff66ff;
   --note-bg: #000000; --note-line: #ffff00;
   --stop-bg: #000000; --stop-line: #ff8080;
-  --info-bg: #000000; --info-line: #80b3ff;
+  --info-bg: #000000; --info-line: #ffffff;
   --flag-bg: #000000; --flag-line: #ffb366;
   --link: #ffff00;
 }
@@ -65,21 +66,31 @@ strong { font-weight: 700; }
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 16px; top: 8px; background: var(--bg); color: var(--fg); padding: 12px; z-index: 10; }
 
-/* ---------- Top bar ---------- */
-.topbar { background: var(--primary); color: var(--primary-fg); border-bottom: 3px solid var(--line); }
-.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-.brand { display: flex; flex-direction: column; }
-.brand-title { font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
-.brand-sub { font-size: 0.85rem; }
-.display { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.display-label { font-size: 0.85rem; margin-right: 2px; }
+/* ---------- Top bar (version 2): no colored bar, just round buttons at the top right ---------- */
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.topbar { background: transparent; color: var(--fg); }
+.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px 0; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.display { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+.display-label { font-size: 0.8rem; color: var(--muted); margin-right: 2px; }
 .display button {
-  min-height: 48px; min-width: 48px; padding: 4px 10px;
-  font: inherit; font-size: 0.9rem; font-weight: 700;
-  background: var(--primary-fg); color: var(--primary);
-  border: 2px solid var(--primary-fg); border-radius: 8px; cursor: pointer;
+  width: max(52px, 2.7rem); height: max(52px, 2.7rem); padding: 0; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font: inherit; font-size: 0.8rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+  background: var(--bg); color: var(--primary);
+  border: 2px solid var(--line); cursor: pointer;
 }
-.display button[aria-pressed="true"] { outline: 3px solid var(--focus); outline-offset: 1px; }
+.display .contrast-btn { font-size: 1.4rem; }
+/* Read aloud: round speaker button at the top left of every screen. */
+.speak-btn {
+  flex: none; width: max(52px, 2.7rem); height: max(52px, 2.7rem); padding: 0; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg); color: var(--primary); border: 2px solid var(--line); cursor: pointer;
+}
+.speak-btn svg { width: 55%; height: 55%; }
+.speak-btn[aria-pressed="true"] { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+:root[data-contrast="high"] .speak-btn { background: #000; color: #ffff00; border-color: #ffff00; }
+:root[data-contrast="high"] .speak-btn[aria-pressed="true"] { background: #ffff00; color: #000; }
+.display button[aria-pressed="true"] { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
 
 main { max-width: 1200px; margin: 0 auto; padding: 8px 16px 24px; }
 main:focus { outline: none; }
@@ -90,7 +101,7 @@ main:focus { outline: none; }
   min-height: 56px; padding: 10px 18px;
   font: inherit; font-weight: 700; line-height: 1.25; text-align: center;
   color: var(--primary); background: var(--bg);
-  border: 3px solid var(--primary); border-radius: var(--radius);
+  border: 3px solid var(--primary); border-radius: var(--btn-radius);
   cursor: pointer;
 }
 .btn:hover { background: var(--soft); }
@@ -106,7 +117,7 @@ main:focus { outline: none; }
   min-height: 72px; padding: 10px 12px;
   font: inherit; font-weight: 700; line-height: 1.25; text-align: left;
   color: var(--fg); background: var(--soft);
-  border: 3px solid var(--line); border-radius: var(--radius); cursor: pointer;
+  border: 3px solid var(--line); border-radius: min(var(--btn-radius), 24px); cursor: pointer;
   display: flex; flex-direction: column; justify-content: center;
 }
 .topic small { font-weight: 400; font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
@@ -121,7 +132,7 @@ main:focus { outline: none; }
   width: 100%; min-height: 60px; padding: 10px 14px;
   font: inherit; text-align: left; line-height: 1.35;
   color: var(--fg); background: var(--bg);
-  border: 2px solid var(--line); border-radius: var(--radius); cursor: pointer;
+  border: 2px solid var(--line); border-radius: var(--btn-radius); cursor: pointer;
   display: flex; gap: 10px; align-items: center;
 }
 .q-btn::before { content: "›"; font-size: 1.6rem; line-height: 1; color: var(--primary); font-weight: 700; }
@@ -141,7 +152,6 @@ textarea, input[type=text], select {
 @media (min-width: 960px) {
   .layout { display: grid; grid-template-columns: minmax(360px, 440px) 1fr; gap: 32px; align-items: start; }
   .ask-panel { position: sticky; top: 8px; max-height: calc(100vh - 16px); overflow-y: auto; padding-right: 8px; }
-  .back-to-topics { display: none !important; }
 }
 
 /* ---------- Results ---------- */
@@ -239,6 +249,25 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
 }
 
 /* High contrast top bar: black, with yellow buttons. */
-:root[data-contrast="high"] .topbar { background: #000; color: #fff; border-bottom-color: #ffff00; }
-:root[data-contrast="high"] .display button { background: #ffff00; color: #000; border-color: #ffff00; }
+:root[data-contrast="high"] .display button { background: #000; color: #ffff00; border-color: #ffff00; }
+:root[data-contrast="high"] .display button[aria-pressed="true"] { background: #ffff00; color: #000; }
 .summary th[scope=row] { font-weight: 700; }
+/* Phones: hide the "Text size" word so all buttons fit on one row (screen readers still hear it). */
+@media (max-width: 420px) { .display-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+
+/* Tap-to-open details (sources, date note, word meanings). Closed by default; printing opens them. */
+details.tap > summary { list-style: none; cursor: pointer; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+details.tap > summary::-webkit-details-marker { display: none; }
+details.tap > summary::after { content: "›"; font-size: 1.6rem; line-height: 1; font-weight: 700; color: var(--primary); transition: transform 0.15s; }
+details.tap[open] > summary::after { transform: rotate(90deg); }
+.cite details.tap > summary { min-height: 44px; }
+.banner.date details.tap p { margin-top: 0.4em; }
+details.tap.words > summary { font-weight: 700; }
+@media print { details.tap > summary::after { content: ""; } }
+
+/* Results summary: one plain line per chemical. Limits: one line each. */
+.chem-summary { padding-left: 1.2em; margin: 8px 0 12px; }
+.chem-summary li { margin: 4px 0; }
+.limit-line { border-bottom: 2px solid var(--line); padding: 4px 0; }
+.limit-line p { margin: 0.2em 0; }
+.limit-line .cite { border-top: 0; margin-top: 0; padding-top: 0; }

@@ -1,0 +1,71 @@
+/* VERSION 2 OPENING PAGE. Cardinal red on cream. White on --cardinal is about 7.6:1 (AAA). */
+:root {
+  --cardinal: #a8102a;
+  --cardinal-dark: #7d0a1e;
+  --cardinal-ink: #7d0a1e;   /* red text on cream: about 10:1 */
+  --intro-light: #fbf1e3;    /* cream */
+}
+:root[data-contrast="high"] {
+  --cardinal: #000000; --cardinal-dark: #000000; --cardinal-ink: #ffff00; --intro-light: #000000;
+}
+
+body[data-intro] { background: var(--intro-light); }
+/* Fits one phone screen: everything sized so nothing needs scrolling. */
+.intro { font-size: 1.125rem;   /* 18px on this page only (16px elsewhere) */
+  text-align: center; max-width: 520px; margin: 0 auto; padding: 0 0 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5em; }
+.intro p, .intro h1 { margin: 0; }
+.intro-credit { font-size: 0.8em; color: var(--muted); line-height: 1.4; }
+.intro-title { font-size: 2em; line-height: 1.15; color: var(--cardinal-ink); }
+.intro-lead { font-size: 1.05em; }
+.intro-peek { width: min(70vw, 300px); max-height: 34vh; display: flex; justify-content: center; }
+.intro .mascot svg, .intro img.mascot { display: block; max-width: 100%; max-height: 34vh; width: auto; height: auto; }
+/* Pill buttons as wide as the longest label, both the same width. */
+.intro-actions { display: inline-grid; grid-auto-rows: auto; gap: 0.5em; margin-top: 1.25em; }
+.intro-actions .btn { width: 100%; min-height: 48px; padding: 6px 1.6em; font-size: 0.9em; }
+.intro .btn.primary { background: var(--cardinal); border-color: var(--cardinal); color: #fff; }
+.intro .btn.primary:hover { background: var(--cardinal-dark); }
+:root[data-contrast="high"] .intro .btn.primary { background: #ffff00; color: #000; border-color: #ffff00; }
+.intro-note { font-size: 0.8em; color: var(--muted); max-width: 32ch; }
+
+/* Page 2 (Welcome): same look, no picture, black title, cards keep left-aligned lists. */
+.intro-welcome h1.big-result { font-size: 1.1em; line-height: 1.4; font-weight: 700; margin-top: 1em; }
+.intro-welcome .card { width: 100%; text-align: left; margin: 0; }
+.intro-welcome .card h2 { font-size: 1.1em; }
+/* Page 2 has no bottom buttons (Read aloud is at the top left). */
+body[data-intro="welcome"] .help-bar { display: none; }
+
+/* Page 3 (questions): same cream look and 18px text. Typing box comes first. */
+.v2-main { font-size: 1.125rem; }
+.v2-main .panel-box.type-first { border-top: 0; margin-top: 0; padding-top: 0; padding-bottom: 12px; border-bottom: 3px solid var(--line); }
+.v2-main .or-topics { font-weight: 700; margin-top: 14px; }
+/* Topics: one column of full-width pills. */
+.v2-main .topics { grid-template-columns: 1fr; }
+.v2-main .topic { border-radius: var(--btn-radius); padding: 10px 24px; min-height: 64px; }
+
+/* Gentle fade-in of the cardinals. Off for people who ask their device for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .intro-fade { animation: intro-fade 1.2s ease-out both; }
+  @keyframes intro-fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+}
+
+/* Opening page (step 0): deep red page with cream text and buttons. High contrast keeps black and yellow. */
+:root:not([data-contrast="high"]) body[data-intro="0"] { --open-red: #8c0d22; --open-cream: #fbf1e3; background: var(--open-red); color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro-title,
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro-note,
+:root:not([data-contrast="high"]) body[data-intro="0"] .display-label { color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro .btn.primary { background: var(--open-cream); color: var(--open-red); border-color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .intro .btn:not(.primary) { background: transparent; color: var(--open-cream); border-color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .display button,
+:root:not([data-contrast="high"]) body[data-intro="0"] .speak-btn { background: var(--open-cream); color: var(--open-red); border-color: var(--open-cream); }
+:root:not([data-contrast="high"]) body[data-intro="0"] .display button[aria-pressed="true"],
+:root:not([data-contrast="high"]) body[data-intro="0"] .speak-btn[aria-pressed="true"] { background: var(--open-red); color: var(--open-cream); border-color: var(--open-cream); }
+/* Opening page layout: room under the top buttons, smaller picture and tagline, friendly rounded title.
+   Fonts are the device's own (no downloads): rounded where the device has one, else Trebuchet or Verdana. */
+body[data-intro="0"] .intro-title { margin-top: 1em; font-family: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "Nunito", "Trebuchet MS", Verdana, sans-serif; font-weight: 700; letter-spacing: 0.01em; }
+body[data-intro="0"] .intro-lead { font-size: 0.9em; max-width: 26ch; text-wrap: balance; }
+body[data-intro="0"] .intro-peek { width: min(55vw, 220px); max-height: 24vh; margin-top: 0.5em; }
+body[data-intro="0"] .intro .mascot svg, body[data-intro="0"] .intro img.mascot { max-height: 24vh; }
+/* Center the whole block (title to note) up and down in the space under the top buttons. */
+body[data-intro="0"] .intro { min-height: calc(100vh - 110px); min-height: calc(100svh - 110px); justify-content: center; }
+body[data-intro="0"] .intro-title { margin-top: 0; }

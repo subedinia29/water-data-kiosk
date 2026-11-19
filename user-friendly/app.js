@@ -16,6 +16,10 @@ const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch
 let sessionId = null;  // random, not tied to any person (FR-21)
 let last = null;       // last result, for printing / reporting
 let openTopic = null;  // which topic's questions are showing
+let answerHTML = "";   // what the answer page (#/answer) shows
+let onAnswer = false;  // the answer page is showing (works even where the address bar can't change)
+let fromMain = false;  // answer page was opened from the question page, so Back can use the browser history
+let shownHash = null;  // hash of the screen on show, so a hashchange we caused does not redraw it
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -43,7 +47,6 @@ function footer() {
   return `<footer class="site-footer">
     <div class="help-bar no-print">
       <button type="button" class="btn primary print-cta" data-action="print">Print this and talk to a librarian</button>
-      <button type="button" class="btn" data-action="speak">${speaking ? "Stop reading" : "Read aloud"}</button>
       <button type="button" class="btn" data-action="report">Report a problem</button>
       <button type="button" class="btn" data-action="limits">Known limitations</button>
     </div>
@@ -60,7 +63,8 @@ function startSession() {
   S.sessionCount++; save();
 }
 function endSession() {
-  last = null; sessionId = null; openTopic = null;
+  last = null; sessionId = null; openTopic = null; answerHTML = ""; fromMain = false; onAnswer = false;
+  if (typeof Intro !== "undefined") Intro.reset();  // next person sees the opening page
   view.size = "1"; view.contrast = false; applyView();
   stopSpeaking();
   if (location.hash && location.hash !== "#/") go("#/"); else render();
@@ -77,6 +81,10 @@ function renderPatron() {
       <p>Questions are turned off right now. Please ask a librarian.</p>${footer()}`;
     return;
   }
+  // Version 2 opening screens (intro/), shown before the first-use screen. They never skip it.
+  const hasIntro = typeof Intro !== "undefined" && Intro.enabled();
+  if (!sessionId && hasIntro && Intro.pending()) { Intro.render(app, esc); return; }
+  if (hasIntro) Intro.finish();
   // FR-14 first-use screen.
   if (!S.ack || !sessionId) { renderWelcome(); return; }
 
@@ -92,20 +100,33 @@ function renderPatron() {
       <h2>Reports you can read</h2>${docBrowser()}${footer()}`;
     return;
   }
+  // Answers have their own page (#/answer), so the phone's back gesture returns to the questions.
+  if (onAnswer && answerHTML) { renderAnswer(); return; }
   renderMain();
 }
 
+function renderAnswer() {
+  document.body.dataset.intro = "main";
+  app.innerHTML = `<div class="v2-main answer-page">
+    <div class="row no-print back-row"><button type="button" class="btn primary" data-action="back">‹ Back to questions</button></div>
+    <section id="result" aria-live="polite" tabindex="-1">${answerHTML}</section>
+  </div>${footer()}`;
+  $("#result").focus({ preventScroll: true });
+}
+
 function renderWelcome() {
-  app.innerHTML = `<h1>Welcome</h1>
-    <p class="big-result">This web app shows official water and soil test results for the East Palestine area.</p>
+  // Same look as the opening page (intro/intro.css), without the picture or red title.
+  document.body.dataset.intro = "welcome";
+  app.innerHTML = `<section class="intro intro-welcome" aria-labelledby="welcome-h">
+    <p class="intro-credit">Water &amp; Soil Test Results<br>East Palestine Memorial Public Library</p>
+    <h1 id="welcome-h" class="big-result">This web app shows official water and soil test results for the East Palestine area.</h1>
     <div class="card"><h2>It can show you</h2>
-      <ul><li>What was tested</li><li>Where and when it was tested</li><li>Which agency did the test</li><li>The result, and the federal limit</li><li>Where to read the full report</li></ul></div>
+      <ul><li>What was tested</li><li>Where and when</li><li>The result and the federal limit</li></ul></div>
     <div class="card stop"><h2>It cannot tell you</h2>
-      <ul><li>If something is safe</li><li>Anything about your health</li><li>Legal or money advice</li><li>Why something happened</li></ul>
+      <ul><li>If it's safe</li><li>Health, legal or money advice</li><li>Why it happened</li></ul>
       <p>For those questions, it will tell you who can help.</p></div>
-    <p>Is the text too small? Tap <strong>A+</strong> or <strong>A++</strong> at the top of the screen.</p>
-    <button type="button" class="btn primary wide" data-action="start">I understand. Start.</button>
-    ${footer()}`;
+    <div class="intro-actions"><button type="button" class="btn primary" data-action="start">I understand. Start.</button></div>
+    </section>${footer()}`;
 }
 
 function topicButton(t) {
@@ -126,33 +147,28 @@ function questionsHTML(id) {
 }
 
 function renderMain() {
-  app.innerHTML = `<div class="layout">
+  // Version 2 look (intro/intro.css): cream page, 18px text, typing box first.
+  document.body.dataset.intro = "main";
+  app.innerHTML = `<div class="v2-main">
     <section class="ask-panel no-print" aria-labelledby="ask-h">
       <h1 id="ask-h">What would you like to know?</h1>
-      <p>Tap a topic. Then tap a question. You don't need to type.</p>
-      <div class="topics">${TOPICS.map(topicButton).join("")}</div>
-      <div id="questions">${openTopic ? questionsHTML(openTopic) : ""}</div>
-      <div class="panel-box">
+      <div class="panel-box type-first">
         <form id="type-form">
-          <label for="q">Or type your own question</label>
+          <label for="q" class="visually-hidden">Type your question</label>
           <textarea id="q" rows="2" placeholder="Example: What is vinyl chloride?"></textarea>
-          <div class="row"><button type="submit" class="btn primary wide">Ask</button></div>
+          <div class="row"><button type="button" class="btn primary wide" data-action="ask-typed">Ask</button></div>
         </form>
       </div>
-      <div class="panel-box"><button type="button" class="btn wide" data-action="done">Done. Clear the screen for the next person.</button></div>
+      <p class="or-topics">Or tap a topic. Then tap a question.</p>
+      <div class="topics">${TOPICS.map(topicButton).join("")}</div>
+      <div id="questions">${openTopic ? questionsHTML(openTopic) : ""}</div>
     </section>
-    <section id="result" aria-live="polite" tabindex="-1">${last ? resultHTML(last) : placeholderHTML()}</section>
   </div>${footer()}`;
-}
-
-function placeholderHTML() {
-  return `<div class="banner info no-print"><p><strong>Your answer will show here.</strong></p>
-    <p>Not sure where to start? Tap <strong>Newest results</strong>.</p></div>`;
 }
 
 function askQuestion(q, opts = {}) {
   q = (q || "").trim();
-  if (!q) { showResult(`<div class="banner date"><p>Please type a question first, or tap a topic.</p></div>`); return; }
+  if (!q) { toast("Please type a question first, or tap a topic."); return; }
   const tract = opts.tract || null;
   if (tract) S.tractCounts[tract] = (S.tractCounts[tract] || 0) + 1;
   last = Core.answer(q, { tract, suspended: S.suspended });
@@ -165,32 +181,35 @@ function askQuestion(q, opts = {}) {
   showResult(resultHTML(last));
 }
 
+// Opens the answer page. It draws at once, so callers can add to #result right after.
 function showResult(html) {
-  const el = $("#result");
-  if (!el) return;
-  stopSpeaking();
-  el.innerHTML = html;
-  // On a phone the answer is below the topics, so move there.
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
-  el.focus({ preventScroll: true });
+  answerHTML = html;
+  openTopic = null;  // going back shows a fresh question page
+  if (!onAnswer) {
+    onAnswer = true; fromMain = true;
+    try { history.pushState({ answer: true }, "", "#/answer"); } catch {}  // lets the phone's back gesture work; some previews block it
+  }
+  render();
+  window.scrollTo(0, 0);
 }
 
 // ---------- Result rendering (FR-3, FR-4, FR-6..FR-12) ----------
 function dateBannerHTML(d) {
   d = d || {};
-  return `<div class="banner date" role="note">
-    <p><strong>Data last updated:</strong> ${fmt(d.corpusUpdated || DATA.corpusUpdated)}</p>
-    ${d.newestSample ? `<p><strong>Newest test on this page:</strong> ${fmt(d.newestSample)}</p>` : ""}
-    <p>This web app does not have live readings. It only shows results that agencies have already published.</p></div>`;
+  // One short line; tap for the note about live readings. Printing opens it.
+  return `<div class="banner date" role="note"><details class="tap"><summary><span><strong>Updated</strong> ${fmt(d.corpusUpdated || DATA.corpusUpdated)}${d.newestSample ? ` · <strong>Newest test</strong> ${fmt(d.newestSample)}` : ""}</span></summary>
+    <p>This web app does not have live readings. It only shows results that agencies have already published.</p></details></div>`;
 }
 
 function citeHTML(c) {
   if (!c) return "";
+  // Agency and date always show; tap for the full title and where to read it. Printing opens it.
   return `<div class="cite">
     ${c.stale ? `<p class="stale">This report may be out of date. A newer one was expected by now.</p>` : ""}
-    <p><strong>Source:</strong> ${esc(c.title)} (${esc(c.agency)})</p>
+    <details class="tap"><summary><span><strong>Source:</strong> ${esc(c.agency)}, ${fmt(c.published)}</span></summary>
+    <p>${esc(c.title)}</p>
     <p>Published ${fmt(c.published)}.${c.sampleDate ? ` Sample taken ${fmt(c.sampleDate)}.` : ""}</p>
-    <p><strong>Read it:</strong> Library binder: ${esc(c.shelf)}${c.link ? ` · <a href="${esc(c.link)}" target="_blank" rel="noopener">Online copy</a>` : ""}</p>
+    <p><strong>Read it:</strong> Library binder: ${esc(c.shelf)}${c.link ? ` · <a href="${esc(c.link)}" target="_blank" rel="noopener">Online copy</a>` : ""}</p></details>
   </div>`;
 }
 
@@ -217,14 +236,13 @@ function summaryBlock(items) {
   const chems = [...new Set(items.map(i => i.analyteName))];
   const rows = chems.map(c => {
     const its = items.filter(i => i.analyteName === c), found = its.filter(i => i.detected);
-    const dates = its.map(i => i.date).sort();
-    return `<tr><th scope="row">${esc(c)}</th><td>${new Set(its.map(i => i.place)).size}</td><td>${found.length}</td><td>${dates[0] === dates[dates.length - 1] ? fmt(dates[0]) : `${fmt(dates[0])} to ${fmt(dates[dates.length - 1])}`}</td></tr>`;
+    const places = new Set(its.map(i => i.place)).size, foundAt = new Set(found.map(i => i.place)).size, pl = places === 1 ? "place" : "places";
+    return `<li><strong>${esc(c)}:</strong> ${foundAt ? `found at ${foundAt} of ${places} ${pl}` : (places === 1 ? "not found at the 1 place tested" : `not found at any of ${places} places`)}.</li>`;
   }).join("");
   const found = items.filter(i => i.detected);
-  return `<p>Newest test at each place, in short:</p>
-    <div class="table-wrap"><table class="summary"><tr><th>Chemical</th><th>Places tested</th><th>Places where it was found</th><th>Dates of these tests</th></tr>${rows}</table></div>
+  return `<ul class="chem-summary">${rows}</ul>
     ${found.length ? `<h3>Where it was found (newest test)</h3>${byPlace(found)}` : `<p class="big-result">It was not found in the newest test at any of these places.</p>`}
-    <details class="history"><summary><span class="when-closed">Show every place</span><span class="when-open">Hide every place</span>&nbsp;(${items.length} results)</summary>${byPlace(items)}</details>`;
+    <details class="history"><summary><span><span class="when-closed">Show every place</span><span class="when-open">Hide every place</span> (${items.length} results)</span></summary>${byPlace(items)}</details>`;
 }
 
 // Group result cards under a heading for each place.
@@ -248,24 +266,24 @@ function recordsBlock(r) {
   if (oldConf.length) h += `<div class="banner stop" role="note"><p><strong>Note:</strong> In the older results, agencies reported different results for the same test. Tap <strong>Show history</strong> to see both.</p></div>`;
 
   if (r.waiting && r.waiting.length) h += r.waiting.map(w => `<div class="banner date" role="note"><p><strong>Not added yet:</strong> ${esc(w)}</p></div>`).join("");
-  if (r.otherChemicals) h += `<div class="banner info"><p>We show the main derailment chemicals first. <strong>${r.otherChemicals} other chemicals</strong> were also tested. Ask about one by name, for example "benzene in the creeks".</p></div>`;
   if (r.items && r.items.length) {
-    h += r.wantsLatest
-      ? `<div class="banner info"><p><strong>You asked about the newest results.</strong> These are the latest tests on file for each place. They are not live readings.</p></div>`
-      : `<div class="banner info"><p>The newest result for each place is shown first.${r.history && r.history.length ? ` Older results are under <strong>Show history</strong>.` : ""}</p></div>`;
     h += `<h2>Newest results</h2>` + (r.items.length > 12 ? summaryBlock(r.items) : byPlace(r.items));
   }
   if (r.history && r.history.length) {
     const n = r.history.length;
-    h += `<details class="history"><summary><span class="when-closed">Show history</span><span class="when-open">Hide history</span>&nbsp;(${n} older result${n === 1 ? "" : "s"})</summary>
+    h += `<details class="history"><summary><span><span class="when-closed">Show history</span><span class="when-open">Hide history</span> (${n} older result${n === 1 ? "" : "s"})</span></summary>
       <h2>Older results</h2><p>Newest first.</p>${oldConf.map(conflictCard).join("")}${byPlace(r.history)}</details>`;
   }
   if (r.limits && r.limits.length) {
-    h += `<h2>Federal drinking-water limits</h2>
-      <p>This is the published limit. The web app does not compare results to it. A librarian can help you read both.</p>` +
-      r.limits.map(l => `<div class="card"><p>${esc(l.text)}</p>${citeHTML(l.cite)}</div>`).join("");
+    const name = l => esc(DATA.analytes[l.analyte].name);
+    const has = r.limits.filter(l => DATA.mcl[l.analyte]), none = r.limits.filter(l => DATA.mcl[l.analyte] === null);
+    h += `<h2>Federal drinking-water limits</h2>` +
+      has.map(l => `<div class="limit-line"><p><strong>${name(l)}:</strong> ${esc(DATA.mcl[l.analyte].value)} ${esc(DATA.mcl[l.analyte].unit)}</p>${citeHTML(l.cite)}</div>`).join("") +
+      (none.length ? `<div class="limit-line"><p><strong>No federal limit:</strong> ${none.map(name).join(", ")}</p>${citeHTML(none[0].cite)}</div>` : "") +
+      `<p class="hint">The web app does not compare results to these limits.</p>`;
   }
   if (r.docs && r.docs.length) h += `<h2>Where to read it</h2>` + r.docs.map(c => `<div class="card">${citeHTML(c)}</div>`).join("");
+  if (r.otherChemicals) h += `<p class="hint">${r.otherChemicals} other chemicals were also tested. Ask about one by name, like "benzene in the creeks".</p>`;
   if (r.absence) h += `<div class="card"><h2>${/^We don't have data on that yet\./.test(r.absence) ? "We don't have data on that yet." : "We don't have data on that."}</h2>
     <p>${esc(r.absence.replace(/^We don't have data on that yet\. /, ""))}</p>
     <p>Try a topic button, or print this page and ask a librarian.</p></div>`;
@@ -275,8 +293,8 @@ function recordsBlock(r) {
 function wordsHTML(r) {
   const w = Core.wordsUsed(r);
   if (!w.length) return "";
-  return `<section class="words"><h2>What these words mean</h2><dl>
-    ${w.map(x => `<dt>${esc(termLabel(x.term))}</dt><dd>${esc(x.definition)}</dd>`).join("")}</dl></section>`;
+  return `<details class="tap words"><summary><span>What these words mean</span></summary><dl>
+    ${w.map(x => `<dt>${esc(termLabel(x.term))}</dt><dd>${esc(x.definition)}</dd>`).join("")}</dl></details>`;
 }
 function termLabel(t) {
   const special = { "mcl": "MCL", "ppb": "ppb", "µg/l": "µg/L", "ng/kg": "ng/kg", "epa": "EPA", "ohio epa": "Ohio EPA", "atsdr": "ATSDR" };
@@ -295,7 +313,6 @@ function factCardHTML(f, opts = {}) {
 
 function resultHTML(r) {
   const asked = `<p class="you-asked"><strong>You asked:</strong> ${esc(r.question)}</p>`;
-  const back = `<div class="row no-print back-to-topics"><button type="button" class="btn" data-action="back">‹ Back to topics</button></div>`;
   const banner = dateBannerHTML(r.dates);
   let body = "";
   switch (r.kind) {
@@ -339,7 +356,7 @@ function resultHTML(r) {
         <h2>Fact cards</h2>${(r.factCards || []).map(f => factCardHTML(f, { heading: true })).join("") || "<p>None.</p>"}` + wordsHTML(r);
       break;
   }
-  return back + asked + banner + body + `<div class="row no-print"><button type="button" class="btn" data-action="back">Ask another question</button></div>`;
+  return asked + body + banner;  // date panel comes after the answer (owner request)
 }
 
 // FR-19 static document browser.
@@ -376,16 +393,18 @@ function speak() {
   speaking = true; updateSpeakButtons();
 }
 function stopSpeaking() { if ("speechSynthesis" in window) speechSynthesis.cancel(); speaking = false; updateSpeakButtons(); }
-function updateSpeakButtons() { $$('[data-action="speak"]').forEach(b => { b.textContent = speaking ? "Stop reading" : "Read aloud"; }); }
+function updateSpeakButtons() {  // the round speaker button at the top left
+  $$('[data-action="speak"]').forEach(b => { const l = speaking ? "Stop reading" : "Read aloud"; b.setAttribute("aria-pressed", String(speaking)); b.setAttribute("aria-label", l); b.title = l; });
+}
 
 // ---------- Print ----------
 function printPage() {
-  $$("details.history").forEach(d => { d.open = true; });
+  $$("details.history, details.tap").forEach(d => { d.open = true; });
   const pd = $("#print-date"); if (pd) pd.textContent = Core.fmtDate(new Date().toISOString().slice(0, 10));
   window.print();
 }
 window.addEventListener("beforeprint", () => {
-  $$("details.history").forEach(d => { d.open = true; });
+  $$("details.history, details.tap").forEach(d => { d.open = true; });
   const pd = $("#print-date"); if (pd) pd.textContent = Core.fmtDate(new Date().toISOString().slice(0, 10));
 });
 
@@ -536,7 +555,7 @@ function drawAudit() {
 
 // ---------- One click handler for every button ----------
 document.addEventListener("click", e => {
-  const el = e.target.closest("[data-ask], [data-action], [data-topic], [data-size]");
+  const el = e.target.closest("[data-ask], [data-action], [data-topic], [data-size], [data-intro]:not(body)");  // body also carries data-intro (page look)
   if (!el) return;
   if (el.dataset.size) { view.size = el.dataset.size; applyView(); return; }
   if (el.dataset.topic) {
@@ -547,7 +566,9 @@ document.addEventListener("click", e => {
     return;
   }
   if (el.dataset.ask) { e.preventDefault(); askQuestion(el.dataset.ask); return; }
+  if (typeof Intro !== "undefined" && Intro.click(el)) { render(); window.scrollTo(0, 0); return; }
   switch (el.dataset.action) {
+    case "ask-typed": askTyped(); break;
     case "start": S.ack = true; startSession(); render(); window.scrollTo(0, 0); break;
     case "done": endSession(); break;
     case "print": printPage(); break;
@@ -556,12 +577,12 @@ document.addEventListener("click", e => {
     case "limits": go("#/limits"); break;
     case "home": go("#/"); break;
     case "contrast": view.contrast = !view.contrast; applyView(); break;
-    case "back": {
-      stopSpeaking();
-      const panel = $(".ask-panel"); if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
-      const t = openTopic ? $(`.topic[data-topic="${openTopic}"]`) : $(".topic"); if (t) t.focus({ preventScroll: true });
+    case "back":  // same as the phone's back gesture when we came from the question page
+      onAnswer = false;
+      if (fromMain && history.state && history.state.answer) { try { history.back(); } catch {} }
+      fromMain = false;
+      render(); window.scrollTo(0, 0);
       break;
-    }
     case "street": {
       const sel = $("#street");
       const street = sel ? sel.value : "";
@@ -579,27 +600,39 @@ document.addEventListener("click", e => {
     case "audit": drawAudit(); break;
   }
 });
-document.addEventListener("submit", e => {
-  if (e.target.id !== "type-form") return;
-  e.preventDefault();
-  const box = $("#q"); const q = box.value; box.value = "";
-  askQuestion(q);
+// The Ask button and the Enter key ask directly, without a form submit, so it also works
+// inside previews that block forms. Shift+Enter still adds a new line.
+function askTyped() { const box = $("#q"); if (!box) return; const q = box.value; box.value = ""; askQuestion(q); }
+document.addEventListener("submit", e => { if (e.target.id === "type-form") { e.preventDefault(); askTyped(); } });
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing && e.target.id === "q") { e.preventDefault(); askTyped(); }
 });
 
 // ---------- Privacy: clear the screen after 10 minutes with no touch ----------
 let lastActivity = Date.now();
 ["pointerdown", "keydown", "scroll", "touchstart"].forEach(ev => window.addEventListener(ev, () => { lastActivity = Date.now(); }, { passive: true }));
 setInterval(() => {
-  if (sessionId && Date.now() - lastActivity > 10 * 60 * 1000 && location.hash !== "#/staff") endSession();
+  const introStarted = typeof Intro !== "undefined" && Intro.step > 0;
+  if ((sessionId || introStarted) && Date.now() - lastActivity > 10 * 60 * 1000 && location.hash !== "#/staff") endSession();
 }, 30000);
 
 // ---------- Router ----------
 function render() {
   stopSpeaking();
+  shownHash = location.hash;
+  delete document.body.dataset.intro;  // the opening screens set it again if they show
   if (location.hash === "#/staff") renderStaff();
   else if (location.hash === "#/limits") renderLimits();
   else renderPatron();
 }
-window.addEventListener("hashchange", () => { render(); window.scrollTo(0, 0); });
+window.addEventListener("popstate", () => {  // phone back/forward between questions and answer
+  onAnswer = !!(history.state && history.state.answer) && !!answerHTML;
+  render(); window.scrollTo(0, 0);
+});
+window.addEventListener("hashchange", () => {
+  if (location.hash === shownHash) return;
+  onAnswer = location.hash === "#/answer" && !!answerHTML;  // phone back/forward
+  render(); window.scrollTo(0, 0);
+});
 applyView();
 render();

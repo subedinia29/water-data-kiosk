@@ -7,13 +7,16 @@
 <link rel="stylesheet" href="styles.css">
 <!-- EXTRA FEATURES (Project 3.2). To remove: delete this line and the 4 script lines below marked EXTRA FEATURES, then the features/ folder. -->
 <link rel="stylesheet" href="features/features.css">
+<!-- OPENING SCREENS (version 2). To remove: delete this line, the 2 script lines marked OPENING SCREENS, and the intro/ folder. To switch off: intro/intro.js, on: false. -->
+<link rel="stylesheet" href="intro/intro.css">
 </head>
 <body>
 <a class="skip" href="#app">Skip to main content</a>
 
 <header class="topbar no-print">
   <div class="topbar-inner">
-    <div class="brand">
+    <button type="button" class="speak-btn" data-action="speak" aria-pressed="false" aria-label="Read aloud" title="Read aloud"><svg aria-hidden="true" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+    <div class="brand visually-hidden">
       <span class="brand-title">Water &amp; Soil Test Results</span>
       <span class="brand-sub">East Palestine Memorial Public Library</span>
     </div>
@@ -22,7 +25,7 @@
       <button type="button" class="size-btn" data-size="1" aria-describedby="size-label" aria-label="Normal text">A</button>
       <button type="button" class="size-btn" data-size="2" aria-describedby="size-label" aria-label="Bigger text">A+</button>
       <button type="button" class="size-btn" data-size="3" aria-describedby="size-label" aria-label="Biggest text">A++</button>
-      <button type="button" class="contrast-btn" data-action="contrast" aria-pressed="false">High contrast</button>
+      <button type="button" class="contrast-btn" data-action="contrast" aria-pressed="false" aria-label="High contrast" title="High contrast"><span aria-hidden="true">◐</span></button>
     </div>
   </div>
 </header>
@@ -63,6 +66,9 @@
 <script src="data/sample-made-up.js"></script>
 <script src="data.js"></script>
 <script src="core.js"></script>
+<!-- OPENING SCREENS (version 2) -->
+<script src="intro/mascot.js"></script>
+<script src="intro/intro.js"></script>
 <script src="app.js"></script>
 <!-- EXTRA FEATURES (Project 3.2) -->
 <script src="features/config.js"></script>

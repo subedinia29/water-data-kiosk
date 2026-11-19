@@ -2,7 +2,7 @@
 
 A running record of which requirements from the IEEE requirements guide are kept, simplified or left out. Each entry that is not fully kept explains what adding it later would involve.
 
-Last updated: 2026-11-03
+Last updated: 2026-11-03 (user-friendly version added; see the end of this file)
 
 ## Current build at a glance
 - A static web app (`index.html`, `data.js`, `core.js`, `app.js`). It is phone-first, and on desktop (900px or wider) it switches to two columns.
@@ -101,3 +101,88 @@ Last updated: 2026-11-03
 ## Privacy notes
 - The anonymous audit log stores question text, because the weekly audit needs it. It stores no name, no address and only a random session ID.
 - **Open question for Chang:** confirm this is acceptable under ORC 149.432, or whether questions should be dropped after the audit window.
+
+## 2026-11-03: User-friendly version (`user-friendly/` folder)
+A second build for patrons who are older, have low vision, or don't want to type. The root prototype files are unchanged. The new folder has its own copies of `data.js` and `core.js`, adapted as described below. It uses its own browser storage key, so the two versions don't share settings or logs.
+
+### Design
+- **Phone first, two columns on wide screens (960px or wider).** Base text is 20px. A+ and A++ buttons raise it to 24px and 28px. A High contrast button switches to white and yellow on black. Colors meet WCAG AAA contrast (7:1).
+- **Tap targets are at least 56px tall** (48px for the text-size buttons in the top bar).
+- **Topic buttons with tap-to-ask questions,** so nobody has to type. Typing is still available.
+- **Plain words.** Answer sentences are short. Results are labeled "Result / Tested on / Tested by / Sample". "Not detected" shows as "Not found" with the detection limit in plain words. `test.js` checks that the fixed wording averages grade 8 or lower.
+- **Jargon is explained under each answer** ("What these words mean"), using only the glossary. Glossary entries were added for EPA, Ohio EPA, ATSDR, fact card, sample, census tract and "not found". They define words only and contain no health content.
+- **Result values use neutral colors.** No red or green on numbers, because color would suggest a safety judgment.
+- **Report a problem** uses a large on-screen form with four tap choices instead of a browser pop-up.
+- **Read aloud** reads only what is visible on the screen, at a slightly slower rate, and says unit names in full. The same button stops it.
+- **Privacy:** "Done" clears the screen and display settings for the next person. The screen also clears itself after 10 minutes with no touch.
+- **Near my street** is a pick-list of streets instead of a typed address. The street is turned into a census tract once and then cleared (FR-20 unchanged).
+- **Print** opens the history, adds a printed date, "Bring this page to the reference desk", note lines and the disclaimer.
+
+### Gap 1 fixed: "What is <chemical>?" shows the fact card
+- **Now:** a question that is only "What is/are <chemical>?" shows that chemical's fact card, the federal limit (cited) and how many tests are on file, with a button to see them. "What is vinyl chloride at Sulphur Run?" still shows test results.
+- Every chemical now has a fact card entry. All say "Awaiting expert-approved ATSDR text." We wrote no health text. Approved cards would cite a new corpus entry, D7 (ATSDR ToxFAQs printed copies, sample entry).
+- Pausing fact cards on the staff page still hides any approved text.
+
+### Gap 2 fixed: newest result per location first
+- **Now:** by default, and for "right now", "latest", "current", "newest", "recent" or "still" questions, the newest result for each place, chemical and sample type is shown first. Older results sit behind a **Show history** button, newest first.
+- "Right now" questions also say plainly that the kiosk has no live readings.
+- "What are the latest test results?" and "Show me all the test results" now work without naming a place or chemical.
+- If two agencies disagree on a newest result, the flag shows next to it. If the disagreement is in older results, a short note at the top points to Show history, and the full flag card is inside the history.
+- Sample records were added (more made-up dates for the same places) so the history has something to show.
+
+### Other logic changes in `user-friendly/core.js`
+- **Safety gate additions (over-refusal preferred):** health-effect wording ("what will it do to me", "health effects of", "how does it affect my kids") is refused as *risk*. Judgment words ("bad", "clean", "contaminated", "poison", "healthy", "pure") are refused as *safety*. Eight matching red-team items were added (26 total, all refused). The benchmark list is unchanged, because benchmark questions must come from real staff questions.
+- **Glossary only answers word-only questions.** "What is the MCL for vinyl chloride?" now shows the actual limit instead of the MCL definition. It is still Tier 1, so the benchmark still passes at 100%.
+- **Glossary matching normalizes terms,** so "µg/L" and "ng/kg" questions now match.
+- **"Where can I read…" questions** show the documents only, not the test results.
+- **Word definitions now carry a citation** to a new corpus entry, G1 (the kiosk word list, sample, needs expert review), so every answer shows a source.
+- **Agency disagreements are logged for staff** and listed on the staff page, so "flagged" now means a person can see it.
+- **Topic buttons and their questions live in `data.js` (`topics`),** so all wording is in one file. `test.js` checks that every one gives the expected kind of answer.
+
+### Kept the same
+- Safety gate runs first. Eight refusal categories, each with a referral card (wording simplified, same contacts and placeholders).
+- Mandatory citation on every item, date banner on every result, stale-document warning.
+- "We don't have data on that" when nothing matches.
+- Staff page: kill switch, emergency mode, desk staffed toggle, 180-day auto-sunset, anonymous session count, report queue with 5-day warning, incident log, content-class pause, weekly audit, release gate.
+- No server, no AI model, no external requests, no personal data stored.
+
+### Open items
+- **Staff link:** still a small link at the bottom of patron screens, as in the root prototype. In a public kiosk the staff page must not be reachable by patrons (see "Kill switch as a physical action" above).
+- **Fonts:** uses Verdana or the device's system font. No web fonts are downloaded, to keep the kiosk offline.
+- **Reading level of chemical names** can't be lowered. They are official names and stay as published.
+- **User testing:** the design has not yet been tried with library patrons. A short session with a few older residents and the reference staff is the next step.
+- **Two versions:** once the library picks one, delete or archive the other so there is one `data.js` to maintain.
+
+## 2026-11-12: Real EPA data added (user-friendly version)
+Source: the public U.S. EPA East Palestine water sampling page listed in the requirements guide (https://www.epa.gov/east-palestine-oh-train-derailment/water-sampling-data), "EPA Lab Results: Water (through 09/30/2025)" CSV.
+
+### What changed
+- **Data lives in `user-friendly/data/`, one file per source.** `data.js` now holds only wording and settings, and merges the data files when the page loads. Adding, removing or replacing a source means one file plus one line in `DATASET_FILES` and one `<script>` line in `index.html`. A test checks that these two lists match.
+- **Real data:** `tools/import_epa_water.py` converts the CSV into `data/epa-water-sampling.js`: 3,943 of 3,944 rows, 183 chemicals, 56 sampling points, Feb 2023 to Aug 2025. The one row EPA's lab marked "R" (rejected) is skipped. Results EPA marks "J" are shown as "estimated", and "Prelim" ones as "preliminary". Units are normalized (ug/L, UG/L and ppb become µg/L).
+- **Placeholders** (`data/not-yet-available.js`): village tap water, county private wells, soil and dioxins, and the creek names Sulphur Run and Leslie Run. Asking about one gives "We don't have data on that yet" and names the missing source. Missing federal limits show "not entered yet".
+- **Made-up data** moved to `data/sample-made-up.js` and is switched off. Switching it on hides all real data, so the two are never mixed. The staff page warns when it is on. `test.js` runs its checks in both modes.
+- **Readability with real volumes:** when no chemical is named, the kiosk shows the main derailment chemicals first and counts the rest. When there are more than 12 results, it shows a short summary per chemical, lists only the places where it was found, and puts every result behind "Show every place".
+- **Everyday group words:** "creek(s)", "stream(s)", "surface water" cover all EPA stream points, and "monitoring well(s)" and "groundwater" cover all EPA wells. Monitoring wells are labeled as not being home drinking-water wells.
+- **Word questions** now count only when nothing else is asked ("What does monitoring well mean?"), so "latest monitoring well results" shows results.
+- **Topics** were rewritten for the real data. "Near my street" is hidden because EPA's file has no census tracts.
+
+### What could not be done, and why
+- **Location names:** EPA's CSV only has codes like `SW01-SR`. Names appear only in EPA's interactive map on another site (epa.maps.arcgis.com). The kiosk shows codes, and `data/location-names.js` has a placeholder for each code. Names must be confirmed before they are typed in.
+- **Census tracts:** not in the CSV, so "Near my street" can't work with real data yet.
+- **Disagreements between agencies:** only one agency's data is loaded, so nothing is flagged yet. The logic is still tested with the sample data.
+- **Other sources in the guide** (Ohio EPA, the village water system, county wells, soil and dioxins, the TASC summary, ATSDR fact cards) were not downloaded. They are listed as placeholders on the staff page.
+- **Shelf location** for the printed EPA file is a placeholder.
+- **Network:** epa.gov was blocked in the cloud environment, so a personal environment that allows `www.epa.gov` was created to download the file.
+
+## 2026-11-12: Calling it a web app, not a kiosk
+This is a web application, so every screen and guide now says "web app" instead of "kiosk".
+- **Changed:** all wording people see (welcome page, answers, "We don't have data" messages, the staff page heading, now "Web app controls"), the README files, `data/README.md`, `features/FEATURES.md`, `PROJECT-HANDOFF.md`, code comments, and the AI helper's instructions.
+- **New one-file preview:** `preview/web-app-preview.html`, rebuilt from `user-friendly/` with the new wording. It replaces `preview/kiosk-real-data-preview.html`.
+- **Kept as they were:** internal code names such as `KIOSK_USE_SAMPLE` and `KIOSK_DATASETS`, and the browser's saved-settings name (renaming them changes nothing on screen and could break things or wipe saved settings); branch names and the repo name `water-data-kiosk`; past commits; the root prototype files; the submitted write-ups in `docs/` and the older previews they link to; and earlier entries in this file, which record what was true at the time.
+
+## 2026-11-12: Cleanup, only the app stays
+The repo now holds only what the web app needs.
+- **Removed:** the assignment write-ups and screenshots (`docs/`), the one-file previews (`preview/`), and the first prototype files in the main folder (`index.html`, `data.js`, `core.js`, `app.js`). They stay in git history if ever needed.
+- **Taken off GitHub but kept on the owner's Mac:** `PROJECT-HANDOFF.md`.
+- **Kept:** this file, the raw EPA spreadsheet in `user-friendly/data/raw/` (needed to refresh the data), and everything in `user-friendly/`.
+- **Saved versions:** `version 1.html` is a single-file snapshot of the app as of this date, kept on the owner's Mac (not uploaded) so later changes can be compared against it.

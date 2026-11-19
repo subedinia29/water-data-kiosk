@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Water and Soil Test Results</title>
+<link rel="stylesheet" href="styles.css">
+<!-- EXTRA FEATURES (Project 3.2). To remove: delete this line and the 4 script lines below marked EXTRA FEATURES, then the features/ folder. -->
+<link rel="stylesheet" href="features/features.css">
+</head>
+<body>
+<a class="skip" href="#app">Skip to main content</a>
+
+<header class="topbar no-print">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-title">Water &amp; Soil Test Results</span>
+      <span class="brand-sub">East Palestine Memorial Public Library</span>
+    </div>
+    <div class="display" role="group" aria-label="Screen settings">
+      <span class="display-label" id="size-label">Text size</span>
+      <button type="button" class="size-btn" data-size="1" aria-describedby="size-label" aria-label="Normal text">A</button>
+      <button type="button" class="size-btn" data-size="2" aria-describedby="size-label" aria-label="Bigger text">A+</button>
+      <button type="button" class="size-btn" data-size="3" aria-describedby="size-label" aria-label="Biggest text">A++</button>
+      <button type="button" class="contrast-btn" data-action="contrast" aria-pressed="false">High contrast</button>
+    </div>
+  </div>
+</header>
+
+<div class="print-only print-head">
+  <strong>Water &amp; Soil Test Results — East Palestine Memorial Public Library</strong><br>
+  Printed <span id="print-date"></span>. Bring this page to the reference desk. A librarian can help you read it.
+</div>
+
+<main id="app" tabindex="-1"></main>
+
+<!-- Report a problem (FR-15). A big, simple form instead of a pop-up text box. -->
+<dialog id="report-dialog" aria-labelledby="report-title">
+  <form method="dialog" id="report-form">
+    <h2 id="report-title">Report a problem</h2>
+    <p>What went wrong? Tap one.</p>
+    <div class="choice-list">
+      <label class="choice"><input type="radio" name="what" value="The answer looks wrong" checked> The answer looks wrong</label>
+      <label class="choice"><input type="radio" name="what" value="It did not understand my question"> It did not understand my question</label>
+      <label class="choice"><input type="radio" name="what" value="It was hard to read or use"> It was hard to read or use</label>
+      <label class="choice"><input type="radio" name="what" value="Something else"> Something else</label>
+    </div>
+    <label for="report-note">Anything else? (Optional. Please do not write your name or address.)</label>
+    <textarea id="report-note" rows="3"></textarea>
+    <div class="row">
+      <button type="submit" value="send" class="btn primary">Send report</button>
+      <button type="submit" value="cancel" class="btn">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- DATA FILES. Keep this list the same as DATASET_FILES in data.js. See data/README.md. -->
+<script src="data/location-names.js"></script>
+<script src="data/not-yet-available.js"></script>
+<script src="data/epa-water-sampling.js"></script>
+<script src="data/sample-made-up.js"></script>
+<script src="data.js"></script>
+<script src="core.js"></script>
+<script src="app.js"></script>
+<!-- EXTRA FEATURES (Project 3.2) -->
+<script src="features/config.js"></script>
+<script src="features/fuzzy.js"></script>
+<script src="features/features.js"></script>
+</body>
+</html>
